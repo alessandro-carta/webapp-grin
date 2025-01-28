@@ -54,8 +54,8 @@ export async function deleteSottoarea(id) {
     return result;
 }
 
-export async function updateSottoarea(idSottoarea, Nome){
-    const [result] = await db.query(`UPDATE Sottoaree SET Nome = ? WHERE idSottoarea = ?`, [Nome, idSottoarea]);
+export async function updateSottoarea(idSottoarea, Nome, Area){
+    const [result] = await db.query(`UPDATE Sottoaree SET Nome = ?, Area = ? WHERE idSottoarea = ?`, [Nome, Area, idSottoarea]);
     return result;
 }
 

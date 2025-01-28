@@ -85,7 +85,7 @@ function FormUpdateArea(props) {
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.Nome && <p style={{ color: 'red' }}>{formErrors.Nome}</p>}
+                        {formErrors.Nome && <p className="text-red-500">{formErrors.Nome}</p>}
                     </div>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">

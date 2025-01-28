@@ -128,7 +128,7 @@ function FormNewSottoarea() {
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.idSottoarea && <p style={{ color: 'red' }}>{formErrors.idSottoarea}</p>}
+                        {formErrors.idSottoarea && <p className="text-red-500">{formErrors.idSottoarea}</p>}
                     </div>
                     {/* Nome */}
                     <div className="mb-4">
@@ -141,7 +141,7 @@ function FormNewSottoarea() {
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.Nome && <p style={{ color: 'red' }}>{formErrors.Nome}</p>}
+                        {formErrors.Nome && <p className="text-red-500">{formErrors.Nome}</p>}
                     </div>
                     {/* Area */}
                     <div className="mb-4">
@@ -155,7 +155,7 @@ function FormNewSottoarea() {
                             {aree.map(area => (
                                 <option key={area.idArea} value={area.idArea}>{area.Nome}</option> ))}
                         </select>
-                        {formErrors.Area && <p style={{ color: 'red' }}>{formErrors.Area}</p>}
+                        {formErrors.Area && <p className="text-red-500">{formErrors.Area}</p>}
                     </div>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
@@ -172,7 +172,7 @@ function FormNewSottoarea() {
                         >
                             Annulla
                         </Link>
-                        {formErrors.Result && <p style={{ color: 'red' }}>{formErrors.Result}</p>}
+                        {formErrors.Result && <p className="text-red-500">{formErrors.Result}</p>}
                     </div>
                 </form>
             </div>

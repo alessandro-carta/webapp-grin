@@ -26,7 +26,7 @@ function Anno(props){
     }
     if(!loading && clicked){
         component = insegnamenti.map((insegnamento) => (
-            <div key={insegnamento.idInsegnamento} className="border-b border-gray-300">
+            <div key={insegnamento.idInsegnamento} className="bg-gray-100 rounded-lg p-4 m-2">
                 <p className="text-xl">Insegnamento: {insegnamento.Nome}</p>
                 <p className="text-xl">CFU (totali): {insegnamento.CFU}</p>
                 <p className="text-xl">Settore: {insegnamento.Settore}</p>

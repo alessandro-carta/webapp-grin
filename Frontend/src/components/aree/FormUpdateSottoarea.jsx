@@ -1,9 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function FormUpdateSottoarea(props) {
-
     const navigate = useNavigate();
+    const [aree, setAree] = useState([]); // elenco delle aree per il menu a tendina
+    const [loading, setLoading] = useState(true);
+
+    const loadAllAree = async () => {
+            fetch('/api/aree')
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success){
+                        setAree(data.data);
+                        setLoading(false);
+                    }
+            })
+            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+    }
+    
+    useEffect(() => loadAllAree, []); // Non ha dipendenze, eseguito ad ogni render
 
     // dati del form
     const [formData, setFormData] = useState({
@@ -35,9 +50,20 @@ function FormUpdateSottoarea(props) {
         return true;
     }
 
+    const checkArea = () => {
+        if(!formData.Area){
+            setFormErros({
+                ...formErrors,
+                Area: "Campo obbligatorio"
+            })
+            return false;
+        }
+        return true;
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(checkNome()){
+        if(checkNome() && checkArea()){
             const response = await fetch(`/api/updateSottoarea`, {
                 method: 'PUT',
                 headers: {
@@ -48,7 +74,7 @@ function FormUpdateSottoarea(props) {
 
             // modifica riuscita
             if (response.ok) {
-                navigate(`/sottoaree/${props.sottoarea.Area}`);
+                navigate(`/sottoaree/${formData.Area}`);
             }
             // modifica fallita
             if (!response.ok) {
@@ -73,6 +99,7 @@ function FormUpdateSottoarea(props) {
         });
     }
 
+    if(loading) return <p>LOADING...</p>
     return(
         <>
             <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg">
@@ -88,7 +115,21 @@ function FormUpdateSottoarea(props) {
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.Nome && <p style={{ color: 'red' }}>{formErrors.Nome}</p>}
+                        {formErrors.Nome && <p className="text-red-500">{formErrors.Nome}</p>}
+                    </div>
+                    {/* Area */}
+                    <div className="mb-4">
+                        <select
+                            id="Area"
+                            name="Area"
+                            value={formData.Area}
+                            onChange={handleChange}
+                        >
+                            <option value="">Scegli un'area</option>
+                            {aree.map(area => (
+                                <option key={area.idArea} value={area.idArea}>{area.Nome}</option> ))}
+                        </select>
+                        {formErrors.Area && <p className="text-red-500">{formErrors.Area}</p>}
                     </div>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
@@ -105,7 +146,7 @@ function FormUpdateSottoarea(props) {
                         >
                             Annulla
                         </Link>
-                        {formErrors.Result && <p style={{ color: 'red' }}>{formErrors.Result}</p>}
+                        {formErrors.Result && <p className="text-red-500">{formErrors.Result}</p>}
                     </div>
                 </form>
             </div>

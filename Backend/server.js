@@ -329,11 +329,11 @@ app.delete("/api/deleteSottoarea/:idSottoarea", async (req, res) => {
     }
 })
 app.put("/api/updateSottoarea", async (req, res) => {
-    const { idSottoarea, Nome } = req.body;
+    const { idSottoarea, Nome, Area } = req.body;
 
     try {
         // modifica avvenuta con successo
-        const result = await updateSottoarea(idSottoarea, Nome);
+        const result = await updateSottoarea(idSottoarea, Nome, Area);
         return res.status(200).json({
             success: true
         });
