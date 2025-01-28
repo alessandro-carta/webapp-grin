@@ -10,7 +10,7 @@ function AreePage(){
     const [pageTitle, setPageTitle] = useState('Elenco delle aree');
 
     const loadAllAree = async () => {
-        fetch('http://localhost:8081/aree')
+        fetch('/api/aree')
             .then(res => res.json())
             .then(data => {
                 // restituisce i dati se non sono capitati errori

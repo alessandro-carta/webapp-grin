@@ -8,14 +8,13 @@ function ControlloRegolePage(){
     const [regole, setRegole] = useState([]);
     const [loading, setLoading] = useState(true);
     const checkRichiesta = async () => {
-        fetch(`http://localhost:8081/checkRegole/${idRegolamento}`)
+        fetch(`/api/checkRegole/${idRegolamento}`)
             .then(res => res.json())
             .then(data => {
                 // restituisce i dati se non sono capitati errori
                 if(data.success){
                     setRegole(data.data);
                     setLoading(false);
-                    console.log(data.data);
                 }
             })
             .catch(error => console.error("Errore nel caricamento dei dati:", error));

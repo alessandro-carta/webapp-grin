@@ -5,7 +5,7 @@ function Anno(props){
 
     const [insegnamenti, setInsegnamenti] = useState([]);
     const loadInsegnamenti = async () => {
-        fetch(`http://localhost:8081/insegnamenti/${props.idRegolamento}`)
+        fetch(`/api/insegnamenti/${props.idRegolamento}`)
             .then(res => res.json())
             .then(data => {
                 // restituisce i dati se non sono capitati errori

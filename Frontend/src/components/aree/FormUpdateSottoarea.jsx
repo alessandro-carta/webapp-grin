@@ -38,7 +38,7 @@ function FormUpdateSottoarea(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if(checkNome()){
-            const response = await fetch(`http://localhost:8081/updateSottoarea`, {
+            const response = await fetch(`/api/updateSottoarea`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

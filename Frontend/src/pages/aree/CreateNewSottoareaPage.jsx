@@ -11,7 +11,9 @@ function CreateNewSottoareaPage () {
         <>
             <NavbarGrin />
             <h1 className='text-blue-800'>{pageTitle}</h1>
-            <FormNewSottoarea />
+            <div className="flex justify-center">
+                <FormNewSottoarea />
+            </div>
         </>
     )
     

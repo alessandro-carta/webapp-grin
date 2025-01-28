@@ -7,7 +7,7 @@ function Regola(props) {
     // check: boolean, true: controllo regole - false: elenco regole
     const [isDeleted, setIsDeleted] = useState(false); // tiene traccia se una regola e' stata eliminata
     const deleteRegola = async () => {
-        const response = await fetch(`http://localhost:8081/deleteRegola/${props.regola.idRegola}`, {
+        const response = await fetch(`/api/deleteRegola/${props.regola.idRegola}`, {
             method: 'DELETE'
         });
         // eliminazione avvenuta con successo

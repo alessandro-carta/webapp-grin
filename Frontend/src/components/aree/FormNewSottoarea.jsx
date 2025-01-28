@@ -8,7 +8,7 @@ function FormNewSottoarea() {
     const [loading, setLoading] = useState(true);
 
     const loadAllAree = async () => {
-            fetch('http://localhost:8081/aree')
+            fetch('/api/aree')
                 .then(res => res.json())
                 .then(data => {
                     if(data.success){
@@ -78,7 +78,7 @@ function FormNewSottoarea() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if(checkSigla() && checkArea() && checkNome()){
-            const response = await fetch(`http://localhost:8081/addSottoarea`, {
+            const response = await fetch(`/api/addSottoarea`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -15,7 +15,7 @@ function RichiestaPage() {
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
 
     const loadRichiesta = async () => {
-        fetch(`http://localhost:8081/richiesta/${idRichiesta}`)
+        fetch(`/api/richiesta/${idRichiesta}`)
             .then(res => res.json())
             .then(data => {
                 // restituisce i dati se non sono capitati errori

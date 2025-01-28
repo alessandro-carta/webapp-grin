@@ -12,7 +12,7 @@ function PresidentePage() {
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
 
     const loadPresidente = async () => {
-        fetch(`http://localhost:8081/presidenti/${idPresidente}`)
+        fetch(`/api/presidenti/${idPresidente}`)
             .then(res => res.json())
             .then(data => {
                 // restituisce i dati se non sono capitati errori
@@ -29,7 +29,7 @@ function PresidentePage() {
     // Attivo: 0
     const offPresidente = async () => {
         const data = {...presidente, Attivo: 0};
-        const response = await fetch(`http://localhost:8081/updatePresidente`, {
+        const response = await fetch(`/api/updatePresidente`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ function PresidentePage() {
     // Attivo: 1
     const onPresidente = async () => {
         const data = {...presidente, Attivo: 1};
-        const response = await fetch(`http://localhost:8081/updatePresidente`, {
+        const response = await fetch(`/api/updatePresidente`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

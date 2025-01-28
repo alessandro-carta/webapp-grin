@@ -11,7 +11,9 @@ function CreateNewAreaPage () {
         <>
             <NavbarGrin />
             <h1 className='text-blue-800'>{pageTitle}</h1>
-            <FormNewArea />
+            <div className="flex justify-center">
+                <FormNewArea />
+            </div>
         </>
     )
     

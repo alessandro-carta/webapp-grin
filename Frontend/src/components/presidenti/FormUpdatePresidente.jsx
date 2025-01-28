@@ -95,7 +95,7 @@ function FormUpdatePresidente(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if(checkNome() && checkCognome() && checkEmail() && checkUniversità()){
-            const response = await fetch(`http://localhost:8081/updatePresidente`, {
+            const response = await fetch(`/api/updatePresidente`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

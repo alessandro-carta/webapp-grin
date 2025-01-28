@@ -11,7 +11,7 @@ function UpdateSottoareaPage(){
     const [pageTitle, setPageTitle] = useState('Modifica Sottoarea');
 
     const loadSottoarea = async () => {
-        fetch(`http://localhost:8081/sottoarea/${idSottoarea}`)
+        fetch(`/api/sottoarea/${idSottoarea}`)
             .then(res => res.json())
             .then(data => {
                 if(data.success){
@@ -30,7 +30,9 @@ function UpdateSottoareaPage(){
         <>
             <NavbarGrin />
             <h1 className='text-blue-800'>{pageTitle}</h1>
-            <FormUpdateSottoarea sottoarea={sottoarea}/>
+            <div className="flex justify-center">
+                <FormUpdateSottoarea sottoarea={sottoarea}/>
+            </div>
         </>
     )
 

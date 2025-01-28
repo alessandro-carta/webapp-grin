@@ -13,7 +13,7 @@ function Area(props) {
 
     const updateArea = async () => { navigate(`/modifica-area/${props.area.idArea}`); }
     const deleteArea = async () => {
-        const response = await fetch(`http://localhost:8081/deleteArea/${props.area.idArea}`, {
+        const response = await fetch(`/api/deleteArea/${props.area.idArea}`, {
             method: 'DELETE'
         });
 

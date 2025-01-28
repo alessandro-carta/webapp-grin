@@ -13,7 +13,7 @@ function PresidentiPage() {
   useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
 
   const loadAllPresidenti = async () => {
-    fetch('http://localhost:8081/presidenti')
+    fetch('/api/presidenti')
         .then(res => res.json())
         .then(data => {
           // restituisce i dati se non sono capitati errori

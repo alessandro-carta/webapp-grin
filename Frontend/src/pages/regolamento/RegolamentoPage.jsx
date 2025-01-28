@@ -11,7 +11,7 @@ function RegolamentoPage(){
     const [regole, setRegole] = useState([]); // stato che contiene l'elenco delle regole
     const [loading, setLoading] = useState(true); // stato per il caricamento dei dati
     const loadAllRegole = async () => {
-        fetch('http://localhost:8081/regole')
+        fetch('/api/regole')
             .then(res => res.json())
             .then(data => {
               // restituisce i dati se non sono capitati errori

@@ -10,7 +10,9 @@ function CreateNewRegolaPage(){
         <>
             <NavbarGrin />
             <h1 className='text-blue-800'>{pageTitle}</h1>
-            <FormNewRegola />
+            <div className="flex justify-center">
+                <FormNewRegola />
+            </div>
         </>
     )
 }

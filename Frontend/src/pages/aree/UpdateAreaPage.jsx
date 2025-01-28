@@ -11,7 +11,7 @@ function UpdateAreaPage(){
     const [pageTitle, setPageTitle] = useState('Modifica Area');
 
     const loadArea = async () => {
-        fetch(`http://localhost:8081/area/${idArea}`)
+        fetch(`/api/area/${idArea}`)
             .then(res => res.json())
             .then(data => {
                 if(data.success){
@@ -30,7 +30,9 @@ function UpdateAreaPage(){
         <>
             <NavbarGrin />
             <h1 className='text-blue-800'>{pageTitle}</h1>
-            <FormUpdateArea area={area}/>
+            <div className="flex justify-center">
+                <FormUpdateArea area={area}/>
+            </div>
         </>
     )
 

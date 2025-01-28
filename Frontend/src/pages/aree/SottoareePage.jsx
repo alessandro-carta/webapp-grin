@@ -12,7 +12,7 @@ function SottoareePage(){
     const [loadingS, setLoadingS] = useState(true);
     
     const loadArea = async () => {
-        fetch(`http://localhost:8081/area/${idArea}`)
+        fetch(`/api/area/${idArea}`)
             .then(res => res.json())
             .then(data => {
                 if(data.success){
@@ -24,7 +24,7 @@ function SottoareePage(){
             .catch(error => console.error("Errore nel caricamento dei dati:", error));
     }
     const loadAllSottoaree = async () => {
-        fetch(`http://localhost:8081/sottoaree/${idArea}`)
+        fetch(`/api/sottoaree/${idArea}`)
             .then(res => res.json())
             .then(data => {
                 if(data.success){

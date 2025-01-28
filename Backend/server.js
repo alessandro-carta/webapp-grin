@@ -19,7 +19,7 @@ app.listen(8081, () => {
 // Operazioni:
 // 1. Elenco di tutti i presidenti
 // 2. Informazioni di un determinato presidente
-app.get("/presidenti", async (req, res) => {
+app.get("/api/presidenti", async (req, res) => {
     try {
         // risposta con successo
         const presidenti = await getPresidenti();
@@ -36,7 +36,7 @@ app.get("/presidenti", async (req, res) => {
         });
     }
 })
-app.get("/presidenti/:idPresidente", async (req, res) => {
+app.get("/api/presidenti/:idPresidente", async (req, res) => {
     const idPresidente = req.params.idPresidente;
     try {
         // risposta avvenuta con successo
@@ -57,7 +57,7 @@ app.get("/presidenti/:idPresidente", async (req, res) => {
 // Operazioni:
 // 1. Aggiungi un nuovo account presidente
 // 2. Modifica un account già esistente
-app.post("/addPresidente", async (req, res) => {
+app.post("/api/addPresidente", async (req, res) => {
     const {idPresidente, Nome, Cognome, Email, Università } = req.body;
     try {
         // risposta avvenuta con successo
@@ -81,7 +81,7 @@ app.post("/addPresidente", async (req, res) => {
         });
     }
 })
-app.put("/updatePresidente", async (req, res) => {
+app.put("/api/updatePresidente", async (req, res) => {
     const {idPresidente, Nome, Cognome, Email, Università, Attivo } = req.body;
     try {
         // risposta avvenuta con successo
@@ -115,7 +115,7 @@ app.put("/updatePresidente", async (req, res) => {
 // Operazioni:
 // 1. Elenco di tutte le aree
 // 2. Informazioni di una determinata area
-app.get("/aree", async (req, res) => {
+app.get("/api/aree", async (req, res) => {
     try {
         // risposta del server ha avuto successo
         const aree = await getAree();
@@ -132,7 +132,7 @@ app.get("/aree", async (req, res) => {
         });
     }
 })
-app.get("/area/:idArea", async (req, res) => {
+app.get("/api/area/:idArea", async (req, res) => {
     const idArea = req.params.idArea;
     try {
         // risposta del server ha avuto successo
@@ -154,7 +154,7 @@ app.get("/area/:idArea", async (req, res) => {
 // 1. Aggiungi area
 // 2. Elimina area
 // 3. Modifica area
-app.post("/addArea", async (req, res) => {
+app.post("/api/addArea", async (req, res) => {
     const {idArea, Nome} = req.body;
 
     try {
@@ -180,7 +180,7 @@ app.post("/addArea", async (req, res) => {
         });
     }
 })
-app.delete("/deleteArea/:idArea", async (req, res) => {
+app.delete("/api/deleteArea/:idArea", async (req, res) => {
     const { idArea } = req.params;
 
     try {
@@ -205,7 +205,7 @@ app.delete("/deleteArea/:idArea", async (req, res) => {
         });
     }
 })
-app.put("/updateArea", async (req, res) => {
+app.put("/api/updateArea", async (req, res) => {
     const {idArea, Nome } = req.body;
 
     try {
@@ -227,7 +227,7 @@ app.put("/updateArea", async (req, res) => {
 // 1. Elenco di tutte le sottoarea di un'area
 // 2. Informazioni di una determinata sottoarea
 // 3. Elenco di tutte le sottoaree
-app.get("/sottoaree/:idArea", async (req, res) => {
+app.get("/api/sottoaree/:idArea", async (req, res) => {
     const idArea = req.params.idArea;
     try {
          // risposta del server ha avuto successo
@@ -245,7 +245,7 @@ app.get("/sottoaree/:idArea", async (req, res) => {
         });
     }
 })
-app.get("/sottoarea/:idSottoarea", async (req, res) => {
+app.get("/api/sottoarea/:idSottoarea", async (req, res) => {
     const idSottoarea = req.params.idSottoarea;
     try {
         // risposta del server ha avuto successo
@@ -263,7 +263,7 @@ app.get("/sottoarea/:idSottoarea", async (req, res) => {
         });
     }
 })
-app.get("/sottoaree", async (req, res) => {
+app.get("/api/sottoaree", async (req, res) => {
     try {
          // risposta del server ha avuto successo
         const sottoaree = await getSottoareeAll();
@@ -284,7 +284,7 @@ app.get("/sottoaree", async (req, res) => {
 // 1. Aggiungi sottoarea
 // 2. Elimina sottoarea
 // 3. Modifica sottoarea
-app.post("/addSottoarea", async (req, res) => {
+app.post("/api/addSottoarea", async (req, res) => {
     const {idSottoarea, Nome, Area} = req.body;
 
     try {
@@ -310,7 +310,7 @@ app.post("/addSottoarea", async (req, res) => {
         });
     }
 })
-app.delete("/deleteSottoarea/:idSottoarea", async (req, res) => {
+app.delete("/api/deleteSottoarea/:idSottoarea", async (req, res) => {
     const { idSottoarea } = req.params;
 
     try {
@@ -328,7 +328,7 @@ app.delete("/deleteSottoarea/:idSottoarea", async (req, res) => {
         });
     }
 })
-app.put("/updateSottoarea", async (req, res) => {
+app.put("/api/updateSottoarea", async (req, res) => {
     const { idSottoarea, Nome } = req.body;
 
     try {
@@ -349,7 +349,7 @@ app.put("/updateSottoarea", async (req, res) => {
 // SETTORI
 // Operazioni:
 // 1. Elenco di tutti i settori
-app.get("/settori", async (req, res) => {
+app.get("/api/settori", async (req, res) => {
     try {
          // risposta del server ha avuto successo
         const settori = await getSettori();
@@ -374,7 +374,7 @@ app.get("/settori", async (req, res) => {
 // 1. Inserisci una nuova regola
 // 2. Elenco di tutte le regole
 // 3. Eliminare una regola
-app.post("/addRegola", async (req, res) => {
+app.post("/api/addRegola", async (req, res) => {
     // selezioni contiene l'elenco degli id delle aree/sottoaree/settori
     const { idRegola, Descrizione, CFU, Tipologia, Selezioni} = req.body;
     const result = await addRegola(idRegola, Descrizione, CFU, Tipologia, Selezioni);
@@ -395,7 +395,7 @@ app.post("/addRegola", async (req, res) => {
     
 
 })
-app.get("/regole", async (req, res) => {
+app.get("/api/regole", async (req, res) => {
     try {
         // risposta con successo
         // restituisco le regole
@@ -413,7 +413,7 @@ app.get("/regole", async (req, res) => {
         });
     }
 })
-app.delete("/deleteRegola/:idRegola", async (req, res) => {
+app.delete("/api/deleteRegola/:idRegola", async (req, res) => {
     const { idRegola } = req.params;
 
     try {
@@ -440,7 +440,7 @@ app.delete("/deleteRegola/:idRegola", async (req, res) => {
 // 1. Elenco delle richieste
 // 2. Informazioni di una determinata richiesta
 // 3. Elenco degli insegnamenti di una determinata richiesta
-app.get("/richieste", async (req, res) => {
+app.get("/api/richieste", async (req, res) => {
     try {
         // risposta con successo
         const richieste = await getRichieste();
@@ -458,7 +458,7 @@ app.get("/richieste", async (req, res) => {
         
     }
 })
-app.get("/richiesta/:idRichiesta", async (req, res) => {
+app.get("/api/richiesta/:idRichiesta", async (req, res) => {
     const idRichiesta = req.params.idRichiesta;
     try {
         // risposta con successo
@@ -477,7 +477,7 @@ app.get("/richiesta/:idRichiesta", async (req, res) => {
         
     }
 })
-app.get("/insegnamenti/:idRegolamento", async (req, res) => {
+app.get("/api/insegnamenti/:idRegolamento", async (req, res) => {
     const idRegolamento = req.params.idRegolamento;
     try {
         // risposta con successo
@@ -498,7 +498,7 @@ app.get("/insegnamenti/:idRegolamento", async (req, res) => {
 })
 // Operazioni:
 // 1. Controllo delle regole
-app.get("/checkRegole/:idRegolamento", async (req, res) => {
+app.get("/api/checkRegole/:idRegolamento", async (req, res) => {
     const idRegolamento = req.params.idRegolamento;
     try {
         // risposta con successo

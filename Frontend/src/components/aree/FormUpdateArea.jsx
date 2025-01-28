@@ -37,7 +37,7 @@ function FormUpdateArea(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if(checkNome()){
-            const response = await fetch(`http://localhost:8081/updateArea`, {
+            const response = await fetch(`/api/updateArea`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

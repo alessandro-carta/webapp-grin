@@ -25,7 +25,7 @@ function FormNewRegola() {
     const [aree, setAree] = useState([]);
     // funzione per caricare le aree
     const loadAllAree = async () => {
-        fetch('http://localhost:8081/aree')
+        fetch('/api/aree')
         .then(res => res.json())
         .then(data => {
             // restituisce i dati se non ci sono errori
@@ -41,7 +41,7 @@ function FormNewRegola() {
     const [sottoaree, setSottoaree] = useState([]);
     // funzione per caricare le sottoaree
     const loadAllSottoaree = async () => {
-        fetch('http://localhost:8081/sottoaree')
+        fetch('/api/sottoaree')
         .then(res => res.json())
         .then(data => {
             // restituisce i dati se non ci sono errori
@@ -57,7 +57,7 @@ function FormNewRegola() {
     const [settori, setSettori] = useState([]);
     // funzione per caricare i settori
     const loadAllSettori = async () => {
-        fetch('http://localhost:8081/settori')
+        fetch('/api/settori')
         .then(res => res.json())
         .then(data => {
             // restituisce i dati se non ci sono errori
@@ -163,7 +163,7 @@ function FormNewRegola() {
         if(checkCFU() && checkDescrizione() && checkTipologia() && checkSelezioni()){
             // generato idRegola da uuid
             const data = {...formData, idRegola: uuidv4()};
-            const response = await fetch(`http://localhost:8081/addRegola`, {
+            const response = await fetch(`/api/addRegola`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

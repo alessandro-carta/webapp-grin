@@ -97,7 +97,7 @@ function FormNewPresidente() {
         if(checkNome() && checkCognome() && checkEmail() && checkUniversità()){
             // generato idPresidente da uuid
             const data = {...formData, idPresidente: uuidv4()};
-            const response = await fetch(`http://localhost:8081/addPresidente`, {
+            const response = await fetch(`/api/addPresidente`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -57,7 +57,7 @@ function FormNewArea() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if(checkArea() && checkNome()){
-            const response = await fetch(`http://localhost:8081/addArea`, {
+            const response = await fetch(`/api/addArea`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

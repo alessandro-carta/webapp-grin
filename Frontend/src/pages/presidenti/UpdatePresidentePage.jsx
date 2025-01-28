@@ -13,7 +13,7 @@ function UpdatePresidentePage(){
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
 
     const loadPresidente = async () => {
-        fetch(`http://localhost:8081/presidenti/${idPresidente}`)
+        fetch(`/api/presidenti/${idPresidente}`)
             .then(res => res.json())
             .then(data => {
                 // restituisce i dati se non sono capitati errori
@@ -30,7 +30,9 @@ function UpdatePresidentePage(){
         <>
             <NavbarGrin />
             <h1 className='text-blue-800'>{pageTitle}</h1>
-            <FormUpdatePresidente presidente={presidente}/>
+            <div className="flex justify-center">
+                <FormUpdatePresidente presidente={presidente}/>
+            </div>
         </>
     )
 }

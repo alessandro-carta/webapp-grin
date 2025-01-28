@@ -12,7 +12,7 @@ function Sottoarea(props) {
 
     const updateSottoarea = async () => { navigate(`/modifica-sottoarea/${props.sottoarea.idSottoarea}`); }
     const deleteSottoarea = async () => {
-        const response = await fetch(`http://localhost:8081/deleteSottoarea/${props.sottoarea.idSottoarea}`, {
+        const response = await fetch(`/api/deleteSottoarea/${props.sottoarea.idSottoarea}`, {
             method: 'DELETE'
         });
         // eliminazione avvenuta con successo
