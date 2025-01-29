@@ -187,7 +187,7 @@ function FormNewRegola() {
                 <form onSubmit={handleSubmit}>
                     {/* Numero dei CFU */}
                     <div className="mb-4">
-                        <label htmlFor="CFU" className="block text-sm font-medium text-gray-700">Numero dei CFU *</label>
+                        <label htmlFor="CFU" className="block text-sm font-medium text-gray-700">Numero minimo di CFU *</label>
                         <input
                             type="number"
                             id="CFU"

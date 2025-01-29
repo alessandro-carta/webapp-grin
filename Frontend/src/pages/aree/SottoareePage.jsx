@@ -45,7 +45,7 @@ function SottoareePage(){
     return(
         <>
             <NavbarGrin />
-            <h1 className='text-blue-800'>{pageTitle}</h1>
+            <p className='text-4xl text-blue-800 p-2'>{pageTitle}</p>
             <div className="grid grid-cols-1 md:grid-cols-3 p-5">
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800">Sigla</div>
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800">Nome</div>

@@ -3,7 +3,7 @@ import { getRegole, getRegoleFull } from "./Regolamento.js";
 
 export async function getRichieste(){
     const queryRichieste = `
-        SELECT Richieste.idRichiesta, Richieste.Data, Richieste.Stato, Presidenti.Università, Presidenti.Email
+        SELECT Richieste.idRichiesta, Richieste.Data, Richieste.Stato, Presidenti.Università, Presidenti.Email, CorsiDiStudio.Nome, Regolamenti.AnnoAccademico
         FROM Richieste, Regolamenti, CorsiDiStudio, Presidenti
         WHERE Regolamento = idRegolamento AND CDS = idCDS AND Presidente = idPresidente `;
     const [result] = await db.query(queryRichieste);

@@ -37,7 +37,6 @@ function ControlloRegolePage(){
     return(
         <>
             <NavbarGrin />
-            <h1 className='text-blue-800'>{pageTitle}</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 p-5">
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800 md:col-span-2">Descrizione testuale</div>
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div>

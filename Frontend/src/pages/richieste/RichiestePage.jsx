@@ -25,6 +25,7 @@ function RichiestePage() {
             });
             setRichieste(newData);
             setRichiesteAll(newData);
+            console.log(newData);
             setLoading(false);
           }
         })
@@ -47,7 +48,6 @@ function RichiestePage() {
   return (
     <>
       <NavbarGrin />
-      <h1 className='text-blue-800'>{pageTitle}</h1>
       <div className="flex space-x-4 p-4 items-center justify-center">
         <p className="text-xl">Azioni: </p>
         <button
@@ -68,9 +68,9 @@ function RichiestePage() {
         </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-5 p-5">
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Data</div>
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Università</div>
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Presidente</div>
+            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Corso di studio</div>
+            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Anno accademico</div>
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Stato</div>
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
 

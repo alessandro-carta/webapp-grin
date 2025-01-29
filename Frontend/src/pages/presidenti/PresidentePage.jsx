@@ -63,7 +63,7 @@ function PresidentePage() {
     return (
         <>
             <NavbarGrin />
-            <h1 className='text-blue-800'>{presidente.Università}</h1>
+            <p className='text-xl text-blue-800'>{presidente.Università}</p>
             <p className="text-xl">Presidente: {presidente.Nome} {presidente.Cognome}</p>
             <p className="text-xl">Contatto: {presidente.Email}</p>
             <p className="text-xl">Password per primo accesso: {presidente.FirstPassword}</p>

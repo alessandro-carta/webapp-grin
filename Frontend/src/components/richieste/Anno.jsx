@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import Insegnamento from "./Insegnamento";
+
 function Anno(props){
     const [loading, setLoading] = useState(true);
-    const [clicked, setClicked] = useState(false);
+    const [clickedAnno, setClickedAnno] = useState(false);
 
     const [insegnamenti, setInsegnamenti] = useState([]);
     const loadInsegnamenti = async () => {
@@ -17,30 +19,26 @@ function Anno(props){
             })
             .catch(error => console.error("Errore nel caricamento dei dati:", error));
     }
-    useEffect(() => loadInsegnamenti, []); // Non ha dipendenze, eseguito ad ogni render
+    useEffect(() => loadInsegnamenti, []); // non ha dipendenze, eseguito ad ogni render
 
-    const showDetail = () => { setClicked(!clicked) }
+    const showDetailAnno = () => { setClickedAnno(!clickedAnno) }
     let component;
-    if(!loading && !clicked){
+    if(!loading && !clickedAnno){
         component = null;
     }
-    if(!loading && clicked){
-        component = insegnamenti.map((insegnamento) => (
-            <div key={insegnamento.idInsegnamento} className="bg-gray-100 rounded-lg p-4 m-2">
-                <p className="text-xl">Insegnamento: {insegnamento.Nome}</p>
-                <p className="text-xl">CFU (totali): {insegnamento.CFU}</p>
-                <p className="text-xl">Settore: {insegnamento.Settore}</p>
-                <p className="text-xl text-blue-800">Sottoaree:</p>
-                {insegnamento.Sottoaree.map((sottoarea) => (
-                    <div key={sottoarea.idSottoarea}>
-                        <p className="text-xl">{sottoarea.Nome} | CFU: {sottoarea.CFU}</p>
-                    </div> ))}
-            </div> ))}
+    if(!loading && clickedAnno){
+        component = insegnamenti.map((i) => (
+            <Insegnamento key={i.idInsegnamento} insegnamento={i}/>
+        ))}
     return (
-        <div>
-            <p className="text-2xl text-blue-800" onClick={showDetail}>Insegnamenti Anno: {props.anno} {clicked ? '-' : '+'}</p>
-            {component}
-        </div>
+        <>
+            <div className="border p-1 m-2 border-gray-300">
+                <p className="text-2xl text-blue-800" onClick={showDetailAnno}>Insegnamenti Anno: {props.anno} {clickedAnno ? '-' : '+'}</p>
+                <div className="flex flex-wrap items-start justify-center md:justify-start">
+                    {component}
+                </div>
+            </div>
+        </>
     )
 }
 export default Anno;

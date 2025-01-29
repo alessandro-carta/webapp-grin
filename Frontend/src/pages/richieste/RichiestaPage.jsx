@@ -40,17 +40,14 @@ function RichiestaPage() {
         return (
             <>
                 <NavbarGrin />
-                <h1 className="text-blue-800">{richiesta.Nome}</h1>
                 <div className="flex space-x-4 p-4 items-center justify-center">
-                <p className="text-xl">Azioni: </p>
+                    <p className="text-xl">Azioni: </p>
                     <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={checkRichiesta}> Controlla regole </button>
                 </div>
-                <p className="text-xl">Data: {richiesta.Data.getDate()}/{richiesta.Data.getMonth()+1}/{richiesta.Data.getFullYear()}</p>
-                <p className="text-xl">Presidente: {richiesta.Email}</p>
-                <p className="text-xl">Università: {richiesta.Università}</p>
-                <p className="text-xl">Regolamento: {richiesta.AnnoAccademico}</p>
+                <p className="text-xl text-blue-800">{richiesta.Nome} - Regolamento AA: {richiesta.AnnoAccademico}</p>
+                <p className="text-xl">Data richiesta: {richiesta.Data.getDate()}/{richiesta.Data.getMonth()+1}/{richiesta.Data.getFullYear()} - Stato: {richiesta.Stato}</p>
+                <p className="text-xl">{richiesta.Università} - {richiesta.Email}</p>
                 <p className="text-xl">Durata corso: {richiesta.AnnoDurata}</p>
-                <p className="text-xl">Stato: {richiesta.Stato}</p>
 
                 {anni.map(a => (
                     <Anno key={a} idRegolamento={richiesta.idRegolamento} anno={a}/>

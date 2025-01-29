@@ -33,7 +33,6 @@ function AreePage(){
     return(
         <>
             <NavbarGrin />
-            <h1 className='text-blue-800'>{pageTitle}</h1>
             <div className="flex space-x-4 p-4 items-center justify-center">
                 <p className="text-xl">Azioni: </p>
                 <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewArea}> Nuova Area</button>

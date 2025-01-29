@@ -10,7 +10,6 @@ function CreateNewPresidentePage() {
     return(
         <>
             <NavbarGrin />
-            <h1 className='text-blue-800'>{pageTitle}</h1>
             <div className="flex justify-center">
                 <FormNewPresidente />
             </div>
