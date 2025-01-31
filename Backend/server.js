@@ -3,7 +3,8 @@ import cors from "cors"
 import { getPresidenti, addPresidente, getPresidente, updatePresidente} from "./Presidenti.js";
 import { getAree, addArea, deleteArea, getArea, updateArea, addSottoarea, getSottoaree, getSottoarea, deleteSottoarea, updateSottoarea, getSottoareeAll, getSettori } from "./Aree.js";
 import { addRegola, deleteRegola, getRegole } from "./Regolamento.js";
-import { getRichieste, getRichiesta, getInsegnamenti, getInsegnamentoSottoaree, checkRegole, getInsegnamentiFull } from "./Richieste.js";
+import { getRichieste, getRichiesta, getInsegnamenti, getInsegnamentoSottoaree, getInsegnamentiFull } from "./Richieste.js";
+import { checkRegole } from "./CheckRichiesta.js";
 
 const app = express();
 app.use(cors());
@@ -376,8 +377,10 @@ app.get("/api/settori", async (req, res) => {
 // 3. Eliminare una regola
 app.post("/api/addRegola", async (req, res) => {
     // selezioni contiene l'elenco degli id delle aree/sottoaree/settori
-    const { idRegola, Descrizione, CFU, Tipologia, Selezioni} = req.body;
-    const result = await addRegola(idRegola, Descrizione, CFU, Tipologia, Selezioni);
+    let { idRegola, Descrizione, CFU, Tipologia, Selezioni, Count} = req.body;
+    if(CFU == 0) CFU = null;
+    if(Count == 0) Count = null;
+    const result = await addRegola(idRegola, Descrizione, CFU, Tipologia, Selezioni, Count);
 
     if(result){
         // risposta avvenuta con successo
@@ -498,11 +501,11 @@ app.get("/api/insegnamenti/:idRegolamento", async (req, res) => {
 })
 // Operazioni:
 // 1. Controllo delle regole
-app.get("/api/checkRegole/:idRegolamento", async (req, res) => {
-    const idRegolamento = req.params.idRegolamento;
+app.get("/api/checkRegole/:idRichiesta", async (req, res) => {
+    const idRichiesta = req.params.idRichiesta;
     try {
         // risposta con successo
-        const result = await checkRegole(idRegolamento);
+        const result = await checkRegole(idRichiesta);
         return res.status(200).json({
             success: true,
             data: result

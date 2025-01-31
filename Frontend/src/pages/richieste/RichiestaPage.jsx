@@ -8,11 +8,30 @@ function RichiestaPage() {
     const navigate = useNavigate();
     const { idRichiesta } = useParams();
     const [richiesta, setRichiesta] = useState();
+    const [totCFU, setTotCFU] = useState(0);
     const [loading, setLoading] = useState(true);
     useEffect( () => loadRichiesta, [idRichiesta]); // eseguito ogni volta che cambia idPresidente
 
     const [pageTitle, setPageTitle] = useState('Richiesta');
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
+
+
+    const countTotCFU = async (id) => {
+        fetch(`/api/insegnamenti/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                // restituisce i dati se non sono capitati errori
+                if(data.success){
+                    let count = 0;
+                    data.data.map((insegnamento) =>{
+                        count += insegnamento.CFU;
+                    });
+                    setTotCFU(count);
+                    setLoading(false);
+                }
+            })
+            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+    }
 
     const loadRichiesta = async () => {
         fetch(`/api/richiesta/${idRichiesta}`)
@@ -23,14 +42,14 @@ function RichiestaPage() {
                     const dateObj = new Date(data.data.Data);
                     const newData = {...data.data, Data: dateObj};
                     setRichiesta(newData);
-                    setLoading(false);
+                    countTotCFU(newData.idRegolamento);
                 }
             })
             .catch(error => console.error("Errore nel caricamento dei dati:", error));
     }
 
     // funzione per controllare i requisiti di una richiesta
-    const checkRichiesta = () => { navigate(`/controllo-regole/${richiesta.idRegolamento}`)}
+    const checkRichiesta = () => { navigate(`/controllo-regole/${idRichiesta}`)}
 
     if(loading) return <p>LOADING...</p>
     else{
@@ -47,7 +66,7 @@ function RichiestaPage() {
                 <p className="text-xl text-blue-800">{richiesta.Nome} - Regolamento AA: {richiesta.AnnoAccademico}</p>
                 <p className="text-xl">Data richiesta: {richiesta.Data.getDate()}/{richiesta.Data.getMonth()+1}/{richiesta.Data.getFullYear()} - Stato: {richiesta.Stato}</p>
                 <p className="text-xl">{richiesta.Università} - {richiesta.Email}</p>
-                <p className="text-xl">Durata corso: {richiesta.AnnoDurata}</p>
+                <p className="text-xl">Durata corso: {richiesta.AnnoDurata} - Totale CFU: {totCFU}</p>
 
                 {anni.map(a => (
                     <Anno key={a} idRegolamento={richiesta.idRegolamento} anno={a}/>

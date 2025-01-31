@@ -186,6 +186,7 @@ function FormNewPresidente() {
                         />
                         {formErrors.Università && <p className="text-red-500">{formErrors.Università}</p>}
                     </div>
+                    <p className="text-base p-2">* Campi obbligatori</p>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
                         <button

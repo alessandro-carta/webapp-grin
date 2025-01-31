@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-function FormNewSottoarea() {
+function FormNewSottoarea(props) {
 
     const navigate = useNavigate();
     const [aree, setAree] = useState([]); // elenco delle aree per il menu a tendina
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true); 
 
     const loadAllAree = async () => {
             fetch('/api/aree')
@@ -25,7 +25,7 @@ function FormNewSottoarea() {
     const [formData, setFormData] = useState({
         idSottoarea: "",
         Nome: "",
-        Area: "",
+        Area: props.area || "",
 
     })
     // messaggi di errore, result contiene la risposta della chiamata HTTP
@@ -119,7 +119,7 @@ function FormNewSottoarea() {
                 <form onSubmit={handleSubmit}>
                     {/* idSottoArea */}
                     <div className="mb-4">
-                        <label htmlFor="idArea" className="block text-sm font-medium text-gray-700">Sigla*</label>
+                        <label htmlFor="idSottoarea" className="block text-sm font-medium text-gray-700">Sigla*</label>
                         <input
                             type="text"
                             id="idSottoarea"
@@ -145,18 +145,20 @@ function FormNewSottoarea() {
                     </div>
                     {/* Area */}
                     <div className="mb-4">
+                        <label htmlFor="Area" className="block text-sm font-medium text-gray-700">Area*</label>
                         <select
                             id="Area"
                             name="Area"
-                            value={formData.Area.Nome}
+                            value={formData.Area}
                             onChange={handleChange}
                         >
-                            <option value="">Scegli un'area</option>
+                            <option value="">Seleziona un elemento</option>
                             {aree.map(area => (
                                 <option key={area.idArea} value={area.idArea}>{area.Nome}</option> ))}
                         </select>
                         {formErrors.Area && <p className="text-red-500">{formErrors.Area}</p>}
                     </div>
+                    <p className="text-base p-2">* Campi obbligatori</p>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
                         <button

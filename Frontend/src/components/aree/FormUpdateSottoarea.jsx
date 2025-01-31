@@ -119,19 +119,20 @@ function FormUpdateSottoarea(props) {
                     </div>
                     {/* Area */}
                     <div className="mb-4">
+                        <label htmlFor="Area" className="block text-sm font-medium text-gray-700">Area*</label>
                         <select
                             id="Area"
                             name="Area"
                             value={formData.Area}
                             onChange={handleChange}
                         >
-                            <option value="">Scegli un'area</option>
                             {aree.map(area => (
                                 <option key={area.idArea} value={area.idArea}>{area.Nome}</option> ))}
                         </select>
                         {formErrors.Area && <p className="text-red-500">{formErrors.Area}</p>}
                     </div>
                     {/* Bottone di invio e annulla */}
+                    <p className="text-base p-2">* Campi obbligatori</p>
                     <div className="mb-4">
                         <button
                             type="submit"
@@ -139,7 +140,6 @@ function FormUpdateSottoarea(props) {
                         >
                             MODIFICA
                         </button>
-
                         <Link
                             className="text-blue-500 hover:text-blue-700"
                             to={`/sottoaree/${props.sottoarea.Area}`}

@@ -87,6 +87,7 @@ function FormUpdateArea(props) {
                         />
                         {formErrors.Nome && <p className="text-red-500">{formErrors.Nome}</p>}
                     </div>
+                    <p className="text-base p-2">* Campi obbligatori</p>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
                         <button
@@ -95,7 +96,6 @@ function FormUpdateArea(props) {
                         >
                             MODIFICA
                         </button>
-
                         <Link
                             className="text-blue-500 hover:text-blue-700"
                             to={'/aree'}

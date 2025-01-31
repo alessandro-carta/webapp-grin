@@ -25,7 +25,6 @@ function RichiestePage() {
             });
             setRichieste(newData);
             setRichiesteAll(newData);
-            console.log(newData);
             setLoading(false);
           }
         })

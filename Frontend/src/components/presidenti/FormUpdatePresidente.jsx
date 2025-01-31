@@ -185,6 +185,7 @@ function FormUpdatePresidente(props) {
                         />
                         {formErrors.Università && <p className="text-red-500">{formErrors.Università}</p>}
                     </div>
+                    <p className="text-base p-2">* Campi obbligatori</p>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
                         <button
@@ -193,7 +194,6 @@ function FormUpdatePresidente(props) {
                         >
                             Modifica account
                         </button>
-
                         <Link
                             className="text-blue-500 hover:text-blue-700"
                             to={'/presidenti'}

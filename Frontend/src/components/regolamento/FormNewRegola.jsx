@@ -3,19 +3,20 @@ import { Link, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 
-function FormNewRegola() {
+function FormNewRegola(props) {
     const navigate = useNavigate();
     const tipologie = ['area', 'sottoarea', 'settore'];
     // dati del form
     const [formData, setFormData] = useState({
         CFU: 0,
+        Count: 0,
         Descrizione: "",
         Tipologia: "",
         Selezioni: []
     });
     // dati del form
     const [formErrors, setFormErros] = useState({
-        CFU: "",
+        Input: "",
         Descrizione: "",
         Tipologia: "",
         Selezioni: "",
@@ -110,11 +111,11 @@ function FormNewRegola() {
         })
     }
     
-    const checkCFU = () => {
-        if(formData.CFU <= 0){
+    const checkInput = () => {
+        if((formData.Count <= 0) && (formData.CFU <= 0)){
             setFormErros({
                 ...formErrors,
-                CFU: "Inserire un numero positivo"
+                Input: "Inserire un numero positivo"
             })
             return false;
         }
@@ -160,7 +161,7 @@ function FormNewRegola() {
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(checkCFU() && checkDescrizione() && checkTipologia() && checkSelezioni()){
+        if(checkInput() && checkDescrizione() && checkTipologia() && checkSelezioni()){
             // generato idRegola da uuid
             const data = {...formData, idRegola: uuidv4()};
             const response = await fetch(`/api/addRegola`, {
@@ -181,23 +182,63 @@ function FormNewRegola() {
             }
         }
     }
+
+    let component;
+    if(props.RegolaCFU){
+        component = 
+            <>
+                {/* Numero dei CFU */}
+                <div className="mb-4">
+                    <label htmlFor="CFU" className="block text-sm font-medium text-gray-700">Numero minimo di CFU *</label>
+                    <input
+                        type="number"
+                        id="CFU"
+                        name="CFU"
+                        value={formData.CFU}
+                        onChange={handleChange}
+                        className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    {formErrors.Input && <p className="text-red-500">{formErrors.Input}</p>}
+                </div>
+            </>
+    }
+    else{
+        component =
+            <>
+                {/* Numero dei CFU */}
+                <div className="mb-4">
+                    <label htmlFor="CFU" className="block text-sm font-medium text-gray-700">Numero minimo di CFU *</label>
+                    <input
+                        type="number"
+                        id="CFU"
+                        name="CFU"
+                        value={formData.CFU}
+                        onChange={handleChange}
+                        className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    {formErrors.Input && <p className="text-red-500">{formErrors.Input}</p>}
+                </div>
+                {/* Numero del count */}
+                <div className="mb-4">
+                    <label htmlFor="Count" className="block text-sm font-medium text-gray-700">Numero minimo *</label>
+                    <input
+                        type="number"
+                        id="Count"
+                        name="Count"
+                        value={formData.Count}
+                        onChange={handleChange}
+                        className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    {formErrors.Input && <p className="text-red-500">{formErrors.Input}</p>}
+                </div>
+            </>
+    }
     return (
         <>
             <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg">
                 <form onSubmit={handleSubmit}>
-                    {/* Numero dei CFU */}
-                    <div className="mb-4">
-                        <label htmlFor="CFU" className="block text-sm font-medium text-gray-700">Numero minimo di CFU *</label>
-                        <input
-                            type="number"
-                            id="CFU"
-                            name="CFU"
-                            value={formData.CFU}
-                            onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        />
-                        {formErrors.CFU && <p className="text-red-500">{formErrors.CFU}</p>}
-                    </div>
+                    {component}
+                    
                     {/* Descrizione */}
                     <div className="mb-4">
                         <label htmlFor="Descrizione" className="block text-sm font-medium text-gray-700">Descrizione *</label>

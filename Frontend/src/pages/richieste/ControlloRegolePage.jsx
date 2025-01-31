@@ -4,26 +4,29 @@ import Regola from "../../components/regolamento/Regola";
 import NavbarGrin from "../../components/NavbarGrin";
 
 function ControlloRegolePage(){
-    const { idRegolamento } = useParams();
+    const { idRichiesta } = useParams();
     const [regole, setRegole] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [checkAnvur, setCheckAnvur] = useState(false);
     const checkRichiesta = async () => {
-        fetch(`/api/checkRegole/${idRegolamento}`)
+        fetch(`/api/checkRegole/${idRichiesta}`)
             .then(res => res.json())
             .then(data => {
                 // restituisce i dati se non sono capitati errori
                 if(data.success){
-                    setRegole(data.data);
+                    setRegole(data.data.Regole);
+                    setCheckAnvur(data.data.Anvur);
                     setLoading(false);
                 }
             })
             .catch(error => console.error("Errore nel caricamento dei dati:", error));
         
     }
-    useEffect(() => checkRichiesta, [idRegolamento]); // Ogni volta che cambia idRichiesta
+    useEffect(() => checkRichiesta, [idRichiesta]); // Ogni volta che cambia idRichiesta
 
     // restituisce l'esito della richiesta
     const resultErogazione = () => {
+        if(checkAnvur == false) return false;
         for(let regola of regole){
             if(regola.Check == false) return false;
         }
@@ -44,7 +47,8 @@ function ControlloRegolePage(){
                     <Regola key={r.idRegola} regola={r} check={true}/>
                 ))}
             </div>
-            <p className="text-2xl text-blue-700">La richiesta è {resultErogazione() ? "accettata" : "rifiutata"}</p>
+            <p className="text-2xl text-blue-700">Il corso di studio {checkAnvur ? "è" : "non è"} accreditato all'ANVUR</p>
+            <p className="text-2xl text-blue-700">La richiesta {resultErogazione() ? "è" : "non è"} valida</p>
             
         </>
         

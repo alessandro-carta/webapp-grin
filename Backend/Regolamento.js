@@ -1,14 +1,14 @@
 import { db } from "./database.js";
 
-export async function addRegola(idRegola, Descrizione, CFU, Tipologia, Selezioni) {
+export async function addRegola(idRegola, Descrizione, CFU, Tipologia, Selezioni, Count) {
     // garantisco atomicità tramite l'uso di una transazione che:
     // inserisce il record in Regole
     // inserisce k record nella tarella Regole* a seconda della tipologia della regola
     try {
         await db.beginTransaction();
 
-        const queryRegola = 'INSERT INTO Regole (idRegola, Descrizione, CFU, Tipologia) VALUES (?, ?, ?, ?)';
-        await db.query(queryRegola, [idRegola, Descrizione, CFU, Tipologia]);
+        const queryRegola = 'INSERT INTO Regole (idRegola, Descrizione, CFU, Tipologia, Count) VALUES (?, ?, ?, ?, ?)';
+        await db.query(queryRegola, [idRegola, Descrizione, CFU, Tipologia, Count]);
 
         let querySelezioni;
         if(Tipologia === 'area') querySelezioni = 'INSERT INTO RegoleAree (Regola, Area) VALUES ?';
@@ -21,6 +21,7 @@ export async function addRegola(idRegola, Descrizione, CFU, Tipologia, Selezioni
         return true;
     } catch (error) {
         // transazione fallita
+        console.log(error);
         await db.rollback();
         return false;
     }
@@ -41,17 +42,17 @@ export async function getRegoleFull(){
     for (let regola of regole){
         if(regola.Tipologia === 'area') 
             queryRegole = `
-                SELECT RegoleAree.Area
+                SELECT RegoleAree.Area AS "id"
                 FROM Regole, RegoleAree
                 WHERE idRegola = Regola AND idRegola = ?`;
         if(regola.Tipologia === 'sottoarea') 
             queryRegole = `
-                SELECT RegoleSottoaree.Sottoarea
+                SELECT RegoleSottoaree.Sottoarea AS "id"
                 FROM Regole, RegoleSottoaree
                 WHERE idRegola = Regola AND idRegola = ?`;
         if(regola.Tipologia === 'settore') 
             queryRegole = `
-                SELECT RegoleSettori.Settore
+                SELECT RegoleSettori.Settore AS "id"
                 FROM Regole, RegoleSettori
                 WHERE idRegola = Regola AND idRegola = ?`;
         // eseguo la query

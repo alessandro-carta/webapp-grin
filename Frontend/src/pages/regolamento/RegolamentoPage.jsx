@@ -9,6 +9,7 @@ function RegolamentoPage(){
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
     
     const [regole, setRegole] = useState([]); // stato che contiene l'elenco delle regole
+    const [regoleFil, setRegoleFil] = useState([]); // stato che contiene l'elenco delle regole filtrare
     const [loading, setLoading] = useState(true); // stato per il caricamento dei dati
     const loadAllRegole = async () => {
         fetch('/api/regole')
@@ -17,6 +18,7 @@ function RegolamentoPage(){
               // restituisce i dati se non sono capitati errori
               if(data.success){
                 setRegole(data.data);
+                setRegoleFil(data.data);
                 setLoading(false);
               }
             })
@@ -24,21 +26,42 @@ function RegolamentoPage(){
     }
     useEffect(() => loadAllRegole, []); // Non ha dipendenze, eseguito ad ogni render
     // funzione btn crea una nuova regola
-    const createNewRegola = () => {navigate('/crea-una-nuova-regola');}
+    const createNewRegolaCFU = () => {navigate(`/crea-una-nuova-regola/?RegolaCFU=${true}`)}
+    const createNewRegolaCount = () => {navigate(`/crea-una-nuova-regola/?RegolaCFU=${false}`)}
+
+    const handleChange = (e) => {
+        const {  value } = e.target;
+        if(value === "tutto") setRegoleFil(regole);
+        else setRegoleFil(regole.filter((item) => item.Tipologia === value));
+    }
 
     if(loading) return <p>LOADING...</p>
     return (
         <>
             <NavbarGrin />
-            <div className="flex space-x-4 p-4 items-center justify-center">
+            <div className="flex space-x-4 p-2 items-center justify-center">
                 <p className="text-xl">Azioni: </p>
-                <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewRegola}> Aggiungi una regola </button>
+                <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewRegolaCFU}> Aggiungi una regola per CFU </button>
+                <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewRegolaCount}> Aggiungi una regola per numero </button>
+            </div>
+            <div className="flex space-x-4 p-2 items-center justify-center">
+                <p className="text-xl">Filtra per: </p>
+                <select
+                    id="FiltroRegola"
+                    name="FiltroRegola"
+                    onChange={handleChange}
+                >
+                    <option value="tutto">Tutto</option>
+                    <option value="settore">Settore</option>
+                    <option value="area">Area</option>
+                    <option value="sottoarea">Sottoarea</option>
+                </select>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 p-5">
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800 md:col-span-2">Descrizione testuale</div>
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div> 
 
-                {regole.map(r => (
+                {regoleFil.map(r => (
                     <Regola key={r.idRegola} regola={r} check={false}/>
                 ))}       
             </div>

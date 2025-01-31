@@ -121,6 +121,7 @@ function FormNewArea() {
                         />
                         {formErrors.Nome && <p className="text-red-500">{formErrors.Nome}</p>}
                     </div>
+                    <p className="text-base p-2">* Campi obbligatori</p>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
                         <button
@@ -129,7 +130,6 @@ function FormNewArea() {
                         >
                             CREA 
                         </button>
-
                         <Link
                             className="text-blue-500 hover:text-blue-700"
                             to={'/aree'}

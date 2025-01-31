@@ -57,6 +57,10 @@ const router = createBrowserRouter([
     element: <CreateNewSottoareaPage />
   },
   {
+    path: "crea-una-nuova-sottoarea/:idArea",
+    element: <CreateNewSottoareaPage />
+  },
+  {
     path: "sottoaree/:idArea",
     element: <SottoareePage />
   },
@@ -81,7 +85,7 @@ const router = createBrowserRouter([
     element: <RichiestaPage />
   },
   {
-    path: "controllo-regole/:idRegolamento",
+    path: "controllo-regole/:idRichiesta",
     element: <ControlloRegolePage />
   }
 ]
@@ -89,6 +93,6 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+      <RouterProvider router={router} />
   </StrictMode>,
 )
