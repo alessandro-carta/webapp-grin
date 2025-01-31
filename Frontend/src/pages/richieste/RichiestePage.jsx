@@ -3,10 +3,13 @@ import Richiesta from '../../components/richieste/Richiesta.jsx';
 import React, { useState, useEffect } from 'react';
 
 function RichiestePage() {
-  const [richieste, setRichieste] = useState([]); // elenco delle richieste da elaborare
-  const [richiesteAll, setRichiesteAll] = useState([]); // elenco di tutte le richieste
+  const [annoAccademico, setAnnoAccademico] = useState("All");
+  const [stato, setStato] = useState("All");
+
+  const [richiesteAll, setRichiesteAll] = useState([]); 
+  const [richieste, setRichieste] = useState([]); 
   const [loading, setLoading] = useState(true);
-  const [allBtnClicked, setAllBtnClicked] = useState(true);
+  const [filtroAnni, setFiltroAnni] = useState([]);
   useEffect(() => loadAllRichieste, []); // non ha dipendenze, eseguito ad ogni render
 
   const [pageTitle, setPageTitle] = useState('Elenco delle richieste');
@@ -18,53 +21,64 @@ function RichiestePage() {
         .then(data => {
           // restituisce i dati se non sono capitati errori
           if(data.success){
-            const newData = []
+            const newData = [];
+            const anni = []
             data.data.map((item) => {
                 const dateObj = new Date(item.Data);
                 newData.push({...item, Data: dateObj});
+                if(!anni.includes(item.AnnoAccademico)) anni.push(item.AnnoAccademico);
             });
-            setRichieste(newData);
             setRichiesteAll(newData);
+            setRichieste(newData);
+            setFiltroAnni(anni);
             setLoading(false);
           }
         })
         .catch(error => console.error("Errore nel caricamento dei dati:", error));
   }
 
-  // seleziona tutto
-  const filterAll = () => {
-    setRichieste(richiesteAll);
-    setAllBtnClicked(true);
+  // gestione dei filtri
+  const filtraDati = () => {
+    const res = [];
+    richiesteAll.map(richiesta => {
+      if(richiesta.AnnoAccademico === annoAccademico || annoAccademico === 'All')
+        if(richiesta.Stato === stato || stato === 'All')
+          res.push(richiesta);
+    })
+    setRichieste(res);
   }
-  // da elaborare
-  const filterToDo = () => {
-    const filteredRichieste = richiesteAll.filter(richiesta => richiesta.Stato === "Elaborazione");
-    setRichieste(filteredRichieste);
-    setAllBtnClicked(false);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if(name === 'FiltroAnno') setAnnoAccademico(value);
+    if(name === 'FiltroStato') setStato(value);
   }
+  useEffect(() => filtraDati(), [annoAccademico, stato]);
+  
   
   if(loading) return <p>LOADING...</p>
   return (
     <>
       <NavbarGrin />
-      <div className="flex space-x-4 p-4 items-center justify-center">
-        <p className="text-xl">Azioni: </p>
-        <button
-            className={`p-2 rounded-md text-white ${
-                allBtnClicked ? "bg-blue-700" : "bg-blue-500 hover:bg-blue-700"
-            }`}
-            onClick={filterAll}
+      <div className="flex space-x-4 p-2 items-center justify-center">
+        <p className="text-xl">Anno Accademico: </p>
+        <select
+            id="FiltroAnno"
+            name="FiltroAnno"
+            onChange={handleChange}
         >
-        Seleziona Tutto
-        </button>
-        <button
-            className={`p-2 rounded-md text-white ${
-                !allBtnClicked ? "bg-blue-700" : "bg-blue-500 hover:bg-blue-700"
-            }`}
-            onClick={filterToDo}
+            <option value="All">Tutti</option>
+            {filtroAnni.map(a => (
+              <option key={a} value={a}>{a}</option> ))}
+        </select>
+        <p className="text-xl">Stato: </p>
+        <select
+            id="FiltroStato"
+            name="FiltroStato"
+            onChange={handleChange}
         >
-        Da Elaborare
-        </button>
+            <option value="All">Tutti</option>
+            <option value="Elaborazione">Da Elaborare</option>
+        </select>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-5 p-5">
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Università</div>

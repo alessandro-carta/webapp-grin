@@ -9,7 +9,6 @@ export async function getRichieste(){
         WHERE Regolamento = idRegolamento AND CDS = idCDS AND Presidente = idPresidente `;
     const [result] = await db.query(queryRichieste);
     return result;
-
 }
 export async function getRichiesta(idRichiesta){
     const queryRichiesta = `
@@ -18,7 +17,6 @@ export async function getRichiesta(idRichiesta){
         WHERE Regolamento = idRegolamento AND CDS = idCDS AND Presidente = idPresidente AND idRichiesta = ? `;
     const [result] = await db.query(queryRichiesta, [idRichiesta]);
     return result[0];
-
 }
 
 
@@ -33,7 +31,6 @@ export async function getInsegnamenti(id){
         WHERE idRegolamento = Regolamento AND idRegolamento = ? `;
     const [result] = await db.query(queryInsegnamenti, [id]);
     return result;
-
 }
 export async function getInsegnamentoSottoaree(id){
     const querySottoaree = `
@@ -42,7 +39,6 @@ export async function getInsegnamentoSottoaree(id){
         WHERE idInsegnamento = Insegnamento AND idSottoarea = Sottoarea AND idInsegnamento = ? `;
     const [result] = await db.query(querySottoaree, [id]);
     return result;
-
 }
 export async function getInsegnamentiFull(id) {
     // contiene l'elenco degli insegnamenti
