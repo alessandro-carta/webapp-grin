@@ -52,3 +52,9 @@ export async function getInsegnamentiFull(id) {
     return insegnamentiFull;
 }
 
+
+export async function updateRichiesta(idRichiesta, Stato) {
+    const [result] = await db.query(`UPDATE Richieste SET Stato = ? WHERE idRichiesta = ?`, [Stato, idRichiesta]);
+    return result;
+}
+

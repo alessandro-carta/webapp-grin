@@ -10,7 +10,7 @@ function RichiestaPage() {
     const [richiesta, setRichiesta] = useState();
     const [totCFU, setTotCFU] = useState(0);
     const [loading, setLoading] = useState(true);
-    useEffect( () => loadRichiesta, [idRichiesta]); // eseguito ogni volta che cambia idPresidente
+    useEffect( () => loadRichiesta, [idRichiesta]); // eseguito ogni volta che cambia idRichiesta
 
     const [pageTitle, setPageTitle] = useState('Richiesta');
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle

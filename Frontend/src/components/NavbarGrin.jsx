@@ -12,7 +12,7 @@ function NavbarGrin(){
                     <NavLink to={`/aree`} className={({isActive}) => isActive ? 'text-blue-800 hover:text-blue-800' : 'text-black hover:text-gray-300'}> Aree e sottoaree </NavLink>
                     <NavLink to={`/regolamento`} className={({isActive}) => isActive ? 'text-blue-800 hover:text-blue-800' : 'text-black hover:text-gray-300'}> Regolamento </NavLink>
                     <NavLink to={`/richieste`} className={({isActive}) => isActive ? 'text-blue-800 hover:text-blue-800' : 'text-black hover:text-gray-300'}> Richieste </NavLink>
-
+                    <NavLink to={`/bollini`} className={({isActive}) => isActive ? 'text-blue-800 hover:text-blue-800' : 'text-black hover:text-gray-300'}> Bollini </NavLink>
                 </div>
             </div>
         </div>

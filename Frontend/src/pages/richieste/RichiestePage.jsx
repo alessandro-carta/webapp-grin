@@ -59,7 +59,7 @@ function RichiestePage() {
   return (
     <>
       <NavbarGrin />
-      <div className="flex space-x-4 p-2 items-center justify-center">
+      <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
         <p className="text-xl">Anno Accademico: </p>
         <select
             id="FiltroAnno"
@@ -78,6 +78,8 @@ function RichiestePage() {
         >
             <option value="All">Tutti</option>
             <option value="Elaborazione">Da Elaborare</option>
+            <option value="Approvata">Approvate</option>
+            <option value="Invalidata">Invalidate</option>
         </select>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-5 p-5">

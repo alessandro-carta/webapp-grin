@@ -39,7 +39,7 @@ function RegolamentoPage(){
     return (
         <>
             <NavbarGrin />
-            <div className="flex space-x-4 p-2 items-center justify-center">
+            <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
                 <p className="text-xl">Azioni: </p>
                 <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewRegolaCFU}> Aggiungi una regola per CFU </button>
                 <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewRegolaCount}> Aggiungi una regola per numero </button>

@@ -18,6 +18,7 @@ import CreateNewRegolaPage from './pages/regolamento/CreateNewRegolaPage.jsx'
 import RichiestePage from './pages/richieste/RichiestePage.jsx'
 import RichiestaPage from './pages/richieste/RichiestaPage.jsx'
 import ControlloRegolePage from './pages/richieste/ControlloRegolePage.jsx'
+import BolliniPage from './pages/bollini/BolliniPage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -87,6 +88,10 @@ const router = createBrowserRouter([
   {
     path: "controllo-regole/:idRichiesta",
     element: <ControlloRegolePage />
+  },
+  {
+    path: "bollini",
+    element: <BolliniPage />
   }
 ]
 )

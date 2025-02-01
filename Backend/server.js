@@ -3,8 +3,10 @@ import cors from "cors"
 import { getPresidenti, addPresidente, getPresidente, updatePresidente} from "./Presidenti.js";
 import { getAree, addArea, deleteArea, getArea, updateArea, addSottoarea, getSottoaree, getSottoarea, deleteSottoarea, updateSottoarea, getSottoareeAll, getSettori } from "./Aree.js";
 import { addRegola, deleteRegola, getRegole } from "./Regolamento.js";
-import { getRichieste, getRichiesta, getInsegnamenti, getInsegnamentoSottoaree, getInsegnamentiFull } from "./Richieste.js";
+import { getRichieste, getRichiesta, getInsegnamentiFull, updateRichiesta } from "./Richieste.js";
+import { addBollino, getBollini } from "./Bollini.js";
 import { checkRegole } from "./CheckRichiesta.js";
+import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 app.use(cors());
@@ -384,9 +386,8 @@ app.post("/api/addRegola", async (req, res) => {
 
     if(result){
         // risposta avvenuta con successo
-        return res.status(201).json({
-            success: true,
-            data: idRegola
+        return res.status(204).json({
+            success: true
         });
     } else{
         // errore durante l'esecuzione
@@ -501,6 +502,7 @@ app.get("/api/insegnamenti/:idRegolamento", async (req, res) => {
 })
 // Operazioni:
 // 1. Controllo delle regole
+// 2. Invalida una richiesta
 app.get("/api/checkRegole/:idRichiesta", async (req, res) => {
     const idRichiesta = req.params.idRichiesta;
     try {
@@ -515,6 +517,88 @@ app.get("/api/checkRegole/:idRichiesta", async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Si è verificato un errore durante il recupero della richiesta .",
+            error: error.message || error
+        });
+        
+    }
+})
+app.put("/api/invalidRichiesta", async (req, res) => {
+    const { idRichiesta } = req.body;
+    try {
+        // risposta con successo
+        const richiesta = await getRichiesta(idRichiesta);
+        if(richiesta.Stato == 'Elaborazione'){
+            const result = await updateRichiesta(idRichiesta, 'Invalidata');
+            return res.status(204).json({
+                success: true
+            });
+        }
+        return res.status(400).json({
+            success: false,
+            message: "Non è stato possibile accettare la modifica, dati errati",
+        });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta.",
+            error: error.message || error
+        });
+        
+    }
+})
+// RICHIESTE
+// Operazioni:
+// 1. Erogare un bollino
+// 2. Elenco dei bollini
+app.post("/api/addBollino", async (req, res) => {
+    const { Erogato, Richiesta } = req.body;
+    const idBollino =  uuidv4();
+    try {
+        // risposta avvenuta con successo
+        // controllo che la richiesta rispetti le regole per l'erogazione del bollino
+        const resultRegole = await checkRegole(Richiesta);
+        const objRichiesta = await getRichiesta(Richiesta);
+        const checkFinal = resultRegole.Regole.filter((regola) => regola.Check == false);
+        if(checkFinal.length == 0 && resultRegole.Anvur && objRichiesta.Stato === 'Elaborazione'){
+            // creo un nuovo bollino
+            const result = await addBollino(idBollino, Erogato, Richiesta);
+            if(result)
+                return res.status(204).json({
+                    success: true,
+                });
+            else 
+                return res.status(500).json({
+                    success: false,
+                    message: "Si è verificato un errore durante l'elaborazione della richiesta",
+                });
+        }
+        return res.status(400).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta"
+        });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+})
+app.get("/api/bollini", async (req, res) => {
+    try {
+        // risposta con successo
+        const result = await getBollini();
+        return res.status(200).json({
+            success: true,
+            data: result
+        });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante il recupero dei bollini.",
             error: error.message || error
         });
         
