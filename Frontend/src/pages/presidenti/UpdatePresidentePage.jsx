@@ -13,7 +13,7 @@ function UpdatePresidentePage(){
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
 
     const loadPresidente = async () => {
-        fetch(`/api/presidenti/${idPresidente}`)
+        fetch(`/api/presidente/${idPresidente}`)
             .then(res => res.json())
             .then(data => {
                 // restituisce i dati se non sono capitati errori

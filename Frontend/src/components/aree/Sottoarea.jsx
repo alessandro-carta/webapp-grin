@@ -10,9 +10,9 @@ function Sottoarea(props) {
     const [errDelete, setErrDelete] = useState(false); // tiene traccia se un'eliminazione non e' andata a buon fine per un errore
     const [message, setMessage] = useState('');
 
-    const updateSottoarea = async () => { navigate(`/modifica-sottoarea/${props.sottoarea.idSottoarea}`); }
+    const updateSottoarea = async () => { navigate(`/modifica-sottoarea/${props.sottoarea.id}`); }
     const deleteSottoarea = async () => {
-        const response = await fetch(`/api/deleteSottoarea/${props.sottoarea.idSottoarea}`, {
+        const response = await fetch(`/api/deleteSottoarea/${props.sottoarea.id}`, {
             method: 'DELETE'
         });
         // eliminazione avvenuta con successo
@@ -30,8 +30,8 @@ function Sottoarea(props) {
     if (isDeleted) return null
     if(errDelete){
         return (<>
-            <div className="p-2 border-b border-gray-300 text-red-500">{props.sottoarea.idSottoarea}</div>
-            <div className="p-2 border-b border-gray-300 text-red-500">{props.sottoarea.Nome}</div>
+            <div className="p-2 border-b border-gray-300 text-red-500">{props.sottoarea.id}</div>
+            <div className="p-2 border-b border-gray-300 text-red-500">{props.sottoarea.nome}</div>
             <div className="p-2 underline border-b border-gray-300 text-red-500">
                 {message}
             </div >
@@ -43,8 +43,8 @@ function Sottoarea(props) {
 
     return (
         <>
-            <div className="p-2 border-b border-gray-300">{props.sottoarea.idSottoarea}</div>
-            <div className="p-2 border-b border-gray-300">{props.sottoarea.Nome}</div>
+            <div className="p-2 border-b border-gray-300">{props.sottoarea.id}</div>
+            <div className="p-2 border-b border-gray-300">{props.sottoarea.nome}</div>
 
             <div className="p-2 underline border-b border-gray-300">
                 <button className="m-1" onClick={updateSottoarea}> Modifica </button>

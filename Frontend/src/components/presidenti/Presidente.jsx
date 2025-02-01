@@ -4,15 +4,15 @@ import { useNavigate } from 'react-router-dom';
 
 function Presidente(props) {
     const navigate = useNavigate();
-    const updatePresidente = async () => { navigate(`/modifica-account/${props.presidente.idPresidente}`); }
+    const updatePresidente = async () => { navigate(`/modifica-account/${props.presidente.id}`); }
     
     return (
         <>
-            <div className="p-1 border-b border-gray-300">{props.presidente.Nome} {props.presidente.Cognome}</div>
-            <div className="p-1 border-b border-gray-300">{props.presidente.Email}</div>
-            <div className="p-1 border-b border-gray-300">{props.presidente.Università}</div>
+            <div className="p-1 border-b border-gray-300">{props.presidente.nome} {props.presidente.cognome}</div>
+            <div className="p-1 border-b border-gray-300">{props.presidente.email}</div>
+            <div className="p-1 border-b border-gray-300">{props.presidente.università}</div>
             <div className="p-1 underline border-b border-gray-300">
-                <Link to={`/presidenti/${props.presidente.idPresidente}`} key={props.presidente.idPresidente}> Visualizza </Link>
+                <Link to={`/presidenti/${props.presidente.id}`} key={props.presidente.id}> Visualizza </Link>
                 <button className="m-1" onClick={updatePresidente}> Modifica </button>
             </div >
         </>

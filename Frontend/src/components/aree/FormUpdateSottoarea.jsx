@@ -22,28 +22,28 @@ function FormUpdateSottoarea(props) {
 
     // dati del form
     const [formData, setFormData] = useState({
-        idSottoarea: props.sottoarea.idSottoarea,
-        Nome: props.sottoarea.Nome,
-        Area: props.sottoarea.Area
+        id: props.sottoarea.id,
+        nome: props.sottoarea.nome,
+        area: props.sottoarea.area
     })
     // messaggi di errore
     const [formErrors, setFormErros] = useState({
-        Nome: "",
-        Result: ""
+        nome: "",
+        result: ""
     })
 
     const checkNome = () => {
-        if(!formData.Nome){
+        if(!formData.nome){
             setFormErros({
                 ...formErrors,
-                Nome: "Campo obbligatorio"
+                nome: "Campo obbligatorio"
             })
             return false;
         }
-        if(formData.Nome.length > 45){
+        if(formData.nome.length > 45){
             setFormErros({
                 ...formErrors,
-                Nome: "Inserire un nome più corto"
+                nome: "Inserire un nome più corto"
             })
             return false;
         }
@@ -51,10 +51,10 @@ function FormUpdateSottoarea(props) {
     }
 
     const checkArea = () => {
-        if(!formData.Area){
+        if(!formData.area){
             setFormErros({
                 ...formErrors,
-                Area: "Campo obbligatorio"
+                area: "Campo obbligatorio"
             })
             return false;
         }
@@ -74,13 +74,12 @@ function FormUpdateSottoarea(props) {
 
             // modifica riuscita
             if (response.ok) {
-                navigate(`/sottoaree/${formData.Area}`);
+                navigate(`/sottoaree/${formData.area}`);
             }
             // modifica fallita
             if (!response.ok) {
                 const errorData = await response.json();
-                setFormErros({...formErrors, Result: "Modifica non riuscita, si prega di riprovare"});
-                console.error(errorData.message);
+                setFormErros({...formErrors, result: "Modifica non riuscita, si prega di riprovare"});
             }
         }
 
@@ -106,30 +105,30 @@ function FormUpdateSottoarea(props) {
                 <form onSubmit={handleSubmit}>
                     {/* Nome */}
                     <div className="mb-4">
-                        <label htmlFor="Nome" className="block text-sm font-medium text-gray-700">Nome*</label>
+                        <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome*</label>
                         <input
                             type="text"
-                            id="Nome"
-                            name="Nome"
-                            value={formData.Nome}
+                            id="nome"
+                            name="nome"
+                            value={formData.nome}
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.Nome && <p className="text-red-500">{formErrors.Nome}</p>}
+                        {formErrors.nome && <p className="text-red-500">{formErrors.nome}</p>}
                     </div>
                     {/* Area */}
                     <div className="mb-4">
-                        <label htmlFor="Area" className="block text-sm font-medium text-gray-700">Area*</label>
+                        <label htmlFor="area" className="block text-sm font-medium text-gray-700">Area*</label>
                         <select
-                            id="Area"
-                            name="Area"
-                            value={formData.Area}
+                            id="area"
+                            name="area"
+                            value={formData.area}
                             onChange={handleChange}
                         >
                             {aree.map(area => (
-                                <option key={area.idArea} value={area.idArea}>{area.Nome}</option> ))}
+                                <option key={area.id} value={area.id}>{area.nome}</option> ))}
                         </select>
-                        {formErrors.Area && <p className="text-red-500">{formErrors.Area}</p>}
+                        {formErrors.area && <p className="text-red-500">{formErrors.area}</p>}
                     </div>
                     {/* Bottone di invio e annulla */}
                     <p className="text-base p-2">* Campi obbligatori</p>
@@ -142,11 +141,11 @@ function FormUpdateSottoarea(props) {
                         </button>
                         <Link
                             className="text-blue-500 hover:text-blue-700"
-                            to={`/sottoaree/${props.sottoarea.Area}`}
+                            to={`/sottoaree/${props.sottoarea.area}`}
                         >
                             Annulla
                         </Link>
-                        {formErrors.Result && <p className="text-red-500">{formErrors.Result}</p>}
+                        {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
                     </div>
                 </form>
             </div>

@@ -22,11 +22,10 @@ function RichiestePage() {
           // restituisce i dati se non sono capitati errori
           if(data.success){
             const newData = [];
-            const anni = []
-            data.data.map((item) => {
-                const dateObj = new Date(item.Data);
-                newData.push({...item, Data: dateObj});
-                if(!anni.includes(item.AnnoAccademico)) anni.push(item.AnnoAccademico);
+            const anni = [];
+            data.data.map((d) => {
+                newData.push({...d, data: new Date(d.data)});
+                if(!anni.includes(d.annoaccademico)) anni.push(d.annoaccademico);
             });
             setRichiesteAll(newData);
             setRichieste(newData);
@@ -41,16 +40,16 @@ function RichiestePage() {
   const filtraDati = () => {
     const res = [];
     richiesteAll.map(richiesta => {
-      if(richiesta.AnnoAccademico === annoAccademico || annoAccademico === 'All')
-        if(richiesta.Stato === stato || stato === 'All')
+      if(richiesta.annoaccademico === annoAccademico || annoAccademico === 'All')
+        if(richiesta.stato === stato || stato === 'All')
           res.push(richiesta);
     })
     setRichieste(res);
   }
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if(name === 'FiltroAnno') setAnnoAccademico(value);
-    if(name === 'FiltroStato') setStato(value);
+    if(name === 'filtroAnno') setAnnoAccademico(value);
+    if(name === 'filtroStato') setStato(value);
   }
   useEffect(() => filtraDati(), [annoAccademico, stato]);
   
@@ -62,18 +61,18 @@ function RichiestePage() {
       <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
         <p className="text-xl">Anno Accademico: </p>
         <select
-            id="FiltroAnno"
-            name="FiltroAnno"
+            id="filtroAnno"
+            name="filtroAnno"
             onChange={handleChange}
         >
             <option value="All">Tutti</option>
-            {filtroAnni.map(a => (
-              <option key={a} value={a}>{a}</option> ))}
+            {filtroAnni.map(anno => (
+              <option key={anno} value={anno}>{anno}</option> ))}
         </select>
         <p className="text-xl">Stato: </p>
         <select
-            id="FiltroStato"
-            name="FiltroStato"
+            id="filtroStato"
+            name="filtroStato"
             onChange={handleChange}
         >
             <option value="All">Tutti</option>
@@ -90,7 +89,7 @@ function RichiestePage() {
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
 
             {richieste.map(r => (
-                <Richiesta key={r.idRichiesta} richiesta={r}/>
+                <Richiesta key={r.id} richiesta={r}/>
             ))}           
         </div>
     </>

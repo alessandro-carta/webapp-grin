@@ -35,46 +35,45 @@ export async function CFUperSettore(idRegolamento, minCFUperSettore) {
 
 
 
-export async function checkRegole(idRichiesta){
+export async function checkRegole(richiesta){
     const regole = await getRegoleFull(); // insieme delle regole
     // controllo per ANVUR
-    const richiesta = await getRichiesta(idRichiesta);
-    const id = richiesta.idRegolamento;
-    let result = {Anvur: richiesta.Anvur ? true : false, Regole: []};
+    const resRichiesta = await getRichiesta(richiesta);
+    let result = {anvur: resRichiesta.anvur ? true : false, regole: []};
 
     for(let regola of regole){
         // regola per numero
         let resObj;
-        if(regola.Count != null) {
+        if(regola.count != null) {
             // restituisce l'elenco delle aree coperte da un regolamento
             // e ogni area rispetta il numero minimo di CFU
-            if(regola.Tipologia === 'area') resObj = await CFUperArea(id,regola.CFU);
+            if(regola.tipologia === 'area') resObj = await CFUperArea(resRichiesta.regolamento, regola.cfu);
             // restituisce l'elenco delle sottoaree coperte da un regolamento
             // e ogni sottoarea rispetta il numero minimo di CFU
-            if(regola.Tipologia === 'sottoarea') resObj = await CFUperSottoarea(id,regola.CFU);
+            if(regola.tipologia === 'sottoarea') resObj = await CFUperSottoarea(resRichiesta.regolamento, regola.cfu);
             // restituisce l'elenco delle aree coperte da un regolamento
             // e ogni area rispetta il numero minimo di CFU
-            if(regola.Tipologia === 'settore') resObj = await CFUperSettore(id,regola.CFU);
+            if(regola.tipologia === 'settore') resObj = await CFUperSettore(resRichiesta.regolamento, regola.cfu);
 
             const resValues = resObj.map(r => r.id);
-            const regValues = regola.Riferimenti.map(r => r.id);
+            const regValues = regola.riferimenti.map(r => r.id);
             // intersezioni tra i due array
             const intersection = resValues.filter(item => regValues.includes(item));
             // la lunghezza dell'intersezione deve essere almeno pari a regola.Count
-            result.Regole.push({...regola, Check: intersection.length >= regola.Count});
+            result.regole.push({...regola, check: intersection.length >= regola.count});
         }
         // regola per CFU
         else{
             let sumCFU = 0; // accumulatore per il totale dei CFU
             let resObj;
-            if(regola.Tipologia === 'area') resObj = await CFUperArea(id,0);
-            if(regola.Tipologia === 'sottoarea') resObj = await CFUperSottoarea(id,0);
-            if(regola.Tipologia === 'settore') resObj = await CFUperSettore(id,0);
+            if(regola.tipologia === 'area') resObj = await CFUperArea(resRichiesta.regolamento,0);
+            if(regola.tipologia === 'sottoarea') resObj = await CFUperSottoarea(resRichiesta.regolamento,0);
+            if(regola.tipologia === 'settore') resObj = await CFUperSettore(resRichiesta.regolamento,0);
 
-            const regValues = regola.Riferimenti.map(r => r.id);
+            const regValues = regola.riferimenti.map(r => r.id);
             resObj.map((obj) => { if(regValues.includes(obj.id)) sumCFU += parseInt(obj.CFUTot); });
             // la somma dei CFU della richiesta deve essere almeno pari ai CFU della regola
-            result.Regole.push({...regola, Check: sumCFU >= regola.CFU});
+            result.regole.push({...regola, check: sumCFU >= regola.cfu});
         }
     }
     return result;

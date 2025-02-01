@@ -7,29 +7,28 @@ function FormNewArea() {
 
     // dati del form
     const [formData, setFormData] = useState({
-        idArea: "",
-        Nome: "",
-
+        id: "",
+        nome: ""
     })
     // messaggi di errore, result contiene la risposta della chiamata HTTP
     const [formErrors, setFormErros] = useState({
-        idArea: "",
-        Nome: "",
-        Result: ""
+        id: "",
+        nome: "",
+        result: ""
     })
 
     const checkArea = () => {
-        if(!formData.idArea){
+        if(!formData.id){
             setFormErros({
                 ...formErrors,
-                idArea: "Campo obbligatorio"
+                id: "Campo obbligatorio"
             })
             return false;
         }
-        if(formData.idArea.length != 1){
+        if(formData.id.length != 1){
             setFormErros({
                 ...formErrors,
-                idArea: "Deve essere un singolo carattere"
+                id: "Deve essere un singolo carattere"
             })
             return false;
         }
@@ -37,17 +36,17 @@ function FormNewArea() {
     }
 
     const checkNome = () => {
-        if(!formData.Nome){
+        if(!formData.nome){
             setFormErros({
                 ...formErrors,
-                Nome: "Campo obbligatorio"
+                nome: "Campo obbligatorio"
             })
             return false;
         }
-        if(formData.Nome.length > 45){
+        if(formData.nome.length > 45){
             setFormErros({
                 ...formErrors,
-                Nome: "Inserire un nome più corto"
+                nome: "Inserire un nome più corto"
             })
             return false;
         }
@@ -71,7 +70,7 @@ function FormNewArea() {
             // inserita un'area con idArea gia' esistente
             if (!response.ok) {
                 const errorData = await response.json();
-                setFormErros({...formErrors, Result: errorData.message})
+                setFormErros({...formErrors, result: errorData.message})
             }
         }
 
@@ -97,29 +96,29 @@ function FormNewArea() {
                 <form onSubmit={handleSubmit}>
                     {/* idArea */}
                     <div className="mb-4">
-                        <label htmlFor="idArea" className="block text-sm font-medium text-gray-700">Sigla*</label>
+                        <label htmlFor="id" className="block text-sm font-medium text-gray-700">Sigla*</label>
                         <input
                             type="text"
-                            id="idArea"
-                            name="idArea"
-                            value={formData.idArea}
+                            id="id"
+                            name="id"
+                            value={formData.id}
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.idArea && <p className="text-red-500">{formErrors.idArea}</p>}
+                        {formErrors.id && <p className="text-red-500">{formErrors.id}</p>}
                     </div>
                     {/* Nome */}
                     <div className="mb-4">
-                        <label htmlFor="Nome" className="block text-sm font-medium text-gray-700">Nome*</label>
+                        <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome*</label>
                         <input
                             type="text"
-                            id="Nome"
-                            name="Nome"
-                            value={formData.Nome}
+                            id="nome"
+                            name="nome"
+                            value={formData.nome}
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.Nome && <p className="text-red-500">{formErrors.Nome}</p>}
+                        {formErrors.nome && <p className="text-red-500">{formErrors.nome}</p>}
                     </div>
                     <p className="text-base p-2">* Campi obbligatori</p>
                     {/* Bottone di invio e annulla */}
@@ -136,7 +135,7 @@ function FormNewArea() {
                         >
                             Annulla
                         </Link>
-                        {formErrors.Result && <p className="text-red-500">{formErrors.Result}</p>}
+                        {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
                     </div>
                 </form>
             </div>

@@ -8,19 +8,19 @@ function FormNewRegola(props) {
     const tipologie = ['area', 'sottoarea', 'settore'];
     // dati del form
     const [formData, setFormData] = useState({
-        CFU: 0,
-        Count: 0,
-        Descrizione: "",
-        Tipologia: "",
-        Selezioni: []
+        cfu: 0,
+        count: 0,
+        descrizione: "",
+        tipologia: "",
+        selezioni: []
     });
-    // dati del form
+    // dati del form errori
     const [formErrors, setFormErros] = useState({
-        Input: "",
-        Descrizione: "",
-        Tipologia: "",
-        Selezioni: "",
-        Result: ""
+        input: "",
+        descrizione: "",
+        tipologia: "",
+        selezioni: "",
+        result: ""
     });
     const [sel, setSel] = useState([]);
     const [aree, setAree] = useState([]);
@@ -31,9 +31,9 @@ function FormNewRegola(props) {
         .then(data => {
             // restituisce i dati se non ci sono errori
             if (data.success) {
-                setAree(data.data.map((item) => ({
-                    id: item.idArea,
-                    Nome: item.Nome
+                setAree(data.data.map((area) => ({
+                    id: area.id,
+                    nome: area.nome
                 })));
             }
         })
@@ -47,9 +47,9 @@ function FormNewRegola(props) {
         .then(data => {
             // restituisce i dati se non ci sono errori
             if (data.success) {
-                setSottoaree(data.data.map((item) => ({
-                    id: item.idSottoarea,
-                    Nome: item.Nome
+                setSottoaree(data.data.map((sottoarea) => ({
+                    id: sottoarea.id,
+                    nome: sottoarea.nome
                 })));
             }
         })
@@ -63,9 +63,9 @@ function FormNewRegola(props) {
         .then(data => {
             // restituisce i dati se non ci sono errori
             if (data.success) {
-                setSettori(data.data.map((item) => ({
-                    id: item.idSettore,
-                    Nome: item.idSettore
+                setSettori(data.data.map((settore) => ({
+                    id: settore.id,
+                    nome: settore.id
                 })));
             }
         })
@@ -82,7 +82,7 @@ function FormNewRegola(props) {
         const { name, value, type } = e.target;
         // scelta tipologia regola
         if(type === 'radio') {
-            setFormData({...formData, Selezioni: [], Tipologia: value});
+            setFormData({...formData, selezioni: [], tipologia: value});
             setSel([]);
             if(value === 'area') setSel(aree);
             if(value === 'sottoarea') setSel(sottoaree);
@@ -90,12 +90,12 @@ function FormNewRegola(props) {
         }
         else if(type === 'checkbox'){
             setFormData((prevFormData) => {
-                const prevSelezioni = prevFormData.Selezioni || [];
+                const prevSelezioni = prevFormData.selezioni || [];
                 const updatedSelezioni = prevSelezioni.includes(value)
                     ? prevSelezioni.filter((item) => item !== value) // deselezione
                     : [...prevSelezioni, value]; // selezione
 
-                return { ...prevFormData, Selezioni: updatedSelezioni };
+                return { ...prevFormData, selezioni: updatedSelezioni };
             })
         }
         else {
@@ -112,47 +112,47 @@ function FormNewRegola(props) {
     }
     
     const checkInput = () => {
-        if((formData.Count <= 0) && (formData.CFU <= 0)){
+        if((formData.count <= 0) && (formData.cfu <= 0)){
             setFormErros({
                 ...formErrors,
-                Input: "Inserire un numero positivo"
+                input: "Inserire un numero positivo"
             })
             return false;
         }
         return true;
     }
     const checkDescrizione = () => {
-        if(!formData.Descrizione){
+        if(!formData.descrizione){
             setFormErros({
                 ...formErrors,
-                Descrizione: "Campo obbligatorio"
+                descrizione: "Campo obbligatorio"
             })
             return false;
         }
-        if(formData.Descrizione.length > 400){
+        if(formData.descrizione.length > 400){
             setFormErros({
                 ...formErrors,
-                Descrizione: "Inserire una descrizione più corta"
+                descrizione: "Inserire una descrizione più corta"
             })
             return false;
         }
         return true;
     }
     const checkTipologia = () => {
-        if(!formData.Tipologia){
+        if(!formData.tipologia){
             setFormErros({
                 ...formErrors,
-                Tipologia: "Campo obbligatorio"
+                tipologia: "Campo obbligatorio"
             })
             return false;
         }
         return true;
     }
     const checkSelezioni = () => {
-        if(formData.Selezioni.length == 0){
+        if(formData.selezioni.length == 0){
             setFormErros({
                 ...formErrors,
-                Selezioni: "Campo obbligatorio"
+                selezioni: "Campo obbligatorio"
             })
             return false;
         }
@@ -163,7 +163,7 @@ function FormNewRegola(props) {
         e.preventDefault();
         if(checkInput() && checkDescrizione() && checkTipologia() && checkSelezioni()){
             // generato idRegola da uuid
-            const data = {...formData, idRegola: uuidv4()};
+            const data = {...formData, id: uuidv4()};
             const response = await fetch(`/api/addRegola`, {
                 method: 'POST',
                 headers: {
@@ -178,27 +178,27 @@ function FormNewRegola(props) {
             // inserimento fallito
             if (!response.ok) {
                 const errorData = await response.json();
-                setFormErros({...formErrors, Result: errorData.message})
+                setFormErros({...formErrors, result: errorData.message})
             }
         }
     }
 
     let component;
-    if(props.RegolaCFU){
+    if(props.regolaCFU){
         component = 
             <>
                 {/* Numero dei CFU */}
                 <div className="mb-4">
-                    <label htmlFor="CFU" className="block text-sm font-medium text-gray-700">Numero minimo di CFU *</label>
+                    <label htmlFor="cfu" className="block text-sm font-medium text-gray-700">Numero minimo di CFU *</label>
                     <input
                         type="number"
-                        id="CFU"
-                        name="CFU"
-                        value={formData.CFU}
+                        id="cfu"
+                        name="cfu"
+                        value={formData.cfu}
                         onChange={handleChange}
                         className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
-                    {formErrors.Input && <p className="text-red-500">{formErrors.Input}</p>}
+                    {formErrors.input && <p className="text-red-500">{formErrors.input}</p>}
                 </div>
             </>
     }
@@ -207,29 +207,29 @@ function FormNewRegola(props) {
             <>
                 {/* Numero dei CFU */}
                 <div className="mb-4">
-                    <label htmlFor="CFU" className="block text-sm font-medium text-gray-700">Numero minimo di CFU *</label>
+                    <label htmlFor="cfu" className="block text-sm font-medium text-gray-700">Numero minimo di CFU *</label>
                     <input
                         type="number"
-                        id="CFU"
-                        name="CFU"
-                        value={formData.CFU}
+                        id="cfu"
+                        name="cfu"
+                        value={formData.cfu}
                         onChange={handleChange}
                         className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
-                    {formErrors.Input && <p className="text-red-500">{formErrors.Input}</p>}
+                    {formErrors.input && <p className="text-red-500">{formErrors.input}</p>}
                 </div>
                 {/* Numero del count */}
                 <div className="mb-4">
-                    <label htmlFor="Count" className="block text-sm font-medium text-gray-700">Numero minimo *</label>
+                    <label htmlFor="count" className="block text-sm font-medium text-gray-700">Numero minimo *</label>
                     <input
                         type="number"
-                        id="Count"
-                        name="Count"
-                        value={formData.Count}
+                        id="count"
+                        name="count"
+                        value={formData.count}
                         onChange={handleChange}
                         className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
-                    {formErrors.Input && <p className="text-red-500">{formErrors.Input}</p>}
+                    {formErrors.input && <p className="text-red-500">{formErrors.input}</p>}
                 </div>
             </>
     }
@@ -241,16 +241,16 @@ function FormNewRegola(props) {
                     
                     {/* Descrizione */}
                     <div className="mb-4">
-                        <label htmlFor="Descrizione" className="block text-sm font-medium text-gray-700">Descrizione *</label>
+                        <label htmlFor="descrizione" className="block text-sm font-medium text-gray-700">Descrizione *</label>
                         <textarea
                             type="text"
-                            id="Descrizione"
-                            name="Descrizione"
-                            value={formData.Descrizione}
+                            id="descrizione"
+                            name="descrizione"
+                            value={formData.descrizione}
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.Descrizione && <p className="text-red-500">{formErrors.Descrizione}</p>}
+                        {formErrors.descrizione && <p className="text-red-500">{formErrors.descrizione}</p>}
                     </div>
                     {/* Selezione il tipo della regola */}
                     <div className="mb-4">
@@ -260,16 +260,16 @@ function FormNewRegola(props) {
                                 <input 
                                     type="radio"
                                     id={tipo}
-                                    name="Tipologia"
+                                    name="tipologis"
                                     value={tipo}
-                                    checked={formData.Tipologia === tipo}
+                                    checked={formData.tipologia === tipo}
                                     onChange={handleChange}
                                     className="h-4 w-4"
                                 />
                                 <label htmlFor={tipo} className="block text-sm font-medium text-gray-700">Regola per {tipo}</label>
                             </div>
                         ))}
-                        {formErrors.Tipologia && <p className="text-red-500">{formErrors.Tipologia}</p>}
+                        {formErrors.tipologia && <p className="text-red-500">{formErrors.tipologia}</p>}
                     </div>
                     {/* Selezione l'elenco delle aree/sottoaree/settori */}
                     <div className="mb-4">
@@ -279,18 +279,18 @@ function FormNewRegola(props) {
                                 <div key={item.id} className="flex items-center">
                                 <input
                                     type="checkbox"
-                                    name="Selezioni"
+                                    name="selezioni"
                                     id={item.id} 
                                     value={item.id}
-                                    checked={formData.Selezioni.includes(item.id)}
+                                    checked={formData.selezioni.includes(item.id)}
                                     onChange={handleChange}
                                     className="mr-2"
                                 />
-                                <label htmlFor={item.id}>{item.Nome}</label>
+                                <label htmlFor={item.id}>{item.nome}</label>
                                 </div>
                             ))}
                         </div>
-                        {formErrors.Selezioni && <p className="text-red-500">{formErrors.Selezioni}</p>}
+                        {formErrors.selezioni && <p className="text-red-500">{formErrors.selezioni}</p>}
                     </div>
                     <button 
                         type="submit"
@@ -303,7 +303,7 @@ function FormNewRegola(props) {
                     >
                         Annulla
                     </Link>
-                    {formErrors.Result && <p className="text-red-500">{formErrors.Result}</p>}
+                    {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
                 </form>
             </div>
         </>

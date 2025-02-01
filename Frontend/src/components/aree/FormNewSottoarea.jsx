@@ -23,30 +23,30 @@ function FormNewSottoarea(props) {
 
     // dati del form
     const [formData, setFormData] = useState({
-        idSottoarea: "",
-        Nome: "",
-        Area: props.area || "",
+        id: "",
+        nome: "",
+        area: props.area || "",
 
     })
     // messaggi di errore, result contiene la risposta della chiamata HTTP
     const [formErrors, setFormErros] = useState({
-        idSottoarea: "",
-        Nome: "",
-        Result: ""
+        id: "",
+        nome: "",
+        result: ""
     })
 
     const checkNome = () => {
-        if(!formData.Nome){
+        if(!formData.nome){
             setFormErros({
                 ...formErrors,
-                Nome: "Campo obbligatorio"
+                nome: "Campo obbligatorio"
             })
             return false;
         }
-        if(formData.Nome.length > 45){
+        if(formData.nome.length > 45){
             setFormErros({
                 ...formErrors,
-                Nome: "Inserire un nome più corto"
+                nome: "Inserire un nome più corto"
             })
             return false;
         }
@@ -54,10 +54,10 @@ function FormNewSottoarea(props) {
     }
 
     const checkSigla = () => {
-        if(!formData.idSottoarea){
+        if(!formData.id){
             setFormErros({
                 ...formErrors,
-                idSottoarea: "Campo obbligatorio"
+                id: "Campo obbligatorio"
             })
             return false;
         }
@@ -65,10 +65,10 @@ function FormNewSottoarea(props) {
     }
 
     const checkArea = () => {
-        if(!formData.Area){
+        if(!formData.area){
             setFormErros({
                 ...formErrors,
-                Area: "Campo obbligatorio"
+                area: "Campo obbligatorio"
             })
             return false;
         }
@@ -86,12 +86,12 @@ function FormNewSottoarea(props) {
                 body: JSON.stringify(formData)
             });
             // inserimento riuscito
-            if (response.ok) { navigate(`/sottoaree/${formData.Area}`); }
+            if (response.ok) { navigate(`/sottoaree/${formData.area}`); }
             // inserimento fallito
             // inserita una sottoarea con idSottoarea gia' esistente
             if (!response.ok) {
                 const errorData = await response.json();
-                setFormErros({...formErrors, Result: errorData.message})
+                setFormErros({...formErrors, result: errorData.message})
             }
         }
         
@@ -119,44 +119,44 @@ function FormNewSottoarea(props) {
                 <form onSubmit={handleSubmit}>
                     {/* idSottoArea */}
                     <div className="mb-4">
-                        <label htmlFor="idSottoarea" className="block text-sm font-medium text-gray-700">Sigla*</label>
+                        <label htmlFor="sigla" className="block text-sm font-medium text-gray-700">Sigla*</label>
                         <input
                             type="text"
-                            id="idSottoarea"
-                            name="idSottoarea"
-                            value={formData.idSottoarea}
+                            id="id"
+                            name="id"
+                            value={formData.id}
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.idSottoarea && <p className="text-red-500">{formErrors.idSottoarea}</p>}
+                        {formErrors.id && <p className="text-red-500">{formErrors.id}</p>}
                     </div>
                     {/* Nome */}
                     <div className="mb-4">
-                        <label htmlFor="Nome" className="block text-sm font-medium text-gray-700">Nome*</label>
+                        <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome*</label>
                         <input
                             type="text"
-                            id="Nome"
-                            name="Nome"
-                            value={formData.Nome}
+                            id="nome"
+                            name="nome"
+                            value={formData.nome}
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.Nome && <p className="text-red-500">{formErrors.Nome}</p>}
+                        {formErrors.nome && <p className="text-red-500">{formErrors.nome}</p>}
                     </div>
                     {/* Area */}
                     <div className="mb-4">
-                        <label htmlFor="Area" className="block text-sm font-medium text-gray-700">Area*</label>
+                        <label htmlFor="area" className="block text-sm font-medium text-gray-700">Area*</label>
                         <select
-                            id="Area"
-                            name="Area"
-                            value={formData.Area}
+                            id="area"
+                            name="area"
+                            value={formData.area}
                             onChange={handleChange}
                         >
                             <option value="">Seleziona un elemento</option>
                             {aree.map(area => (
-                                <option key={area.idArea} value={area.idArea}>{area.Nome}</option> ))}
+                                <option key={area.id} value={area.id}>{area.nome}</option> ))}
                         </select>
-                        {formErrors.Area && <p className="text-red-500">{formErrors.Area}</p>}
+                        {formErrors.area && <p className="text-red-500">{formErrors.area}</p>}
                     </div>
                     <p className="text-base p-2">* Campi obbligatori</p>
                     {/* Bottone di invio e annulla */}
@@ -174,7 +174,7 @@ function FormNewSottoarea(props) {
                         >
                             Annulla
                         </Link>
-                        {formErrors.Result && <p className="text-red-500">{formErrors.Result}</p>}
+                        {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
                     </div>
                 </form>
             </div>

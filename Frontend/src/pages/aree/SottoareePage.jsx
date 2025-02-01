@@ -19,7 +19,7 @@ function SottoareePage(){
                 if(data.success){
                     setArea(data.data);
                     setLoadingA(false);
-                    setPageTitle('Elenco delle sottoaree per '+data.data.Nome);
+                    setPageTitle('Elenco delle sottoaree per '+data.data.nome);
                 }
             })
             .catch(error => console.error("Errore nel caricamento dei dati:", error));
@@ -59,7 +59,7 @@ function SottoareePage(){
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div>
 
                 {sottoaree.map(s => (
-                    <Sottoarea key={s.idSottoarea} sottoarea={s}/>
+                    <Sottoarea key={s.id} sottoarea={s}/>
                 ))}           
             </div>
 

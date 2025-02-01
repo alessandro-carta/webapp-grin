@@ -45,7 +45,7 @@ function PresidentiPage() {
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
 
             {presidenti.map(p => (
-                <Presidente key={p.idPresidente} presidente={p}/>
+                <Presidente key={p.id} presidente={p}/>
             ))}           
         </div>
     </>

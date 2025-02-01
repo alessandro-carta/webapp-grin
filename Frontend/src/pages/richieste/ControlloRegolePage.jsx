@@ -14,9 +14,7 @@ function ControlloRegolePage(){
             .then(res => res.json())
             .then(data => {
                 // restituisce i dati se non sono capitati errori
-                if(data.success){
-                    setStatoRichiesta(data.data.Stato);
-                }
+                if(data.success) setStatoRichiesta(data.data.stato);
             })
             .catch(error => console.error("Errore nel caricamento dei dati:", error));
     }
@@ -30,8 +28,8 @@ function ControlloRegolePage(){
             .then(data => {
                 // restituisce i dati se non sono capitati errori
                 if(data.success){
-                    setRegole(data.data.Regole);
-                    setCheckAnvur(data.data.Anvur);
+                    setRegole(data.data.regole);
+                    setCheckAnvur(data.data.anvur);
                     setLoading(false);
                 }
             })
@@ -43,7 +41,7 @@ function ControlloRegolePage(){
     const resultErogazione = () => {
         if(checkAnvur == false) return false;
         for(let regola of regole){
-            if(regola.Check == false) return false;
+            if(regola.check == false) return false;
         }
         return true;
     }
@@ -53,29 +51,25 @@ function ControlloRegolePage(){
 
     // funzione per erogare un bollino
     const erogaBollino = async () => {
-        const data = {Erogato: 1, Richiesta: idRichiesta};
+        const data = {erogato: 1, richiesta: idRichiesta};
         const response = await fetch(`/api/addBollino`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify(data)
         });
         // se ha successo torno alla pagina richieste
-        if (response.ok) {
-            navigate(`/richieste`);
-        }
+        if (response.ok) navigate(`/richieste`);
     }
     // funzione per invalidare una richiesta
     const invalidRichiesta = async () => {
-        const data = {idRichiesta: idRichiesta, Stato: 'Invalidata'};
+        const data = { id: idRichiesta };
         const response = await fetch(`/api/invalidRichiesta`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify(data)
         });
         // se ha successo torno alla pagina richieste
-        if (response.ok) {
-            navigate(`/richieste`);
-        }
+        if (response.ok) navigate(`/richieste`);
     }
 
 

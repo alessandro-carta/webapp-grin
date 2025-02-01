@@ -7,27 +7,27 @@ function FormUpdateArea(props) {
 
     // dati del form
     const [formData, setFormData] = useState({
-        idArea: props.area.idArea,
-        Nome: props.area.Nome
+        id: props.area.id,
+        nome: props.area.nome
     })
     // messaggi di errore
     const [formErrors, setFormErros] = useState({
-        Nome: "",
-        Result: ""
+        nome: "",
+        result: ""
     })
 
     const checkNome = () => {
-        if(!formData.Nome){
+        if(!formData.nome){
             setFormErros({
                 ...formErrors,
-                Nome: "Campo obbligatorio"
+                nome: "Campo obbligatorio"
             })
             return false;
         }
-        if(formData.Nome.length > 45){
+        if(formData.nome.length > 45){
             setFormErros({
                 ...formErrors,
-                Nome: "Inserire un nome più corto"
+                nome: "Inserire un nome più corto"
             })
             return false;
         }
@@ -51,7 +51,6 @@ function FormUpdateArea(props) {
             if (!response.ok) {
                 const errorData = await response.json();
                 setFormErros({...formErrors, Result: "Modifica non riuscita, si prega di riprovare"});
-                console.error(errorData.message);
             }
         }
 
@@ -76,16 +75,16 @@ function FormUpdateArea(props) {
                 <form onSubmit={handleSubmit}>
                     {/* Nome */}
                     <div className="mb-4">
-                        <label htmlFor="Nome" className="block text-sm font-medium text-gray-700">Nome*</label>
+                        <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome*</label>
                         <input
                             type="text"
-                            id="Nome"
-                            name="Nome"
-                            value={formData.Nome}
+                            id="nome"
+                            name="nome"
+                            value={formData.nome}
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.Nome && <p className="text-red-500">{formErrors.Nome}</p>}
+                        {formErrors.nome && <p className="text-red-500">{formErrors.nome}</p>}
                     </div>
                     <p className="text-base p-2">* Campi obbligatori</p>
                     {/* Bottone di invio e annulla */}
@@ -102,7 +101,7 @@ function FormUpdateArea(props) {
                         >
                             Annulla
                         </Link>
-                        {formErrors.Result && <p className="text-red-500">{formErrors.Result}</p>}
+                        {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
                     </div>
                 </form>
             </div>

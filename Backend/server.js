@@ -1,12 +1,11 @@
 import express from "express"
 import cors from "cors"
-import { getPresidenti, addPresidente, getPresidente, updatePresidente} from "./Presidenti.js";
-import { getAree, addArea, deleteArea, getArea, updateArea, addSottoarea, getSottoaree, getSottoarea, deleteSottoarea, updateSottoarea, getSottoareeAll, getSettori } from "./Aree.js";
-import { addRegola, deleteRegola, getRegole } from "./Regolamento.js";
-import { getRichieste, getRichiesta, getInsegnamentiFull, updateRichiesta } from "./Richieste.js";
-import { addBollino, getBollini } from "./Bollini.js";
-import { checkRegole } from "./CheckRichiesta.js";
-import { v4 as uuidv4 } from 'uuid';
+import { handleGetPresidenti, handleGetPresidente, handleAddPresidente, handleUpdatePresidente} from "./Presidenti.js";
+import { handleGetAree, handleGetArea, handleAddArea, handleDeleteArea, handleUpdateArea, handleGetSettori } from "./Aree.js";
+import { handleAddRegola, handleDeleteRegola, handleGetRegole } from "./Regolamento.js";
+import { handleGetRichieste, handleGetRichiesta, handleGetInsegnamenti, handleCheckRegole, handleInvalidRichiesta } from "./Richieste.js";
+import { handleAddBollino, handleBollini } from "./Bollini.js";
+import { handleAddSottoarea, handleGetSottoarea, handleGetSottoareePerArea, handleGetSottoaree, handleDeleteSottoarea, handleUpdateSottoarea } from "./Sottoaree.js";
 
 const app = express();
 app.use(cors());
@@ -22,352 +21,73 @@ app.listen(8081, () => {
 // Operazioni:
 // 1. Elenco di tutti i presidenti
 // 2. Informazioni di un determinato presidente
+// 3. Aggiungi un nuovo account presidente
+// 4. Modifica un account già esistente
 app.get("/api/presidenti", async (req, res) => {
-    try {
-        // risposta con successo
-        const presidenti = await getPresidenti();
-        return res.status(200).json({
-            success: true,
-            data: presidenti
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero degli account .",
-            error: error.message || error
-        });
-    }
+    return handleGetPresidenti(req, res);
 })
-app.get("/api/presidenti/:idPresidente", async (req, res) => {
-    const idPresidente = req.params.idPresidente;
-    try {
-        // risposta avvenuta con successo
-        const presidente = await getPresidente(idPresidente);
-        return res.status(200).json({
-            success: true,
-            data: presidente
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero dell\'account .",
-            error: error.message || error
-        });
-    }
+app.get("/api/presidente/:idPresidente", async (req, res) => {
+    return handleGetPresidente(req, res);
 })
-// Operazioni:
-// 1. Aggiungi un nuovo account presidente
-// 2. Modifica un account già esistente
 app.post("/api/addPresidente", async (req, res) => {
-    const {idPresidente, Nome, Cognome, Email, Università } = req.body;
-    try {
-        // risposta avvenuta con successo
-        const result = await addPresidente(idPresidente, Nome, Cognome, Email, Università);
-        return res.status(201).json({
-            success: true,
-            data: result
-        });
-    } catch (error) {
-        if(error.code == 'ER_DUP_ENTRY') {
-            return res.status(400).json({
-                success: false,
-                message: 'Email già esistente, riprovare con un\'altra'
-            });
-        }
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta",
-            error: error.message || error
-        });
-    }
+    return handleAddPresidente(req, res);
 })
 app.put("/api/updatePresidente", async (req, res) => {
-    const {idPresidente, Nome, Cognome, Email, Università, Attivo } = req.body;
-    try {
-        // risposta avvenuta con successo
-        const result = await updatePresidente(idPresidente, Nome, Cognome, Email, Università, Attivo);
-        return res.status(200).json({
-            success: true,
-            data: result
-        });
-    } catch (error) {
-        if(error.code == 'ER_DUP_ENTRY') {
-            return res.status(400).json({
-                success: false,
-                message: 'Email già esistente, riprovare con un\'altra'
-            });
-        }
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta",
-            error: error.message || error
-        });
-    }
+    return handleUpdatePresidente(req, res);
 })
-
-
-
-
-
-
-// AREE e SOTTOAREE
+// AREE
 // Operazioni:
 // 1. Elenco di tutte le aree
 // 2. Informazioni di una determinata area
+// 3. Aggiungi area
+// 4. Elimina area
+// 5. Modifica area
 app.get("/api/aree", async (req, res) => {
-    try {
-        // risposta del server ha avuto successo
-        const aree = await getAree();
-        return res.status(200).json({
-            success: true,
-            data: aree
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero delle aree.",
-            error: error.message || error
-        });
-    }
+    return handleGetAree(req, res);
 })
 app.get("/api/area/:idArea", async (req, res) => {
-    const idArea = req.params.idArea;
-    try {
-        // risposta del server ha avuto successo
-        const area = await getArea(idArea);
-        return res.status(200).json({
-            success: true,
-            data: area
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero dell\'area.",
-            error: error.message || error
-        });
-    }
+    return handleGetArea(req, res);
 })
-// Operazioni:
-// 1. Aggiungi area
-// 2. Elimina area
-// 3. Modifica area
 app.post("/api/addArea", async (req, res) => {
-    const {idArea, Nome} = req.body;
-
-    try {
-        const result = await addArea(idArea, Nome);
-        // inserimento avvenuto con successo
-        return res.status(201).json({
-            success: true,
-            data: result
-        });
-    } catch (error) {
-        // errore idArea già presente
-        if(error.code == 'ER_DUP_ENTRY') {
-            return res.status(400).json({
-                success: false,
-                message: 'Sigla già esistente, riprovare con un\'altra'
-            });
-        }
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta",
-            error: error.message || error
-        });
-    }
+    return handleAddArea(req, res);
 })
 app.delete("/api/deleteArea/:idArea", async (req, res) => {
-    const { idArea } = req.params;
-
-    try {
-        const result = await deleteArea(idArea);
-        // eliminazione avvenuta con successo
-        return res.status(200).json({
-            success: true
-        });
-    } catch (error) {
-        // errore sottoaree presenti
-        if(error.code == 'ER_ROW_IS_REFERENCED_2') {
-            return res.status(400).json({
-                success: false,
-                message: 'Impossibile eliminare, sottoaree presenti'
-            });
-        }
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta",
-            error: error.message || error
-        });
-    }
+    return handleDeleteArea(req, res);
 })
 app.put("/api/updateArea", async (req, res) => {
-    const {idArea, Nome } = req.body;
-
-    try {
-        const result = await updateArea(idArea, Nome);
-        // modifica avvenuta con successo
-        return res.status(200).json({
-            success: true
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta",
-            error: error.message || error
-        });
-    }
+    return handleUpdateArea(req, res);
 })
+// SOTTOAREE
 // Operazioni:
 // 1. Elenco di tutte le sottoarea di un'area
 // 2. Informazioni di una determinata sottoarea
 // 3. Elenco di tutte le sottoaree
+// 4. Aggiungi sottoarea
+// 5. Elimina sottoarea
+// 6. Modifica sottoarea
 app.get("/api/sottoaree/:idArea", async (req, res) => {
-    const idArea = req.params.idArea;
-    try {
-         // risposta del server ha avuto successo
-        const sottoaree = await getSottoaree(idArea);
-        return res.status(200).json({
-            success: true,
-            data: sottoaree
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero delle aree.",
-            error: error.message || error
-        });
-    }
+    return handleGetSottoareePerArea(req, res);
 })
 app.get("/api/sottoarea/:idSottoarea", async (req, res) => {
-    const idSottoarea = req.params.idSottoarea;
-    try {
-        // risposta del server ha avuto successo
-        const sottoarea = await getSottoarea(idSottoarea);
-        return res.status(200).json({
-            success: true,
-            data: sottoarea
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero delle aree.",
-            error: error.message || error
-        });
-    }
+    return handleGetSottoarea(req, res);
 })
 app.get("/api/sottoaree", async (req, res) => {
-    try {
-         // risposta del server ha avuto successo
-        const sottoaree = await getSottoareeAll();
-        return res.status(200).json({
-            success: true,
-            data: sottoaree
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero delle sottoaree.",
-            error: error.message || error
-        });
-    }
+    return handleGetSottoaree(req, res);
 })
-// Operazioni:
-// 1. Aggiungi sottoarea
-// 2. Elimina sottoarea
-// 3. Modifica sottoarea
 app.post("/api/addSottoarea", async (req, res) => {
-    const {idSottoarea, Nome, Area} = req.body;
-
-    try {
-        // inserimento avvenuto con successo
-        const result = await addSottoarea(idSottoarea, Nome, Area);
-        return res.status(201).json({
-            success: true,
-            data: result
-        });
-    } catch (error) {
-        // errore idSottoarea già presente
-        if(error.code == 'ER_DUP_ENTRY') {
-            return res.status(400).json({
-                success: false,
-                message: 'Sigla già esistente, riprovare con un\'altra'
-            });
-        }
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta",
-            error: error.message || error
-        });
-    }
+    return handleAddSottoarea(req, res);
 })
 app.delete("/api/deleteSottoarea/:idSottoarea", async (req, res) => {
-    const { idSottoarea } = req.params;
-
-    try {
-        const result = await deleteSottoarea(idSottoarea);
-        // cancellazione avvenuta con successo
-        return res.status(200).json({
-            success: true
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta",
-            error: error.message || error
-        });
-    }
+    return handleDeleteSottoarea(req, res);
 })
 app.put("/api/updateSottoarea", async (req, res) => {
-    const { idSottoarea, Nome, Area } = req.body;
-
-    try {
-        // modifica avvenuta con successo
-        const result = await updateSottoarea(idSottoarea, Nome, Area);
-        return res.status(200).json({
-            success: true
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta",
-            error: error.message || error
-        });
-    }
+    return handleUpdateSottoarea(req, res);
 })
 // SETTORI
 // Operazioni:
 // 1. Elenco di tutti i settori
 app.get("/api/settori", async (req, res) => {
-    try {
-         // risposta del server ha avuto successo
-        const settori = await getSettori();
-        return res.status(200).json({
-            success: true,
-            data: settori
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero dei settori.",
-            error: error.message || error
-        });
-    }
+    return handleGetSettori(req, res);
 })
 
 
@@ -378,229 +98,43 @@ app.get("/api/settori", async (req, res) => {
 // 2. Elenco di tutte le regole
 // 3. Eliminare una regola
 app.post("/api/addRegola", async (req, res) => {
-    // selezioni contiene l'elenco degli id delle aree/sottoaree/settori
-    let { idRegola, Descrizione, CFU, Tipologia, Selezioni, Count} = req.body;
-    if(CFU == 0) CFU = null;
-    if(Count == 0) Count = null;
-    const result = await addRegola(idRegola, Descrizione, CFU, Tipologia, Selezioni, Count);
-
-    if(result){
-        // risposta avvenuta con successo
-        return res.status(204).json({
-            success: true
-        });
-    } else{
-        // errore durante l'esecuzione
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante l'eleborazione della richiesta.",
-        });
-    }
-    
-
+    return handleAddRegola(req, res);
 })
 app.get("/api/regole", async (req, res) => {
-    try {
-        // risposta con successo
-        // restituisco le regole
-        const regole = await getRegole();
-        return res.status(200).json({
-            success: true,
-            data: regole
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero delle regole .",
-            error: error.message || error
-        });
-    }
+    return handleGetRegole(req, res);
 })
 app.delete("/api/deleteRegola/:idRegola", async (req, res) => {
-    const { idRegola } = req.params;
-
-    try {
-        const result = await deleteRegola(idRegola);
-        // eliminazione avvenuta con successo
-        return res.status(200).json({
-            success: true
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta",
-            error: error.message || error
-        });
-    }
+    return handleDeleteRegola(req, res);
 })
-
-
-
-
 // RICHIESTE
 // Operazioni:
 // 1. Elenco delle richieste
 // 2. Informazioni di una determinata richiesta
 // 3. Elenco degli insegnamenti di una determinata richiesta
+// 4. Controllo delle regole
+// 5. Invalida una richiesta
 app.get("/api/richieste", async (req, res) => {
-    try {
-        // risposta con successo
-        const richieste = await getRichieste();
-        return res.status(200).json({
-            success: true,
-            data: richieste
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero delle richieste .",
-            error: error.message || error
-        });
-        
-    }
+    return handleGetRichieste(req, res);
 })
 app.get("/api/richiesta/:idRichiesta", async (req, res) => {
-    const idRichiesta = req.params.idRichiesta;
-    try {
-        // risposta con successo
-        const richiesta = await getRichiesta(idRichiesta);
-        return res.status(200).json({
-            success: true,
-            data: richiesta
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero della richiesta .",
-            error: error.message || error
-        });
-        
-    }
+    return handleGetRichiesta(req, res);
 })
 app.get("/api/insegnamenti/:idRegolamento", async (req, res) => {
-    const idRegolamento = req.params.idRegolamento;
-    try {
-        // risposta con successo
-        const insegnamenti = await getInsegnamentiFull(idRegolamento);
-        return res.status(200).json({
-            success: true,
-            data: insegnamenti
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero degli insegnamenti.",
-            error: error.message || error
-        });
-        
-    }
+    return handleGetInsegnamenti(req, res);
 })
-// Operazioni:
-// 1. Controllo delle regole
-// 2. Invalida una richiesta
 app.get("/api/checkRegole/:idRichiesta", async (req, res) => {
-    const idRichiesta = req.params.idRichiesta;
-    try {
-        // risposta con successo
-        const result = await checkRegole(idRichiesta);
-        return res.status(200).json({
-            success: true,
-            data: result
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero della richiesta .",
-            error: error.message || error
-        });
-        
-    }
+    return handleCheckRegole(req, res);
 })
 app.put("/api/invalidRichiesta", async (req, res) => {
-    const { idRichiesta } = req.body;
-    try {
-        // risposta con successo
-        const richiesta = await getRichiesta(idRichiesta);
-        if(richiesta.Stato == 'Elaborazione'){
-            const result = await updateRichiesta(idRichiesta, 'Invalidata');
-            return res.status(204).json({
-                success: true
-            });
-        }
-        return res.status(400).json({
-            success: false,
-            message: "Non è stato possibile accettare la modifica, dati errati",
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta.",
-            error: error.message || error
-        });
-        
-    }
+    return handleInvalidRichiesta(req, res);
 })
-// RICHIESTE
+// BOLLINI
 // Operazioni:
 // 1. Erogare un bollino
 // 2. Elenco dei bollini
 app.post("/api/addBollino", async (req, res) => {
-    const { Erogato, Richiesta } = req.body;
-    const idBollino =  uuidv4();
-    try {
-        // risposta avvenuta con successo
-        // controllo che la richiesta rispetti le regole per l'erogazione del bollino
-        const resultRegole = await checkRegole(Richiesta);
-        const objRichiesta = await getRichiesta(Richiesta);
-        const checkFinal = resultRegole.Regole.filter((regola) => regola.Check == false);
-        if(checkFinal.length == 0 && resultRegole.Anvur && objRichiesta.Stato === 'Elaborazione'){
-            // creo un nuovo bollino
-            const result = await addBollino(idBollino, Erogato, Richiesta);
-            if(result)
-                return res.status(204).json({
-                    success: true,
-                });
-            else 
-                return res.status(500).json({
-                    success: false,
-                    message: "Si è verificato un errore durante l'elaborazione della richiesta",
-                });
-        }
-        return res.status(400).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta"
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta",
-            error: error.message || error
-        });
-    }
+    return handleAddBollino(req, res);
 })
 app.get("/api/bollini", async (req, res) => {
-    try {
-        // risposta con successo
-        const result = await getBollini();
-        return res.status(200).json({
-            success: true,
-            data: result
-        });
-    } catch (error) {
-        // errore generale interno al server
-        return res.status(500).json({
-            success: false,
-            message: "Si è verificato un errore durante il recupero dei bollini.",
-            error: error.message || error
-        });
-        
-    }
+    return handleBollini(req, res);
 })

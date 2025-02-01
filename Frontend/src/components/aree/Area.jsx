@@ -11,9 +11,9 @@ function Area(props) {
     const [errDelete, setErrDelete] = useState(false); // tiene traccia se un'eliminazione non e' andata a buon fine per un errore
     const [message, setMessage] = useState('');
 
-    const updateArea = async () => { navigate(`/modifica-area/${props.area.idArea}`); }
+    const updateArea = async () => { navigate(`/modifica-area/${props.area.id}`); }
     const deleteArea = async () => {
-        const response = await fetch(`/api/deleteArea/${props.area.idArea}`, {
+        const response = await fetch(`/api/deleteArea/${props.area.id}`, {
             method: 'DELETE'
         });
 
@@ -34,8 +34,8 @@ function Area(props) {
     if (isDeleted) return null
     if(errDelete){
         return (<>
-            <div className="p-2 border-b border-gray-300 text-red-500">{props.area.idArea}</div>
-            <div className="p-2 border-b border-gray-300 text-red-500">{props.area.Nome}</div>
+            <div className="p-2 border-b border-gray-300 text-red-500">{props.area.id}</div>
+            <div className="p-2 border-b border-gray-300 text-red-500">{props.area.nome}</div>
             <div className="p-2 underline border-b border-gray-300 text-red-500">
                 {message}
             </div >
@@ -47,10 +47,10 @@ function Area(props) {
 
     return (
         <>
-            <div className="p-2 border-b border-gray-300">{props.area.idArea}</div>
-            <div className="p-2 border-b border-gray-300">{props.area.Nome}</div>
+            <div className="p-2 border-b border-gray-300">{props.area.id}</div>
+            <div className="p-2 border-b border-gray-300">{props.area.nome}</div>
             <div className="p-2 underline border-b border-gray-300">
-                <Link to={`/sottoaree/${props.area.idArea}`}> Elenco sottoaree </Link>
+                <Link to={`/sottoaree/${props.area.id}`}> Elenco sottoaree </Link>
             </div >
 
             <div className="p-2 underline border-b border-gray-300">

@@ -45,7 +45,7 @@ function AreePage(){
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div>
 
                 {aree.map(a => (
-                    <Area key={a.idArea} area={a}/>
+                    <Area key={a.id} area={a}/>
                 ))}           
             </div>
 

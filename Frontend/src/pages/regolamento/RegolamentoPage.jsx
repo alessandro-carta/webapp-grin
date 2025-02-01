@@ -32,7 +32,7 @@ function RegolamentoPage(){
     const handleChange = (e) => {
         const {  value } = e.target;
         if(value === "tutto") setRegoleFil(regole);
-        else setRegoleFil(regole.filter((item) => item.Tipologia === value));
+        else setRegoleFil(regole.filter((regola) => regola.tipologia === value));
     }
 
     if(loading) return <p>LOADING...</p>
@@ -47,8 +47,8 @@ function RegolamentoPage(){
             <div className="flex space-x-4 p-2 items-center justify-center">
                 <p className="text-xl">Filtra per: </p>
                 <select
-                    id="FiltroRegola"
-                    name="FiltroRegola"
+                    id="filtroRegola"
+                    name="filtroRegola"
                     onChange={handleChange}
                 >
                     <option value="tutto">Tutto</option>
@@ -62,7 +62,7 @@ function RegolamentoPage(){
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div> 
 
                 {regoleFil.map(r => (
-                    <Regola key={r.idRegola} regola={r} check={false}/>
+                    <Regola key={r.id} regola={r} check={false}/>
                 ))}       
             </div>
         </>

@@ -6,49 +6,49 @@ function FormNewPresidente() {
     const navigate = useNavigate();
     // dati del form e messaggio di errore per ogni cambo
     const [formData, setFormData] = useState({
-        Nome: "",
-        Cognome: "",
-        Email: "",
-        Università: ""
+        nome: "",
+        cognome: "",
+        email: "",
+        università: ""
     })
     // result contiene il messaggio di errore inviato dal server
     const [formErrors, setFormErros] = useState({
-        Nome: "",
-        Cognome: "",
-        Email: "",
-        Università: "",
-        Result: ""
+        nome: "",
+        cognome: "",
+        email: "",
+        università: "",
+        result: ""
     })
 
     const checkNome = () => {
-        if(!formData.Nome){
+        if(!formData.nome){
             setFormErros({
                 ...formErrors,
-                Nome: "Campo obbligatorio"
+                nome: "Campo obbligatorio"
             })
             return false;
         }
-        if(formData.Nome.length > 45){
+        if(formData.nome.length > 45){
             setFormErros({
                 ...formErrors,
-                Nome: "Inserire un nome più corto"
+                nome: "Inserire un nome più corto"
             })
             return false;
         }
         return true;
     }
     const checkCognome = () => {
-        if(!formData.Cognome){
+        if(!formData.cognome){
             setFormErros({
                 ...formErrors,
-                Cognome: "Campo obbligatorio"
+                cognome: "Campo obbligatorio"
             })
             return false;
         }
-        if(formData.Cognome.length > 45){
+        if(formData.cognome.length > 45){
             setFormErros({
                 ...formErrors,
-                Cognome: "Inserire un cognome più corto"
+                cognome: "Inserire un cognome più corto"
             })
             return false;
         }
@@ -57,17 +57,17 @@ function FormNewPresidente() {
 
     const checkEmail = () => {
         const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        if(!formData.Email || !emailPattern.test(formData.Email)){
+        if(!formData.email || !emailPattern.test(formData.email)){
             setFormErros({
                 ...formErrors,
-                Email: "Inserisci email valida"
+                email: "Inserisci email valida"
             })
             return false;
         }
-        if(formData.Email.length > 45){
+        if(formData.email.length > 45){
             setFormErros({
                 ...formErrors,
-                Email: "Inserire una email più corta"
+                email: "Inserire una email più corta"
             })
             return false;
         }
@@ -75,17 +75,17 @@ function FormNewPresidente() {
     }
 
     const checkUniversità = () => {
-        if(!formData.Università){
+        if(!formData.università){
             setFormErros({
                 ...formErrors,
-                Università: "Campo obbligatorio"
+                università: "Campo obbligatorio"
             })
             return false;
         }
-        if(formData.Università.length > 45){
+        if(formData.università.length > 45){
             setFormErros({
                 ...formErrors,
-                Università: "Inserire un'università più corta"
+                università: "Inserire un'università più corta"
             })
             return false;
         }
@@ -96,13 +96,12 @@ function FormNewPresidente() {
         e.preventDefault();
         if(checkNome() && checkCognome() && checkEmail() && checkUniversità()){
             // generato idPresidente da uuid
-            const data = {...formData, idPresidente: uuidv4()};
             const response = await fetch(`/api/addPresidente`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(formData)
             });
             // inserimento avvenuto con successo
             if (response.ok) {
@@ -111,7 +110,7 @@ function FormNewPresidente() {
             // inserimento fallito
             if (!response.ok) {
                 const errorData = await response.json();
-                setFormErros({...formErrors, Result: errorData.message})
+                setFormErros({...formErrors, result: errorData.message})
             }
         }
 
@@ -126,7 +125,7 @@ function FormNewPresidente() {
         setFormErros({
             ...formErrors,
             [name]: "",
-            Result: ""
+            result: ""
         });
     }
 
@@ -136,55 +135,55 @@ function FormNewPresidente() {
                 <form onSubmit={handleSubmit}>
                     {/* Nome */}
                     <div className="mb-4">
-                        <label htmlFor="Nome" className="block text-sm font-medium text-gray-700">Nome*</label>
+                        <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome*</label>
                         <input
                             type="text"
-                            id="Nome"
-                            name="Nome"
-                            value={formData.Nome}
+                            id="nome"
+                            name="nome"
+                            value={formData.nome}
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.Nome && <p className="text-red-500">{formErrors.Nome}</p>}
+                        {formErrors.nome && <p className="text-red-500">{formErrors.nome}</p>}
                     </div>
                     {/* Cognome */}
                     <div className="mb-4">
-                        <label htmlFor="Cognome" className="block text-sm font-medium text-gray-700">Cognome*</label>
+                        <label htmlFor="cognome" className="block text-sm font-medium text-gray-700">Cognome*</label>
                         <input
                             type="text"
-                            id="Cognome"
-                            name="Cognome"
-                            value={formData.Cognome}
+                            id="cognome"
+                            name="cognome"
+                            value={formData.cognome}
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.Cognome && <p className="text-red-500">{formErrors.Cognome}</p>}
+                        {formErrors.cognome && <p className="text-red-500">{formErrors.cognome}</p>}
                     </div>
                     {/* Email */}
                     <div className="mb-4">
-                        <label htmlFor="Email" className="block text-sm font-medium text-gray-700">Email*</label>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email*</label>
                         <input
                             type="text"
-                            id="Email"
-                            name="Email"
-                            value={formData.Email}
+                            id="email"
+                            name="email"
+                            value={formData.email}
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.Email && <p className="text-red-500">{formErrors.Email}</p>}
+                        {formErrors.email && <p className="text-red-500">{formErrors.email}</p>}
                     </div>
                     {/* Università */}
                     <div className="mb-4">
-                        <label htmlFor="Università" className="block text-sm font-medium text-gray-700">Università*</label>
+                        <label htmlFor="università" className="block text-sm font-medium text-gray-700">Università*</label>
                         <input
                             type="text"
-                            id="Università"
-                            name="Università"
-                            value={formData.Università}
+                            id="università"
+                            name="università"
+                            value={formData.università}
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.Università && <p className="text-red-500">{formErrors.Università}</p>}
+                        {formErrors.università && <p className="text-red-500">{formErrors.università}</p>}
                     </div>
                     <p className="text-base p-2">* Campi obbligatori</p>
                     {/* Bottone di invio e annulla */}
@@ -202,7 +201,7 @@ function FormNewPresidente() {
                         >
                             Annulla
                         </Link>
-                        {formErrors.Result && <p className="text-red-500">{formErrors.Result}</p>}
+                        {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
                     </div>
                 </form>
             </div>
