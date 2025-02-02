@@ -4,7 +4,7 @@ import { handleGetPresidenti, handleGetPresidente, handleAddPresidente, handleUp
 import { handleGetAree, handleGetArea, handleAddArea, handleDeleteArea, handleUpdateArea, handleGetSettori } from "./Aree.js";
 import { handleAddRegola, handleDeleteRegola, handleGetRegole } from "./Regolamento.js";
 import { handleGetRichieste, handleGetRichiesta, handleGetInsegnamenti, handleCheckRegole, handleInvalidRichiesta } from "./Richieste.js";
-import { handleAddBollino, handleBollini } from "./Bollini.js";
+import { handleAddBollino, handleBollini, handleInvalidBollino } from "./Bollini.js";
 import { handleAddSottoarea, handleGetSottoarea, handleGetSottoareePerArea, handleGetSottoaree, handleDeleteSottoarea, handleUpdateSottoarea } from "./Sottoaree.js";
 
 const app = express();
@@ -132,9 +132,13 @@ app.put("/api/invalidRichiesta", async (req, res) => {
 // Operazioni:
 // 1. Erogare un bollino
 // 2. Elenco dei bollini
+// 3. Revocare un bollino
 app.post("/api/addBollino", async (req, res) => {
     return handleAddBollino(req, res);
 })
 app.get("/api/bollini", async (req, res) => {
     return handleBollini(req, res);
+})
+app.put("/api/invalidBollino/:idBollino", async (req, res) => {
+    return handleInvalidBollino(req, res);
 })

@@ -27,6 +27,10 @@ export async function getBollini() {
     const [result] = await db.query(queryBollini);
     return result;
 }
+export async function updateBollino(id, erogato) {
+    const [result] = await db.query(`UPDATE Bollini SET Erogato = ? WHERE idBollino = ?`, [erogato, id]);
+    return result;
+}
 
 
 
@@ -86,4 +90,22 @@ export async function handleBollini(req, res) {
         });
         
     }
+}
+export async function handleInvalidBollino(req, res) {
+    const id = req.params.idBollino;
+    try {
+        const result = await updateBollino(id, 0);
+        // modifica avvenuta con successo
+        return res.status(200).json({
+            success: true
+        });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+    
 }
