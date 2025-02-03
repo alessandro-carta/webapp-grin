@@ -94,26 +94,30 @@ function FormNewPresidente() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(checkNome() && checkCognome() && checkEmail() && checkUniversità()){
-            // generato idPresidente da uuid
-            const response = await fetch(`/api/addPresidente`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
+        try {
+            if(checkNome() && checkCognome() && checkEmail() && checkUniversità()){
+                const response = await fetch(`/api/addPresidente`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                // accesso non consentito
+                if(response.status == 403) navigate('/');
+                if (response.ok) { navigate('/presidenti'); }
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    setFormErros({...formErrors, result: errorData.message})
+                }
+            }
+        } catch (error) {
+            setFormErros({
+                ...formErrors,
+                result: "Errore nella comunicazione con il server. Si prega di riprovare"
             });
-            // inserimento avvenuto con successo
-            if (response.ok) {
-                navigate('/presidenti');
-            }
-            // inserimento fallito
-            if (!response.ok) {
-                const errorData = await response.json();
-                setFormErros({...formErrors, result: errorData.message})
-            }
         }
-
     }
 
     const handleChange = (e) => {

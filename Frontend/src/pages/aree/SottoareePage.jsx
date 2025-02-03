@@ -13,27 +13,43 @@ function SottoareePage(){
     const navigate = useNavigate();
     
     const loadArea = async () => {
-        fetch(`/api/area/${idArea}`)
-            .then(res => res.json())
-            .then(data => {
-                if(data.success){
-                    setArea(data.data);
-                    setLoadingA(false);
-                    setPageTitle('Elenco delle sottoaree per '+data.data.nome);
+        try {
+            const response = await fetch(`/api/area/${idArea}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
                 }
-            })
-            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            });
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok){
+                const data = await response.json();
+                setArea(data.data);
+                setLoadingA(false);
+                setPageTitle('Elenco delle sottoaree per '+data.data.nome);
+            }
+        } catch (error) { console.log(error); }
     }
     const loadAllSottoaree = async () => {
-        fetch(`/api/sottoaree/${idArea}`)
-            .then(res => res.json())
-            .then(data => {
-                if(data.success){
-                    setSottoaree(data.data);
-                    setLoadingS(false);
+        try {
+            const response = await fetch(`/api/sottoaree/${idArea}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
                 }
-            })
-            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            });
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok){
+                const data = await response.json();
+                setSottoaree(data.data);
+                setLoadingS(false);
+            }
+        } catch (error) { console.log(error); }
     }
 
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle

@@ -19,6 +19,7 @@ import RichiestePage from './pages/richieste/RichiestePage.jsx'
 import RichiestaPage from './pages/richieste/RichiestaPage.jsx'
 import ControlloRegolePage from './pages/richieste/ControlloRegolePage.jsx'
 import BolliniPage from './pages/bollini/BolliniPage.jsx'
+import LoginAdminPage from './pages/auth/LoginAdminPage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -92,6 +93,10 @@ const router = createBrowserRouter([
   {
     path: "bollini",
     element: <BolliniPage />
+  },
+  {
+    path: "admin-login",
+    element: <LoginAdminPage />
   }
 ]
 )

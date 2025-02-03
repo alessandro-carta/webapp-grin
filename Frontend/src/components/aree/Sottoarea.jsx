@@ -12,19 +12,26 @@ function Sottoarea(props) {
 
     const updateSottoarea = async () => { navigate(`/modifica-sottoarea/${props.sottoarea.id}`); }
     const deleteSottoarea = async () => {
-        const response = await fetch(`/api/deleteSottoarea/${props.sottoarea.id}`, {
-            method: 'DELETE'
-        });
-        // eliminazione avvenuta con successo
-        if (response.ok) { setIsDeleted(true); }
 
-        // errore nell'eliminazione
-        if (!response.ok) {
-            const errorData = await response.json();
-            setMessage(errorData.message);
-            setErrDelete(true);
-        }
-        
+        try {
+            const response = await fetch(`/api/deleteSottoarea/${props.sottoarea.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // eliminazione avvenuta con successo
+            if (response.ok) setIsDeleted(true);
+            // errore nell'eliminazione
+            if (!response.ok) {
+                const errorData = await response.json();
+                setMessage(errorData.message);
+                setErrDelete(true);
+            }
+        } catch (error) { console.log(error); }
     }
 
     if (isDeleted) return null

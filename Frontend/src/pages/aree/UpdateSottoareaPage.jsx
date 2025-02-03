@@ -11,15 +11,24 @@ function UpdateSottoareaPage(){
     const [pageTitle, setPageTitle] = useState('Modifica Sottoarea');
 
     const loadSottoarea = async () => {
-        fetch(`/api/sottoarea/${idSottoarea}`)
-            .then(res => res.json())
-            .then(data => {
-                if(data.success){
-                    setSottoarea(data.data);
-                    setLoading(false);
+        try {
+            const response = await fetch(`/api/sottoarea/${idSottoarea}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
                 }
             })
-            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) {
+                const data = await response.json();
+                setSottoarea(data.data);
+                setLoading(false);
+            }
+            
+        } catch (error) { console.log(error); }
     }
 
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle

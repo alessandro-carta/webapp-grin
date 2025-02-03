@@ -7,15 +7,24 @@ function FormUpdateSottoarea(props) {
     const [loading, setLoading] = useState(true);
 
     const loadAllAree = async () => {
-            fetch('/api/aree')
-                .then(res => res.json())
-                .then(data => {
-                    if(data.success){
-                        setAree(data.data);
-                        setLoading(false);
-                    }
+        try {
+            const response = await fetch(`/api/aree`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
             })
-            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) {
+                const data = await response.json();
+                setAree(data.data);
+                setLoading(false);
+            }
+            
+        } catch (error) { console.log(error); }
     }
     
     useEffect(() => loadAllAree, []); // Non ha dipendenze, eseguito ad ogni render
@@ -63,26 +72,33 @@ function FormUpdateSottoarea(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(checkNome() && checkArea()){
-            const response = await fetch(`/api/updateSottoarea`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
+
+        try {
+            if(checkNome() && checkArea()){
+                const response = await fetch(`/api/updateSottoarea`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                // accesso non consentito
+                if(response.status == 403) navigate('/');
+                // modifica riuscita
+                if (response.ok) navigate(`/sottoaree/${formData.area}`);
+                // modifica fallita
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    setFormErros({...formErrors, result: "Modifica non riuscita, si prega di riprovare"});
+                }
+            }
+        } catch (error) {
+            setFormErros({
+                ...formErrors,
+                result: "Errore nella comunicazione con il server. Si prega di riprovare"
             });
-
-            // modifica riuscita
-            if (response.ok) {
-                navigate(`/sottoaree/${formData.area}`);
-            }
-            // modifica fallita
-            if (!response.ok) {
-                const errorData = await response.json();
-                setFormErros({...formErrors, result: "Modifica non riuscita, si prega di riprovare"});
-            }
         }
-
     }
 
     const handleChange = (e) => {

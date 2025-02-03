@@ -1,13 +1,24 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Bollino(props){
+    const navigate = useNavigate();
     
     const invalidBollino = async () => {
-        const response = await fetch(`/api/invalidBollino/${props.bollino.id}`, {
-            method: 'PUT'
-        });
-        // eliminazione avvenuta con successo
-        if (response.ok) { window.location.reload(); }
+        try {
+            const response = await fetch(`/api/invalidBollino/${props.bollino.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) window.location.reload();
+            
+        } catch (error) { console.log(error); }
     }
 
     // componenti nulli in caso di bollino revocato

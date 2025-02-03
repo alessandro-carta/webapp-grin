@@ -36,24 +36,32 @@ function FormUpdateArea(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(checkNome()){
-            const response = await fetch(`/api/updateArea`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            // modifica riuscita
-            if (response.ok) { navigate('/aree'); }
-            // modifica fallita
-            if (!response.ok) {
-                const errorData = await response.json();
-                setFormErros({...formErrors, Result: "Modifica non riuscita, si prega di riprovare"});
+        try {
+            if(checkNome()){
+                const response = await fetch(`/api/updateArea`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                // accesso non consentito
+                if(response.status == 403) navigate('/admin-login');
+                // modifica riuscita
+                if (response.ok) { navigate('/aree'); }
+                // modifica fallita
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    setFormErros({...formErrors, result: "Modifica non riuscita, si prega di riprovare"});
+                }
             }
+        } catch (error) {
+            setFormErros({
+                ...formErrors,
+                result: "Errore nella comunicazione con il server. Si prega di riprovare"
+            });
         }
-
     }
 
     const handleChange = (e) => {

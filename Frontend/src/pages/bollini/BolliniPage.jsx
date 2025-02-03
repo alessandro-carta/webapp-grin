@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import NavbarGrin from "../../components/NavbarGrin";
 import Bollino from "../../components/bollini/Bollino";
+import { useNavigate } from "react-router-dom";
 
 
 function BolliniPage(){
+    const navigate = useNavigate();
     const [pageTitle, setPageTitle] = useState('Elenco dei bollini');
     useEffect(() => { document.title = pageTitle }, [pageTitle]); // eseguito ogni volta che cambia pageTitle
 
@@ -11,17 +13,25 @@ function BolliniPage(){
     const [bollini, setBollini] = useState([]);
     const [bolliniAll, setBolliniAll] = useState([]);
     const loadBollini = async () => {
-        fetch('/api/bollini')
-        .then(res => res.json())
-        .then(data => {
-          // restituisce i dati se non sono capitati errori
-          if(data.success){
-            setBollini(data.data);
-            setBolliniAll(data.data);
-            setLoading(false);
-          }
-        })
-        .catch(error => console.error("Errore nel caricamento dei dati:", error));
+        try {
+            const response = await fetch(`/api/bollini`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) {
+                const data = await response.json();
+                setBollini(data.data);
+                setBolliniAll(data.data);
+                setLoading(false);
+            }
+            
+        } catch (error) { console.log(error); }
     }
     useEffect(() => loadBollini, []);
 

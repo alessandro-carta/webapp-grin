@@ -55,25 +55,33 @@ function FormNewArea() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(checkArea() && checkNome()){
-            const response = await fetch(`/api/addArea`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            // inserimento riuscito
-            if (response.ok) { navigate('/aree'); }
-            // inserimento fallito
-            // inserita un'area con idArea gia' esistente
-            if (!response.ok) {
-                const errorData = await response.json();
-                setFormErros({...formErrors, result: errorData.message})
+        try {
+            if(checkArea() && checkNome()){
+                const response = await fetch(`/api/addArea`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                // accesso non consentito
+                if(response.status == 403) navigate('/');
+                // inserimento riuscito
+                if (response.ok) { navigate('/aree'); }
+                // inserimento fallito
+                // inserita un'area con idArea gia' esistente
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    setFormErros({...formErrors, result: errorData.message})
+                }
             }
+        } catch (error) {
+            setFormErros({
+                ...formErrors,
+                result: "Errore nella comunicazione con il server. Si prega di riprovare"
+            });
         }
-
     }
 
     const handleChange = (e) => {

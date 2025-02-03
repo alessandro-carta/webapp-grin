@@ -10,16 +10,26 @@ function AreePage(){
     const [pageTitle, setPageTitle] = useState('Elenco delle aree');
 
     const loadAllAree = async () => {
-        fetch('/api/aree')
-            .then(res => res.json())
-            .then(data => {
-                // restituisce i dati se non sono capitati errori
-                if(data.success){
-                    setAree(data.data);
-                    setLoading(false);
+        try {
+            const response = await fetch('/api/aree', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
                 }
-            })
-            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            });
+            // risposta con successo
+            if(response.ok){
+                const data = await response.json();
+                setAree(data.data);
+                setLoading(false);
+            }
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+        } catch (error) {
+            console.error(error);
+        }
+        
     }
 
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle

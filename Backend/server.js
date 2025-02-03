@@ -6,16 +6,43 @@ import { handleAddRegola, handleDeleteRegola, handleGetRegole } from "./Regolame
 import { handleGetRichieste, handleGetRichiesta, handleGetInsegnamenti, handleCheckRegole, handleInvalidRichiesta } from "./Richieste.js";
 import { handleAddBollino, handleBollini, handleInvalidBollino } from "./Bollini.js";
 import { handleAddSottoarea, handleGetSottoarea, handleGetSottoareePerArea, handleGetSottoaree, handleDeleteSottoarea, handleUpdateSottoarea } from "./Sottoaree.js";
+import { handleAdminLogin } from "./Auth.js";
+import jwt from 'jsonwebtoken';
+import { keyJwt, port } from "./Config.js";
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.listen(8081, () => {
-    console.log("> Server in ascolto sulla porta 8081");
+app.listen(port, () => {
+    console.log(`Server in ascolto sulla porta > ${port}`);
 })
 
 
+const authenticateToken = (req, res, next) => {
+    const token = req.headers['authorization']?.split(' ')[1];
+    if (!token) return res.status(403).json({ error: 'Token mancante' });
+    jwt.verify(token, keyJwt, (err, user) => {
+      if (err) return res.status(403).json({ error: 'Token non valido' });
+      req.user = user;
+      next();
+    });
+};
+const authorizeRole = (roles) => {
+    return (req, res, next) => {
+      if (!roles.includes(req.user.role)) {
+        return res.status(403).json({ error: 'Accesso vietato: ruolo non autorizzato' });
+      }
+      next();
+    };
+};
 
+// AUTH
+// Operazioni:
+// 1. Accesso Admin Grin
+app.post("/api/adminLogin", async (req, res) => {
+    return handleAdminLogin(req, res);
+})
 
 // PRESIDENTI
 // Operazioni:
@@ -23,16 +50,16 @@ app.listen(8081, () => {
 // 2. Informazioni di un determinato presidente
 // 3. Aggiungi un nuovo account presidente
 // 4. Modifica un account già esistente
-app.get("/api/presidenti", async (req, res) => {
+app.get("/api/presidenti", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleGetPresidenti(req, res);
 })
-app.get("/api/presidente/:idPresidente", async (req, res) => {
+app.get("/api/presidente/:idPresidente", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleGetPresidente(req, res);
 })
-app.post("/api/addPresidente", async (req, res) => {
+app.post("/api/addPresidente", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleAddPresidente(req, res);
 })
-app.put("/api/updatePresidente", async (req, res) => {
+app.put("/api/updatePresidente", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleUpdatePresidente(req, res);
 })
 // AREE
@@ -42,19 +69,19 @@ app.put("/api/updatePresidente", async (req, res) => {
 // 3. Aggiungi area
 // 4. Elimina area
 // 5. Modifica area
-app.get("/api/aree", async (req, res) => {
+app.get("/api/aree", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleGetAree(req, res);
 })
-app.get("/api/area/:idArea", async (req, res) => {
+app.get("/api/area/:idArea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleGetArea(req, res);
 })
-app.post("/api/addArea", async (req, res) => {
+app.post("/api/addArea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleAddArea(req, res);
 })
-app.delete("/api/deleteArea/:idArea", async (req, res) => {
+app.delete("/api/deleteArea/:idArea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleDeleteArea(req, res);
 })
-app.put("/api/updateArea", async (req, res) => {
+app.put("/api/updateArea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleUpdateArea(req, res);
 })
 // SOTTOAREE
@@ -65,22 +92,22 @@ app.put("/api/updateArea", async (req, res) => {
 // 4. Aggiungi sottoarea
 // 5. Elimina sottoarea
 // 6. Modifica sottoarea
-app.get("/api/sottoaree/:idArea", async (req, res) => {
+app.get("/api/sottoaree/:idArea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleGetSottoareePerArea(req, res);
 })
-app.get("/api/sottoarea/:idSottoarea", async (req, res) => {
+app.get("/api/sottoarea/:idSottoarea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleGetSottoarea(req, res);
 })
-app.get("/api/sottoaree", async (req, res) => {
+app.get("/api/sottoaree", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleGetSottoaree(req, res);
 })
-app.post("/api/addSottoarea", async (req, res) => {
+app.post("/api/addSottoarea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleAddSottoarea(req, res);
 })
-app.delete("/api/deleteSottoarea/:idSottoarea", async (req, res) => {
+app.delete("/api/deleteSottoarea/:idSottoarea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleDeleteSottoarea(req, res);
 })
-app.put("/api/updateSottoarea", async (req, res) => {
+app.put("/api/updateSottoarea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleUpdateSottoarea(req, res);
 })
 // SETTORI
@@ -133,12 +160,12 @@ app.put("/api/invalidRichiesta", async (req, res) => {
 // 1. Erogare un bollino
 // 2. Elenco dei bollini
 // 3. Revocare un bollino
-app.post("/api/addBollino", async (req, res) => {
+app.post("/api/addBollino", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleAddBollino(req, res);
 })
-app.get("/api/bollini", async (req, res) => {
+app.get("/api/bollini", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleBollini(req, res);
 })
-app.put("/api/invalidBollino/:idBollino", async (req, res) => {
+app.put("/api/invalidBollino/:idBollino", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleInvalidBollino(req, res);
 })

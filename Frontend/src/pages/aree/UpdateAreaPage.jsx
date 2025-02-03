@@ -11,15 +11,28 @@ function UpdateAreaPage(){
     const [pageTitle, setPageTitle] = useState('Modifica Area');
 
     const loadArea = async () => {
-        fetch(`/api/area/${idArea}`)
-            .then(res => res.json())
-            .then(data => {
-                if(data.success){
-                    setArea(data.data);
-                    setLoading(false);
+        try {
+            const response = await fetch(`/api/area/${idArea}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
                 }
-            })
-            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            });
+    
+            if(response.ok){
+                const data = await response.json();
+                setArea(data.data);
+                setLoading(false);
+            }
+            if(!response.ok){
+                navigate('/admin-login');
+            }
+            
+        } catch (error) {
+            console.error(error);
+        }
+        
     }
 
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle

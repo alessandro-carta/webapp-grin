@@ -13,16 +13,24 @@ function PresidentiPage() {
   useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
 
   const loadAllPresidenti = async () => {
-    fetch('/api/presidenti')
-        .then(res => res.json())
-        .then(data => {
-          // restituisce i dati se non sono capitati errori
-          if(data.success){
-            setPresidenti(data.data);
-            setLoading(false);
+    try {
+      const response = await fetch(`/api/presidenti`, {
+          method: 'GET',
+          headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'application/json'
           }
-        })
-        .catch(error => console.error("Errore nel caricamento dei dati:", error));
+      })
+      // accesso non consentito
+      if(response.status == 403) navigate('/');
+      // risposta con successo
+      if(response.ok) {
+          const data = await response.json();
+          setPresidenti(data.data);
+          setLoading(false);
+      }
+      
+    } catch (error) { console.log(error); }
   }
 
   // funzione crea un nuovo account

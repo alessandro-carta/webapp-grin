@@ -13,20 +13,26 @@ function Area(props) {
 
     const updateArea = async () => { navigate(`/modifica-area/${props.area.id}`); }
     const deleteArea = async () => {
-        const response = await fetch(`/api/deleteArea/${props.area.id}`, {
-            method: 'DELETE'
-        });
-
-        // eliminazione avvenuta con successo
-        if (response.ok) { setIsDeleted(true); }
-
-        // errore nell'eliminazione
-        // sottoaree presenti nell'area che si voleva eliminare
-        if (!response.ok) {
-            const errorData = await response.json();
-            setMessage(errorData.message);
-            setErrDelete(true);
+        try {
+            const response = await fetch(`/api/deleteArea/${props.area.id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            // accesso non consentito
+            if(response.status == 403) navigate('/admin-login');
+            // eliminazione avvenuta con successo
+            if (response.ok) { setIsDeleted(true); }
+            // errore nell'eliminazione
+            // sottoaree presenti nell'area che si voleva eliminare
+            if (!response.ok) {
+                const errorData = await response.json();
+                setMessage(errorData.message);
+                setErrDelete(true);
+            }
+        } catch (error) {
+            console.log(error);
         }
+        
         
     }
 

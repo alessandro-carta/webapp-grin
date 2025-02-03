@@ -8,15 +8,24 @@ function FormNewSottoarea(props) {
     const [loading, setLoading] = useState(true); 
 
     const loadAllAree = async () => {
-            fetch('/api/aree')
-                .then(res => res.json())
-                .then(data => {
-                    if(data.success){
-                        setAree(data.data);
-                        setLoading(false);
-                    }
+        try {
+            const response = await fetch(`/api/aree`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
             })
-            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) {
+                const data = await response.json();
+                setAree(data.data);
+                setLoading(false);
+            }
+            
+        } catch (error) { console.log(error); }
     }
     
     useEffect(() => loadAllAree, []); // Non ha dipendenze, eseguito ad ogni render
@@ -77,25 +86,33 @@ function FormNewSottoarea(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(checkSigla() && checkArea() && checkNome()){
-            const response = await fetch(`/api/addSottoarea`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-            // inserimento riuscito
-            if (response.ok) { navigate(`/sottoaree/${formData.area}`); }
-            // inserimento fallito
-            // inserita una sottoarea con idSottoarea gia' esistente
-            if (!response.ok) {
-                const errorData = await response.json();
-                setFormErros({...formErrors, result: errorData.message})
+        try {
+            if(checkSigla() && checkArea() && checkNome()){
+                const response = await fetch(`/api/addSottoarea`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                // accesso non consentito
+                if(response.status == 403) navigate('/');
+                // inserimento riuscito
+                if (response.ok) { navigate(`/sottoaree/${formData.area}`); }
+                // inserimento fallito
+                // inserita una sottoarea con idSottoarea gia' esistente
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    setFormErros({...formErrors, result: errorData.message})
+                }
             }
+        } catch (error) {
+            setFormErros({
+                ...formErrors,
+                result: "Errore nella comunicazione con il server. Si prega di riprovare"
+            });
         }
-        
-
     }
 
     const handleChange = (e) => {
