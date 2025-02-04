@@ -9,6 +9,7 @@ import { handleAddSottoarea, handleGetSottoarea, handleGetSottoareePerArea, hand
 import { handleAdminLogin, handleChangePassword, handlePresidenteLogin } from "./Auth.js";
 import jwt from 'jsonwebtoken';
 import { keyJwt, port } from "./Config.js";
+import { handleAddCDS, handleDashboard, handleDeleteCDS } from "./Dashboard.js";
 
 
 const app = express();
@@ -50,6 +51,21 @@ app.post("/api/presidenteLogin", async (req, res) => {
 })
 app.put("/api/changePassword", async (req, res) => {
     return handleChangePassword(req, res);
+})
+
+// DASHBORAD
+// Operazioni
+// 1. Elenco dei propri corsi di studio
+// 2. Aggiungere un cds
+// 3. Eliminare un cds
+app.get("/api/dashboard", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+    return handleDashboard(req, res);
+})
+app.post("/api/addCDS", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+    return handleAddCDS(req, res);
+})
+app.delete("/api/deleteCDS/:idCDS", authenticateToken, authorizeRole(['presidente']), async (req, res) => {
+    return handleDeleteCDS(req, res);
 })
 
 // PRESIDENTI

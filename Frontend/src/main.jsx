@@ -21,6 +21,8 @@ import ControlloRegolePage from './pages/richieste/ControlloRegolePage.jsx'
 import BolliniPage from './pages/bollini/BolliniPage.jsx'
 import LoginAdminPage from './pages/auth/LoginAdminPage.jsx'
 import PasswordChangePage from './pages/auth/PasswordChangePage.jsx'
+import CorsiDiStudioPage from './pages/dashboard/CorsiDiStudioPage.jsx'
+import CreateNewCDSPage from './pages/dashboard/CreateNewCDSPage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -102,7 +104,16 @@ const router = createBrowserRouter([
   {
     path: "cambio-password",
     element: <PasswordChangePage />
+  },
+  {
+    path: "dashboard",
+    element: <CorsiDiStudioPage />
+  },
+  {
+    path: "crea-un-nuovo-corso",
+    element: <CreateNewCDSPage />
   }
+
 ]
 )
 

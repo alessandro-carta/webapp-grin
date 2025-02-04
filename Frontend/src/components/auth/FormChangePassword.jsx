@@ -31,15 +31,14 @@ function FormChangePassword() {
             try {
                 const response = await fetch(`/api/changePassword`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({...formData, token: localStorage.getItem('token')})
                 })
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
                 // risposta con successo
                 if(response.ok) {
+                    localStorage.removeItem('token');
                     navigate('/');
                 }
                 if(!response.ok){

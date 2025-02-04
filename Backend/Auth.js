@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken';
 import { keyJwt, passAdmin } from './Config.js';
 import { db } from "./database.js";
 import { getPresidente } from './Presidenti.js';
+import bcrypt from 'bcrypt'
+import { saltRounds } from './Config.js';
 
 export async function getAuthPresidente(email){
     const [result] = await db.query(`
@@ -67,7 +69,8 @@ export async function handlePresidenteLogin(req, res) {
             }
         } else {
             // controllo con password
-            if(password === result.passPres){
+            const verifyPassword = await bcrypt.compare(password, result.passPres);
+            if(verifyPassword){
                 const token = jwt.sign({ userId: result.id, role: 'presidente' }, keyJwt, { expiresIn: '1h' });
                 return res.status(200).json({
                     success: true,
@@ -100,14 +103,15 @@ export async function handleChangePassword(req, res){
     });
     try {
         const presidente = await getPresidente(id);
-        console.log(presidente);
         if(presidente.passPres != null || presidente.attivo == 0) {
             return res.status(401).json({ 
                 success: false,
                 error: "Operazione non consentita"
             });
         }
-        const result = await updatePassword(id, password);
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        console.log(hashedPassword);
+        const result = await updatePassword(id, hashedPassword);
         return res.status(204).json({ 
             success: true,
         });
