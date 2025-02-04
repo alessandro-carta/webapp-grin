@@ -134,7 +134,7 @@ export async function handleUpdateArea(req, res) {
 }
 // SETTORI
 export async function getSettori(){
-    const [result] = await db.query(`SELECT idSettore AS "id" FROM Settori`,[]);
+    const [result] = await db.query(`SELECT idSettore AS "id", idSettore AS "nome" FROM Settori`,[]);
     return result;
 }
 

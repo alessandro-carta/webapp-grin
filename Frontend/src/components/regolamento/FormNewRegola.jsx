@@ -26,50 +26,65 @@ function FormNewRegola(props) {
     const [aree, setAree] = useState([]);
     // funzione per caricare le aree
     const loadAllAree = async () => {
-        fetch('/api/aree')
-        .then(res => res.json())
-        .then(data => {
-            // restituisce i dati se non ci sono errori
-            if (data.success) {
-                setAree(data.data.map((area) => ({
-                    id: area.id,
-                    nome: area.nome
-                })));
+        try {
+            const response = await fetch(`/api/aree`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) {
+                const data = await response.json();
+                setAree(data.data);
             }
-        })
-        .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            
+        } catch (error) { console.log(error); }
     };
     const [sottoaree, setSottoaree] = useState([]);
     // funzione per caricare le sottoaree
     const loadAllSottoaree = async () => {
-        fetch('/api/sottoaree')
-        .then(res => res.json())
-        .then(data => {
-            // restituisce i dati se non ci sono errori
-            if (data.success) {
-                setSottoaree(data.data.map((sottoarea) => ({
-                    id: sottoarea.id,
-                    nome: sottoarea.nome
-                })));
+        try {
+            const response = await fetch(`/api/sottoaree`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) {
+                const data = await response.json();
+                setSottoaree(data.data);
             }
-        })
-        .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            
+        } catch (error) { console.log(error); }
     };
     const [settori, setSettori] = useState([]);
     // funzione per caricare i settori
     const loadAllSettori = async () => {
-        fetch('/api/settori')
-        .then(res => res.json())
-        .then(data => {
-            // restituisce i dati se non ci sono errori
-            if (data.success) {
-                setSettori(data.data.map((settore) => ({
-                    id: settore.id,
-                    nome: settore.id
-                })));
+        try {
+            const response = await fetch(`/api/settori`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) {
+                const data = await response.json();
+                setSettori(data.data);
             }
-        })
-        .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            
+        } catch (error) { console.log(error); }
     };
     // recupera i dati dinamici all'avvio
     useEffect(() => {
@@ -161,25 +176,29 @@ function FormNewRegola(props) {
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(checkInput() && checkDescrizione() && checkTipologia() && checkSelezioni()){
-            // generato idRegola da uuid
-            const data = {...formData, id: uuidv4()};
-            const response = await fetch(`/api/addRegola`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+        try {
+            if(checkInput() && checkDescrizione() && checkTipologia() && checkSelezioni()){
+                const response = await fetch(`/api/addRegola`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                // accesso non consentito
+                if(response.status == 403) navigate('/');
+                if (response.ok) { navigate('/regolamento'); }
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    setFormErros({...formErrors, result: errorData.message})
+                }
+            }
+        } catch (error) {
+            setFormErros({
+                ...formErrors,
+                result: "Errore nella comunicazione con il server. Si prega di riprovare"
             });
-            // inserimento avvenuto con successo
-            if (response.ok) {
-                navigate('/regolamento');
-            }
-            // inserimento fallito
-            if (!response.ok) {
-                const errorData = await response.json();
-                setFormErros({...formErrors, result: errorData.message})
-            }
         }
     }
 

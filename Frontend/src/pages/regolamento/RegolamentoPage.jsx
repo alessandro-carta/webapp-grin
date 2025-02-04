@@ -12,17 +12,25 @@ function RegolamentoPage(){
     const [regoleFil, setRegoleFil] = useState([]); // stato che contiene l'elenco delle regole filtrare
     const [loading, setLoading] = useState(true); // stato per il caricamento dei dati
     const loadAllRegole = async () => {
-        fetch('/api/regole')
-            .then(res => res.json())
-            .then(data => {
-              // restituisce i dati se non sono capitati errori
-              if(data.success){
+        try {
+            const response = await fetch(`/api/regole`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) {
+                const data = await response.json();
                 setRegole(data.data);
                 setRegoleFil(data.data);
                 setLoading(false);
-              }
-            })
-            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            }
+            
+        } catch (error) { console.log(error); }
     }
     useEffect(() => loadAllRegole, []); // Non ha dipendenze, eseguito ad ogni render
     // funzione btn crea una nuova regola

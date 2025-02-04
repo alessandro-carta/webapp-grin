@@ -1,4 +1,6 @@
 import { db } from "./database.js";
+import { v4 as uuidv4 } from 'uuid';
+
 
 export async function addRegola(id, descrizione, cfu, tipologia, selezioni, count) {
     // garantisco atomicità tramite l'uso di una transazione che:
@@ -68,7 +70,8 @@ export async function deleteRegola(id) {
 
 export async function handleAddRegola(req, res) {
     // selezioni contiene l'elenco degli id delle aree/sottoaree/settori
-    let { id, descrizione, cfu, tipologia, selezioni, count } = req.body;
+    let { descrizione, cfu, tipologia, selezioni, count } = req.body;
+    const id = uuidv4();
     if(cfu == 0) cfu = null;
     if(count == 0) count = null;
     const result = await addRegola(id, descrizione, cfu, tipologia, selezioni, count);

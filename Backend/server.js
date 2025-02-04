@@ -6,7 +6,7 @@ import { handleAddRegola, handleDeleteRegola, handleGetRegole } from "./Regolame
 import { handleGetRichieste, handleGetRichiesta, handleGetInsegnamenti, handleCheckRegole, handleInvalidRichiesta } from "./Richieste.js";
 import { handleAddBollino, handleBollini, handleInvalidBollino } from "./Bollini.js";
 import { handleAddSottoarea, handleGetSottoarea, handleGetSottoareePerArea, handleGetSottoaree, handleDeleteSottoarea, handleUpdateSottoarea } from "./Sottoaree.js";
-import { handleAdminLogin } from "./Auth.js";
+import { handleAdminLogin, handleChangePassword, handlePresidenteLogin } from "./Auth.js";
 import jwt from 'jsonwebtoken';
 import { keyJwt, port } from "./Config.js";
 
@@ -40,8 +40,16 @@ const authorizeRole = (roles) => {
 // AUTH
 // Operazioni:
 // 1. Accesso Admin Grin
+// 2. Accesso Presidente
+// 3. Cambio password Presidente
 app.post("/api/adminLogin", async (req, res) => {
     return handleAdminLogin(req, res);
+})
+app.post("/api/presidenteLogin", async (req, res) => {
+    return handlePresidenteLogin(req, res);
+})
+app.put("/api/changePassword", async (req, res) => {
+    return handleChangePassword(req, res);
 })
 
 // PRESIDENTI
@@ -113,7 +121,7 @@ app.put("/api/updateSottoarea", authenticateToken, authorizeRole(['admin']), asy
 // SETTORI
 // Operazioni:
 // 1. Elenco di tutti i settori
-app.get("/api/settori", async (req, res) => {
+app.get("/api/settori", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleGetSettori(req, res);
 })
 
@@ -124,13 +132,13 @@ app.get("/api/settori", async (req, res) => {
 // 1. Inserisci una nuova regola
 // 2. Elenco di tutte le regole
 // 3. Eliminare una regola
-app.post("/api/addRegola", async (req, res) => {
+app.post("/api/addRegola", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleAddRegola(req, res);
 })
-app.get("/api/regole", async (req, res) => {
+app.get("/api/regole", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleGetRegole(req, res);
 })
-app.delete("/api/deleteRegola/:idRegola", async (req, res) => {
+app.delete("/api/deleteRegola/:idRegola", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleDeleteRegola(req, res);
 })
 // RICHIESTE
@@ -140,19 +148,19 @@ app.delete("/api/deleteRegola/:idRegola", async (req, res) => {
 // 3. Elenco degli insegnamenti di una determinata richiesta
 // 4. Controllo delle regole
 // 5. Invalida una richiesta
-app.get("/api/richieste", async (req, res) => {
+app.get("/api/richieste", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleGetRichieste(req, res);
 })
-app.get("/api/richiesta/:idRichiesta", async (req, res) => {
+app.get("/api/richiesta/:idRichiesta", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleGetRichiesta(req, res);
 })
-app.get("/api/insegnamenti/:idRegolamento", async (req, res) => {
+app.get("/api/insegnamenti/:idRegolamento", authenticateToken, authorizeRole(['admin']),  async (req, res) => {
     return handleGetInsegnamenti(req, res);
 })
-app.get("/api/checkRegole/:idRichiesta", async (req, res) => {
+app.get("/api/checkRegole/:idRichiesta", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleCheckRegole(req, res);
 })
-app.put("/api/invalidRichiesta", async (req, res) => {
+app.put("/api/invalidRichiesta", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleInvalidRichiesta(req, res);
 })
 // BOLLINI

@@ -20,6 +20,7 @@ import RichiestaPage from './pages/richieste/RichiestaPage.jsx'
 import ControlloRegolePage from './pages/richieste/ControlloRegolePage.jsx'
 import BolliniPage from './pages/bollini/BolliniPage.jsx'
 import LoginAdminPage from './pages/auth/LoginAdminPage.jsx'
+import PasswordChangePage from './pages/auth/PasswordChangePage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
   {
     path: "admin-login",
     element: <LoginAdminPage />
+  },
+  {
+    path: "cambio-password",
+    element: <PasswordChangePage />
   }
 ]
 )

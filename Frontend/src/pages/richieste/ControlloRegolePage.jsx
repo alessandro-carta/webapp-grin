@@ -10,31 +10,48 @@ function ControlloRegolePage(){
     // carico lo stato della richiesta
     const [statoRichiesta, setStatoRichiesta] = useState('');
     const loadRichiesta = async () => {
-        fetch(`/api/richiesta/${idRichiesta}`)
-            .then(res => res.json())
-            .then(data => {
-                // restituisce i dati se non sono capitati errori
-                if(data.success) setStatoRichiesta(data.data.stato);
+        try {
+            const response = await fetch(`/api/richiesta/${idRichiesta}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
             })
-            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) {
+                const data = await response.json();
+                setStatoRichiesta(data.data.stato)
+            }
+            
+        } catch (error) { console.log(error); }
     }
     useEffect( () => loadRichiesta, [idRichiesta]); // eseguito ogni volta che cambia idRichiesta
     // controllo delle regole
     const [checkAnvur, setCheckAnvur] = useState(false);
     const [regole, setRegole] = useState([]);
     const checkRichiesta = async () => {
-        fetch(`/api/checkRegole/${idRichiesta}`)
-            .then(res => res.json())
-            .then(data => {
-                // restituisce i dati se non sono capitati errori
-                if(data.success){
-                    setRegole(data.data.regole);
-                    setCheckAnvur(data.data.anvur);
-                    setLoading(false);
+        try {
+            const response = await fetch(`/api/checkRegole/${idRichiesta}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
                 }
             })
-            .catch(error => console.error("Errore nel caricamento dei dati:", error));
-        
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) {
+                const data = await response.json();
+                setRegole(data.data.regole);
+                setCheckAnvur(data.data.anvur);
+                setLoading(false);
+            }
+            
+        } catch (error) { console.log(error); }
     }
     useEffect(() => checkRichiesta, [idRichiesta]); // Ogni volta che cambia idRichiesta
     // restituisce l'esito della richiesta
@@ -54,9 +71,14 @@ function ControlloRegolePage(){
         const data = {erogato: 1, richiesta: idRichiesta};
         const response = await fetch(`/api/addBollino`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json'},
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
             body: JSON.stringify(data)
         });
+        // accesso non consentito
+        if(response.status == 403) navigate('/');
         // se ha successo torno alla pagina richieste
         if (response.ok) navigate(`/richieste`);
     }
@@ -65,9 +87,14 @@ function ControlloRegolePage(){
         const data = { id: idRichiesta };
         const response = await fetch(`/api/invalidRichiesta`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json'},
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
             body: JSON.stringify(data)
         });
+        // accesso non consentito
+        if(response.status == 403) navigate('/');
         // se ha successo torno alla pagina richieste
         if (response.ok) navigate(`/richieste`);
     }

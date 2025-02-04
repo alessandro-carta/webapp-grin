@@ -7,17 +7,25 @@ function Anno(props){
     const [loading, setLoading] = useState(true);
     const [insegnamenti, setInsegnamenti] = useState([]);
     const loadInsegnamenti = async () => {
-        fetch(`/api/insegnamenti/${props.regolamento}`)
-            .then(res => res.json())
-            .then(data => {
-                // restituisce i dati se non sono capitati errori
-                if(data.success){
-                    const fil = data.data.filter(insegnamento => insegnamento.annoerogazione == props.anno);
-                    setInsegnamenti(fil);
-                    setLoading(false);
+        try {
+            const response = await fetch(`/api/insegnamenti/${props.regolamento}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
                 }
             })
-            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) {
+                const data = await response.json();
+                const fil = data.data.filter(insegnamento => insegnamento.annoerogazione == props.anno);
+                setInsegnamenti(fil);
+                setLoading(false);
+            }
+            
+        } catch (error) { console.log(error); }
     }
     useEffect(() => loadInsegnamenti, []); // non ha dipendenze, eseguito ad ogni render
 

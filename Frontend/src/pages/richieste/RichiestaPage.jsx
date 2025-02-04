@@ -9,36 +9,52 @@ function RichiestaPage() {
 
     const [totCFU, setTotCFU] = useState(0);
     const countTotCFU = async (regolamento) => {
-        fetch(`/api/insegnamenti/${regolamento}`)
-            .then(res => res.json())
-            .then(data => {
-                // restituisce i dati se non sono capitati errori
-                if(data.success){
-                    let count = 0;
-                    data.data.map((insegnamento) =>{
-                        count += insegnamento.cfutot;
-                    });
-                    setTotCFU(count);
-                    setLoading(false);
+        try {
+            const response = await fetch(`/api/insegnamenti/${regolamento}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
                 }
             })
-            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) {
+                const data = await response.json();
+                let count = 0;
+                data.data.map((insegnamento) =>{
+                    count += insegnamento.cfutot;
+                });
+                setTotCFU(count);
+                setLoading(false);
+            }
+            
+        } catch (error) { console.log(error); }
     }
 
     const [loading, setLoading] = useState(true);
     const [richiesta, setRichiesta] = useState();
     const loadRichiesta = async () => {
-        fetch(`/api/richiesta/${idRichiesta}`)
-            .then(res => res.json())
-            .then(data => {
-                // restituisce i dati se non sono capitati errori
-                if(data.success){
-                    const newData = {...data.data, data: new Date(data.data.data)};
-                    setRichiesta(newData);
-                    countTotCFU(newData.regolamento);
+        try {
+            const response = await fetch(`/api/richiesta/${idRichiesta}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
                 }
             })
-            .catch(error => console.error("Errore nel caricamento dei dati:", error));
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            // risposta con successo
+            if(response.ok) {
+                const data = await response.json();
+                const newData = {...data.data, data: new Date(data.data.data)};
+                setRichiesta(newData);
+                countTotCFU(newData.regolamento);
+            }
+            
+        } catch (error) { console.log(error); }
     }
     useEffect( () => loadRichiesta, [idRichiesta]); // eseguito ogni volta che cambia idRichiesta
 

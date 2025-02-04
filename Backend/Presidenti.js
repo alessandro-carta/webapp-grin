@@ -9,7 +9,7 @@ export async function getPresidenti(){
 }
 export async function getPresidente(id){
     const [result] = await db.query(`
-        SELECT idPresidente AS "id", Nome AS "nome", Cognome AS "cognome", Email AS "email", Università AS "università", Attivo AS "attivo", FirstPassword AS "firstpassword"
+        SELECT idPresidente AS "id", Nome AS "nome", Cognome AS "cognome", Email AS "email", Università AS "università", Attivo AS "attivo", FirstPassword AS "firstpassword", Password AS "passPres"
         FROM Presidenti
         WHERE idPresidente = ? `, [id]);
     return result[0];

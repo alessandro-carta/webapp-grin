@@ -1,10 +1,12 @@
 import NavbarGrin from '../../components/NavbarGrin.jsx'
 import Richiesta from '../../components/richieste/Richiesta.jsx';
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function RichiestePage() {
   const [annoAccademico, setAnnoAccademico] = useState("All");
   const [stato, setStato] = useState("All");
+  const navigate = useNavigate();
 
   const [richiesteAll, setRichiesteAll] = useState([]); 
   const [richieste, setRichieste] = useState([]); 
@@ -16,24 +18,32 @@ function RichiestePage() {
   useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
 
   const loadAllRichieste = async () => {
-    fetch('/api/richieste')
-        .then(res => res.json())
-        .then(data => {
-          // restituisce i dati se non sono capitati errori
-          if(data.success){
-            const newData = [];
-            const anni = [];
-            data.data.map((d) => {
-                newData.push({...d, data: new Date(d.data)});
-                if(!anni.includes(d.annoaccademico)) anni.push(d.annoaccademico);
-            });
-            setRichiesteAll(newData);
-            setRichieste(newData);
-            setFiltroAnni(anni);
-            setLoading(false);
+    try {
+      const response = await fetch(`/api/richieste`, {
+          method: 'GET',
+          headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'application/json'
           }
-        })
-        .catch(error => console.error("Errore nel caricamento dei dati:", error));
+      })
+      // accesso non consentito
+      if(response.status == 403) navigate('/');
+      // risposta con successo
+      if(response.ok) {
+          const data = await response.json();
+          const newData = [];
+          const anni = [];
+          data.data.map((d) => {
+              newData.push({...d, data: new Date(d.data)});
+              if(!anni.includes(d.annoaccademico)) anni.push(d.annoaccademico);
+          });
+          setRichiesteAll(newData);
+          setRichieste(newData);
+          setFiltroAnni(anni);
+          setLoading(false);
+      }
+      
+    } catch (error) { console.log(error); }
   }
 
   // gestione dei filtri
