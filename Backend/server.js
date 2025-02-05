@@ -9,7 +9,7 @@ import { handleAddSottoarea, handleGetSottoarea, handleGetSottoareePerArea, hand
 import { handleAdminLogin, handleChangePassword, handlePresidenteLogin } from "./Auth.js";
 import jwt from 'jsonwebtoken';
 import { keyJwt, port } from "./Config.js";
-import { handleAddCDS, handleDashboard, handleDeleteCDS } from "./Dashboard.js";
+import { handleAddCDS, handleAddRegolamento, handleDashboard, handleDeleteCDS, handleDeleteRegolamento, handleGetRegolamenti, hanldeCorsoDiStudio } from "./dashboard/Dashboard.js";
 
 
 const app = express();
@@ -58,6 +58,9 @@ app.put("/api/changePassword", async (req, res) => {
 // 1. Elenco dei propri corsi di studio
 // 2. Aggiungere un cds
 // 3. Eliminare un cds
+// 4. Informazioni di un singolo corso di studio
+// 5. Elenco dei regolamenti di un cds
+// 6. Elimanare un regolamento di un cds
 app.get("/api/dashboard", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
     return handleDashboard(req, res);
 })
@@ -66,6 +69,18 @@ app.post("/api/addCDS", authenticateToken, authorizeRole(['presidente']),  async
 })
 app.delete("/api/deleteCDS/:idCDS", authenticateToken, authorizeRole(['presidente']), async (req, res) => {
     return handleDeleteCDS(req, res);
+})
+app.get("/api/corsodistudio/:idCDS", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+    return hanldeCorsoDiStudio(req, res);
+})
+app.post("/api/addRegolamento/", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+    return handleAddRegolamento(req, res);
+})
+app.get("/api/regolamenti/:idCDS", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+    return handleGetRegolamenti(req, res);
+})
+app.delete("/api/deleteRegolamento/:idRegolamento", authenticateToken, authorizeRole(['presidente']), async (req, res) => {
+    return handleDeleteRegolamento(req, res);
 })
 
 // PRESIDENTI
@@ -151,7 +166,7 @@ app.get("/api/settori", authenticateToken, authorizeRole(['admin']), async (req,
 app.post("/api/addRegola", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleAddRegola(req, res);
 })
-app.get("/api/regole", authenticateToken, authorizeRole(['admin']), async (req, res) => {
+app.get("/api/regole", authenticateToken, authorizeRole(['admin','presidente']), async (req, res) => {
     return handleGetRegole(req, res);
 })
 app.delete("/api/deleteRegola/:idRegola", authenticateToken, authorizeRole(['admin']), async (req, res) => {

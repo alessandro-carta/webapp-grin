@@ -29,9 +29,9 @@ function Regola(props) {
         <>
             <div className="p-1 border-b border-gray-300 md:col-span-2">{props.regola.descrizione}</div>
             {/* Visualizzazione nel caso di modifiche al regolamento*/}
-            {!props.check && 
+            {!props.check &&
             <div className="p-1 underline border-b border-gray-300">
-                <button className="m-1" onClick={deleteRegola}> Elimina </button>
+                { props.admin && <button className="m-1" onClick={deleteRegola}> Elimina </button>}
             </div> }
             {/* Visualizzazione nel caso di controllo requisiti*/}
             {props.check &&

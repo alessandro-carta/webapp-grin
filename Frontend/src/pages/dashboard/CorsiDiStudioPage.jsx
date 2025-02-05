@@ -46,10 +46,11 @@ function CorsiDiStudioPage(){
           <p className="text-xl">Azioni: </p>
           <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewCDS}> Crea un nuovo corso </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 p-5">
+        <div className="grid grid-cols-1 md:grid-cols-5 p-5">
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Corso di studio</div>
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Università</div>
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Durata</div>
+            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Regolamenti</div>
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
             {corsiDiStudio.map(corso => ( <CorsoDiStudio key={corso.id} corso={corso}/> ))}
         </div> 

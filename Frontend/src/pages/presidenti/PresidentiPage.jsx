@@ -47,15 +47,15 @@ function PresidentiPage() {
         <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewPresidente}> Crea nuovo account </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 p-5">
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Presidente</div>
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Email</div>
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Università</div>
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
+          <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Presidente</div>
+          <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Email</div>
+          <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Università</div>
+          <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
 
-            {presidenti.map(p => (
-                <Presidente key={p.id} presidente={p}/>
-            ))}           
-        </div>
+          {presidenti.map(p => (
+              <Presidente key={p.id} presidente={p}/>
+          ))}           
+      </div>
     </>
   )
 }

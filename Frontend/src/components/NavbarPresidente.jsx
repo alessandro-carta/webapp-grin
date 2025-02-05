@@ -11,7 +11,7 @@ function NavbarPresidente(){
                 <div className="space-x-6">
                     <NavLink to={`/dashboard`} className={({isActive}) => isActive ? 'text-blue-800 hover:text-blue-800' : 'text-black hover:text-gray-300'}> Corsi Di Studio </NavLink>
                     <NavLink to={`/404`} className={({isActive}) => isActive ? 'text-blue-800 hover:text-blue-800' : 'text-black hover:text-gray-300'}> Richieste </NavLink>
-                    <NavLink to={`/404`} className={({isActive}) => isActive ? 'text-blue-800 hover:text-blue-800' : 'text-black hover:text-gray-300'}> Regolamento </NavLink>
+                    <NavLink to={`/regolamento/?Visual=presidente`} className={({isActive}) => isActive ? 'text-blue-800 hover:text-blue-800' : 'text-black hover:text-gray-300'}> Regolamento </NavLink>
                     <NavLink to={`/404`} className={({isActive}) => isActive ? 'text-blue-800 hover:text-blue-800' : 'text-black hover:text-gray-300'}> Bollini </NavLink>
                 </div>
                 <Logout />

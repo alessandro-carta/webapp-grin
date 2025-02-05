@@ -1,9 +1,18 @@
 import NavbarGrin from '../../components/NavbarGrin.jsx'
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Regola from '../../components/regolamento/Regola.jsx'
+import NavbarPresidente from '../../components/NavbarPresidente.jsx';
 
 function RegolamentoPage(){
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const visual = queryParams.get('Visual');
+    const [admin, setAdmin] = useState(false)
+    useEffect(() => {
+        if (visual === 'admin') setAdmin(true);
+    }, [visual]);
+
     const navigate = useNavigate();
     const [pageTitle, setPageTitle] = useState('Elenco delle regole');
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
@@ -43,15 +52,25 @@ function RegolamentoPage(){
         else setRegoleFil(regole.filter((regola) => regola.tipologia === value));
     }
 
+    let navbar;
+    if(admin) navbar = <NavbarGrin />
+    else navbar = <NavbarPresidente />
+
+    let azioni;
+    if(admin) azioni = <>
+        <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
+            <p className="text-xl">Azioni: </p>
+            <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewRegolaCFU}> Aggiungi una regola per CFU </button>
+            <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewRegolaCount}> Aggiungi una regola per numero </button>
+        </div>
+    </>;
+    else azioni = null;
+
     if(loading) return <p>LOADING...</p>
     return (
         <>
-            <NavbarGrin />
-            <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
-                <p className="text-xl">Azioni: </p>
-                <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewRegolaCFU}> Aggiungi una regola per CFU </button>
-                <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewRegolaCount}> Aggiungi una regola per numero </button>
-            </div>
+            {navbar}
+            {azioni}
             <div className="flex space-x-4 p-2 items-center justify-center">
                 <p className="text-xl">Filtra per: </p>
                 <select
@@ -70,7 +89,7 @@ function RegolamentoPage(){
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div> 
 
                 {regoleFil.map(r => (
-                    <Regola key={r.id} regola={r} check={false}/>
+                    <Regola key={r.id} regola={r} check={false} admin={admin}/>
                 ))}       
             </div>
         </>

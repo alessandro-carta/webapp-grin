@@ -23,6 +23,8 @@ import LoginAdminPage from './pages/auth/LoginAdminPage.jsx'
 import PasswordChangePage from './pages/auth/PasswordChangePage.jsx'
 import CorsiDiStudioPage from './pages/dashboard/CorsiDiStudioPage.jsx'
 import CreateNewCDSPage from './pages/dashboard/CreateNewCDSPage.jsx'
+import CorsoDiStudioPage from './pages/dashboard/CorsoDiStudioPage.jsx'
+import CreateNewRegolamentoPage from './pages/dashboard/CreateNewRegolamentoPage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -110,8 +112,16 @@ const router = createBrowserRouter([
     element: <CorsiDiStudioPage />
   },
   {
+    path: "dashboard/:idCDS",
+    element: <CorsoDiStudioPage />
+  },
+  {
     path: "crea-un-nuovo-corso",
     element: <CreateNewCDSPage />
+  },
+  {
+    path: "crea-un-nuovo-regolamento/:idCDS",
+    element: <CreateNewRegolamentoPage />
   }
 
 ]

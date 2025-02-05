@@ -188,7 +188,7 @@ function FormNewRegola(props) {
                 });
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
-                if (response.ok) { navigate('/regolamento'); }
+                if (response.ok) { navigate(`/regolamento/?Visual=admin`); }
                 if (!response.ok) {
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
@@ -318,7 +318,7 @@ function FormNewRegola(props) {
                     </button>
                     <Link
                         className="text-blue-500 hover:text-blue-700"
-                        to={'/regolamento'}
+                        to={`/regolamento/?Visual=admin`}
                     >
                         Annulla
                     </Link>

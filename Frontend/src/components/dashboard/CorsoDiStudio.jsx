@@ -32,6 +32,8 @@ function CorsoDiStudio(props) {
             <div className="p-1 border-b border-gray-300">{props.corso.durata}</div>
             <div className="p-1 underline border-b border-gray-300">
                 <Link to={`/dashboard/${props.corso.id}`} key={props.corso.id}> Visualizza </Link>
+            </div >
+            <div className="p-1 underline border-b border-gray-300">
                 <button className="m-1" onClick={deleteCDS}> Elimina </button>
             </div >
         </>
