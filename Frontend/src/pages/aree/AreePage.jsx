@@ -1,9 +1,18 @@
 import NavbarGrin from "../../components/NavbarGrin.jsx";
+import NavbarPresidente from "../../components/NavbarPresidente.jsx";
 import Area from "../../components/aree/Area.jsx";
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function AreePage(){
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const visual = queryParams.get('Visual');
+    const [admin, setAdmin] = useState(false);
+    useEffect(() => {
+        if (visual === 'admin') setAdmin(true);
+    }, [visual]);
+
     const [aree, setAree] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -39,24 +48,25 @@ function AreePage(){
     const createNewArea = () => { navigate('/crea-una-nuova-area'); }
     const createNewSottoArea = () => { navigate('/crea-una-nuova-sottoarea'); }
 
+    let navbar;
+    if(admin) navbar = <NavbarGrin />
+    else navbar = <NavbarPresidente />
+
     if(loading) return <p>LOADING...</p>
     return(
         <>
-            <NavbarGrin />
-            <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
+            {navbar}
+            { admin && <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
                 <p className="text-xl">Azioni: </p>
                 <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewArea}> Nuova Area</button>
                 <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewSottoArea}> Nuova Sottoarea </button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 p-5">
+            </div> }
+            <div className={`grid grid-cols-1 ${admin ? 'md:grid-cols-4' : 'md:grid-cols-3'} p-5`}>
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800">Sigla</div>
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800">Nome</div>
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div>
-                <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div>
-
-                {aree.map(a => (
-                    <Area key={a.id} area={a}/>
-                ))}           
+                { admin && <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div> }
+                {aree.map(a => ( <Area key={a.id} area={a} admin={admin}/> ))}           
             </div>
 
         </>

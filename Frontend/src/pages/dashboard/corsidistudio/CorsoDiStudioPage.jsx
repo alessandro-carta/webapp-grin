@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import NavbarPresidente from "../../components/NavbarPresidente";
-import Regolamento from "../../components/dashboard/Regolamento";
+import NavbarPresidente from "../../../components/NavbarPresidente";
+import Regolamento from "../../../components/dashboard/regolamenti/Regolamento";
 
 function CorsoDiStudioPage(){
     const { idCDS } = useParams();

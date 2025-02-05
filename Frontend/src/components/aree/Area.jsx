@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-
 function Area(props) {
 
     const navigate = useNavigate();
@@ -56,13 +55,13 @@ function Area(props) {
             <div className="p-2 border-b border-gray-300">{props.area.id}</div>
             <div className="p-2 border-b border-gray-300">{props.area.nome}</div>
             <div className="p-2 underline border-b border-gray-300">
-                <Link to={`/sottoaree/${props.area.id}`}> Elenco sottoaree </Link>
+                <Link to={`/sottoaree/${props.area.id}/?Visual=${props.admin ? "admin" : "presidente"}`}> Elenco sottoaree </Link>
             </div >
 
-            <div className="p-2 underline border-b border-gray-300">
+            {props.admin && <div className="p-2 underline border-b border-gray-300">
                 <button className="m-1" onClick={updateArea}> Modifica </button>
                 <button className="m-1" onClick={deleteArea}> Elimina </button>
-            </div >
+            </div>} 
         </>
     )
 }

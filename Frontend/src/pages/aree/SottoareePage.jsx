@@ -1,9 +1,18 @@
 import NavbarGrin from "../../components/NavbarGrin.jsx";
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Sottoarea from "../../components/aree/Sottoarea.jsx";
+import NavbarPresidente from "../../components/NavbarPresidente.jsx";
 
 function SottoareePage(){
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const visual = queryParams.get('Visual');
+    const [admin, setAdmin] = useState(false);
+    useEffect(() => {
+        if (visual === 'admin') setAdmin(true);
+    }, [visual]);
+
     const [pageTitle, setPageTitle] = useState('Elenco delle sottoaree');
     const { idArea } = useParams();
     const [sottoaree, setSottoaree] = useState([]);
@@ -60,22 +69,26 @@ function SottoareePage(){
 
     const createNewSottoArea = () => { navigate(`/crea-una-nuova-sottoarea/${idArea}`); }
 
+    let navbar;
+    if(admin) navbar = <NavbarGrin />
+    else navbar = <NavbarPresidente />
+
     if(loadingA || loadingS) return <p>LOADING...</p>
     return(
         <>
-            <NavbarGrin />
+            {navbar}
             <p className='text-4xl text-blue-800 p-2'>{pageTitle}</p>
-            <div className="flex space-x-4 p-4 items-center justify-center">
+            { admin && <div className="flex space-x-4 p-4 items-center justify-center">
                 <p className="text-xl">Azioni: </p>
                 <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewSottoArea}> Nuova Sottoarea </button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 p-5">
+            </div>}
+            <div className={`grid grid-cols-1 ${admin ? 'md:grid-cols-3' : 'md:grid-cols-2'} p-5`}>
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800">Sigla</div>
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800">Nome</div>
-                <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div>
+                { admin && <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div> }
 
                 {sottoaree.map(s => (
-                    <Sottoarea key={s.id} sottoarea={s}/>
+                    <Sottoarea key={s.id} sottoarea={s} admin={admin}/>
                 ))}           
             </div>
 

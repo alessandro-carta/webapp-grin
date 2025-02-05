@@ -54,7 +54,7 @@ function FormLoginPresidente() {
                     const data = await response.json();
                     localStorage.setItem('token', data.data.token);
                     if(data.data.changePassword) navigate(`/cambio-password`);
-                    else navigate(`/dashboard`);
+                    else navigate(`/dashboard/corsidistudio`);
                 }
                 if(!response.ok){
                     const { error } = await response.json();

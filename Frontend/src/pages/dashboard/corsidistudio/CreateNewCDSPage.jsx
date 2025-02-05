@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import NavbarPresidente from "../../components/NavbarPresidente.jsx";
-import FormNewCDS from "../../components/dashboard/FormNewCDS.jsx";
+import NavbarPresidente from "../../../components/NavbarPresidente.jsx";
+import FormNewCDS from "../../../components/dashboard/corsidistudio/FormNewCDS.jsx";
 
 function CreateNewCDSPage() {
 

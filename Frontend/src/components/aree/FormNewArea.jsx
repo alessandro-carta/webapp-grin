@@ -68,7 +68,7 @@ function FormNewArea() {
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
                 // inserimento riuscito
-                if (response.ok) { navigate('/aree'); }
+                if (response.ok) { navigate('/aree/?Visual=admin'); }
                 // inserimento fallito
                 // inserita un'area con idArea gia' esistente
                 if (!response.ok) {
@@ -139,7 +139,7 @@ function FormNewArea() {
                         </button>
                         <Link
                             className="text-blue-500 hover:text-blue-700"
-                            to={'/aree'}
+                            to={'/aree/?Visual=admin'}
                         >
                             Annulla
                         </Link>

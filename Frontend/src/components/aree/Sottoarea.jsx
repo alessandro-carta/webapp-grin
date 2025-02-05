@@ -52,11 +52,10 @@ function Sottoarea(props) {
         <>
             <div className="p-2 border-b border-gray-300">{props.sottoarea.id}</div>
             <div className="p-2 border-b border-gray-300">{props.sottoarea.nome}</div>
-
-            <div className="p-2 underline border-b border-gray-300">
+            { props.admin && <div className="p-2 underline border-b border-gray-300">
                 <button className="m-1" onClick={updateSottoarea}> Modifica </button>
                 <button className="m-1" onClick={deleteSottoarea}> Elimina </button>
-            </div >
+            </div > }
         </>
     )
 }

@@ -49,7 +49,7 @@ function FormUpdateArea(props) {
                 // accesso non consentito
                 if(response.status == 403) navigate('/admin-login');
                 // modifica riuscita
-                if (response.ok) { navigate('/aree'); }
+                if (response.ok) { navigate('/aree/?Visual=admin'); }
                 // modifica fallita
                 if (!response.ok) {
                     const errorData = await response.json();
@@ -105,7 +105,7 @@ function FormUpdateArea(props) {
                         </button>
                         <Link
                             className="text-blue-500 hover:text-blue-700"
-                            to={'/aree'}
+                            to={'/aree/?Visual=admin'}
                         >
                             Annulla
                         </Link>

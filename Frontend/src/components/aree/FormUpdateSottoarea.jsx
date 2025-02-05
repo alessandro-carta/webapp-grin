@@ -86,7 +86,7 @@ function FormUpdateSottoarea(props) {
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
                 // modifica riuscita
-                if (response.ok) navigate(`/sottoaree/${formData.area}`);
+                if (response.ok) navigate(`/sottoaree/${formData.area}/?Visual=admin`);
                 // modifica fallita
                 if (!response.ok) {
                     const errorData = await response.json();
@@ -157,7 +157,7 @@ function FormUpdateSottoarea(props) {
                         </button>
                         <Link
                             className="text-blue-500 hover:text-blue-700"
-                            to={`/sottoaree/${props.sottoarea.area}`}
+                            to={`/sottoaree/${props.sottoarea.area}/?Visual=admin`}
                         >
                             Annulla
                         </Link>

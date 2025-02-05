@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import NavbarPresidente from "../../components/NavbarPresidente.jsx";
-import FormNewRegolamento from "../../components/dashboard/FormNewRegolamento.jsx";
+import NavbarPresidente from "../../../components/NavbarPresidente.jsx";
+import FormNewRegolamento from "../../../components/dashboard/regolamenti/FormNewRegolamento.jsx";
 
 function CreateNewRegolamentoPage () {
 

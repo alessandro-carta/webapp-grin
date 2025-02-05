@@ -21,10 +21,11 @@ import ControlloRegolePage from './pages/richieste/ControlloRegolePage.jsx'
 import BolliniPage from './pages/bollini/BolliniPage.jsx'
 import LoginAdminPage from './pages/auth/LoginAdminPage.jsx'
 import PasswordChangePage from './pages/auth/PasswordChangePage.jsx'
-import CorsiDiStudioPage from './pages/dashboard/CorsiDiStudioPage.jsx'
-import CreateNewCDSPage from './pages/dashboard/CreateNewCDSPage.jsx'
-import CorsoDiStudioPage from './pages/dashboard/CorsoDiStudioPage.jsx'
-import CreateNewRegolamentoPage from './pages/dashboard/CreateNewRegolamentoPage.jsx'
+import CorsiDiStudioPage from './pages/dashboard/corsidistudio/CorsiDiStudioPage.jsx'
+import CreateNewCDSPage from './pages/dashboard/corsidistudio/CreateNewCDSPage.jsx'
+import CorsoDiStudioPage from './pages/dashboard/corsidistudio/CorsoDiStudioPage.jsx'
+import CreateNewRegolamentoPage from './pages/dashboard/regolamenti/CreateNewRegolamentoPage.jsx'
+import BolliniPresidentePage from './pages/dashboard/bollini/BolliniPresidentePage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -108,11 +109,15 @@ const router = createBrowserRouter([
     element: <PasswordChangePage />
   },
   {
-    path: "dashboard",
+    path: "dashboard/corsidistudio",
     element: <CorsiDiStudioPage />
   },
   {
-    path: "dashboard/:idCDS",
+    path: "dashboard/bollini",
+    element: <BolliniPresidentePage />
+  },
+  {
+    path: "dashboard/regolamenti/:idCDS",
     element: <CorsoDiStudioPage />
   },
   {

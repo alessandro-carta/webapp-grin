@@ -9,8 +9,9 @@ import { handleAddSottoarea, handleGetSottoarea, handleGetSottoareePerArea, hand
 import { handleAdminLogin, handleChangePassword, handlePresidenteLogin } from "./Auth.js";
 import jwt from 'jsonwebtoken';
 import { keyJwt, port } from "./Config.js";
-import { handleAddCDS, handleAddRegolamento, handleDashboard, handleDeleteCDS, handleDeleteRegolamento, handleGetRegolamenti, hanldeCorsoDiStudio } from "./dashboard/Dashboard.js";
-
+import { handleAddCDS, handleDashboard, handleDeleteCDS, hanldeCorsoDiStudio } from "./dashboard/CorsiDiStudio.js";
+import { handleGetBolliniPerPresidente } from "./dashboard/Bollini.js";
+import { handleAddRegolamento, handleDeleteRegolamento, handleGetRegolamenti } from "./dashboard/Regolamenti.js";
 
 const app = express();
 app.use(cors());
@@ -18,7 +19,6 @@ app.use(express.json());
 app.listen(port, () => {
     console.log(`Server in ascolto sulla porta > ${port}`);
 })
-
 
 const authenticateToken = (req, res, next) => {
     const token = req.headers['authorization']?.split(' ')[1];
@@ -53,14 +53,12 @@ app.put("/api/changePassword", async (req, res) => {
     return handleChangePassword(req, res);
 })
 
-// DASHBORAD
+// DASHBORAD/CORSIDISTUDIO
 // Operazioni
 // 1. Elenco dei propri corsi di studio
 // 2. Aggiungere un cds
 // 3. Eliminare un cds
 // 4. Informazioni di un singolo corso di studio
-// 5. Elenco dei regolamenti di un cds
-// 6. Elimanare un regolamento di un cds
 app.get("/api/dashboard", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
     return handleDashboard(req, res);
 })
@@ -73,6 +71,12 @@ app.delete("/api/deleteCDS/:idCDS", authenticateToken, authorizeRole(['president
 app.get("/api/corsodistudio/:idCDS", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
     return hanldeCorsoDiStudio(req, res);
 })
+
+// DASHBORAD/REGOLAMENTI
+// Operazioni
+// 1. Aggiungere un regolamento
+// 2. Elenco dei regolamenti di un cds
+// 3. Elimanare un regolamento di un cds
 app.post("/api/addRegolamento/", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
     return handleAddRegolamento(req, res);
 })
@@ -81,6 +85,13 @@ app.get("/api/regolamenti/:idCDS", authenticateToken, authorizeRole(['presidente
 })
 app.delete("/api/deleteRegolamento/:idRegolamento", authenticateToken, authorizeRole(['presidente']), async (req, res) => {
     return handleDeleteRegolamento(req, res);
+})
+
+// DASHBOARD/BOLLINI
+// Operazioni:
+// 1. Elenco dei bollini di un presidente
+app.get("/api/bolliniPresidente", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+    return handleGetBolliniPerPresidente(req, res);
 })
 
 // PRESIDENTI
@@ -101,6 +112,7 @@ app.post("/api/addPresidente", authenticateToken, authorizeRole(['admin']), asyn
 app.put("/api/updatePresidente", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleUpdatePresidente(req, res);
 })
+
 // AREE
 // Operazioni:
 // 1. Elenco di tutte le aree
@@ -108,10 +120,10 @@ app.put("/api/updatePresidente", authenticateToken, authorizeRole(['admin']), as
 // 3. Aggiungi area
 // 4. Elimina area
 // 5. Modifica area
-app.get("/api/aree", authenticateToken, authorizeRole(['admin']), async (req, res) => {
+app.get("/api/aree", authenticateToken, authorizeRole(['admin','presidente']), async (req, res) => {
     return handleGetAree(req, res);
 })
-app.get("/api/area/:idArea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
+app.get("/api/area/:idArea", authenticateToken, authorizeRole(['admin','presidente']), async (req, res) => {
     return handleGetArea(req, res);
 })
 app.post("/api/addArea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
@@ -123,6 +135,7 @@ app.delete("/api/deleteArea/:idArea", authenticateToken, authorizeRole(['admin']
 app.put("/api/updateArea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleUpdateArea(req, res);
 })
+
 // SOTTOAREE
 // Operazioni:
 // 1. Elenco di tutte le sottoarea di un'area
@@ -131,13 +144,13 @@ app.put("/api/updateArea", authenticateToken, authorizeRole(['admin']), async (r
 // 4. Aggiungi sottoarea
 // 5. Elimina sottoarea
 // 6. Modifica sottoarea
-app.get("/api/sottoaree/:idArea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
+app.get("/api/sottoaree/:idArea", authenticateToken, authorizeRole(['admin','presidente']), async (req, res) => {
     return handleGetSottoareePerArea(req, res);
 })
-app.get("/api/sottoarea/:idSottoarea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
+app.get("/api/sottoarea/:idSottoarea", authenticateToken, authorizeRole(['admin','presidente']), async (req, res) => {
     return handleGetSottoarea(req, res);
 })
-app.get("/api/sottoaree", authenticateToken, authorizeRole(['admin']), async (req, res) => {
+app.get("/api/sottoaree", authenticateToken, authorizeRole(['admin','presidente']), async (req, res) => {
     return handleGetSottoaree(req, res);
 })
 app.post("/api/addSottoarea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
@@ -149,14 +162,13 @@ app.delete("/api/deleteSottoarea/:idSottoarea", authenticateToken, authorizeRole
 app.put("/api/updateSottoarea", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleUpdateSottoarea(req, res);
 })
+
 // SETTORI
 // Operazioni:
 // 1. Elenco di tutti i settori
 app.get("/api/settori", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleGetSettori(req, res);
 })
-
-
 
 // REGOLAMENTO
 // Operazioni:
@@ -172,6 +184,7 @@ app.get("/api/regole", authenticateToken, authorizeRole(['admin','presidente']),
 app.delete("/api/deleteRegola/:idRegola", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleDeleteRegola(req, res);
 })
+
 // RICHIESTE
 // Operazioni:
 // 1. Elenco delle richieste
@@ -194,6 +207,7 @@ app.get("/api/checkRegole/:idRichiesta", authenticateToken, authorizeRole(['admi
 app.put("/api/invalidRichiesta", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleInvalidRichiesta(req, res);
 })
+
 // BOLLINI
 // Operazioni:
 // 1. Erogare un bollino

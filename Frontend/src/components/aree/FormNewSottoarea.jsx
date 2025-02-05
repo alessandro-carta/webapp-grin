@@ -99,7 +99,7 @@ function FormNewSottoarea(props) {
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
                 // inserimento riuscito
-                if (response.ok) { navigate(`/sottoaree/${formData.area}`); }
+                if (response.ok) { navigate(`/sottoaree/${formData.area}/?Visual=admin`); }
                 // inserimento fallito
                 // inserita una sottoarea con idSottoarea gia' esistente
                 if (!response.ok) {
@@ -187,7 +187,7 @@ function FormNewSottoarea(props) {
 
                         <Link
                             className="text-blue-500 hover:text-blue-700"
-                            to={'/aree'}
+                            to={'/aree/?Visual=admin'}
                         >
                             Annulla
                         </Link>

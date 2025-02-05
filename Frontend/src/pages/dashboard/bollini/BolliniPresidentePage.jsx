@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import NavbarGrin from "../../components/NavbarGrin";
-import Bollino from "../../components/bollini/Bollino";
 import { useNavigate } from "react-router-dom";
+import NavbarPresidente from "../../../components/NavbarPresidente";
+import Bollino from "../../../components/bollini/Bollino.jsx";
 
 
-function BolliniPage(){
+function BolliniPresidentePage(){
     const navigate = useNavigate();
     const [pageTitle, setPageTitle] = useState('Elenco dei bollini');
     useEffect(() => { document.title = pageTitle }, [pageTitle]); // eseguito ogni volta che cambia pageTitle
@@ -14,7 +14,7 @@ function BolliniPage(){
     const [bolliniAll, setBolliniAll] = useState([]);
     const loadBollini = async () => {
         try {
-            const response = await fetch(`/api/bollini`, {
+            const response = await fetch(`/api/bolliniPresidente`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -46,7 +46,7 @@ function BolliniPage(){
     if(loading) return <p>LOADING...</p>
     return (
         <>
-            <NavbarGrin />
+            <NavbarPresidente />
             <div className="flex space-x-4 p-2 items-center justify-center">
                 <p className="text-xl">Stato: </p>
                 <select
@@ -59,21 +59,16 @@ function BolliniPage(){
                     <option value="Revocato">Revocato</option>
                 </select>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-6 p-5">
-                <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Università</div>
+            <div className="grid grid-cols-1 md:grid-cols-4 p-5">
                 <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Corso Di Studio</div>
                 <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Anno Accademico</div>
                 <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Stato</div>
-                <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Richiesta</div>
-                <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
-
-                {bollini.map(bollino => (
-                    <Bollino key={bollino.id} bollino={bollino} admin={true}/>
-                ))}
+                <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Regolamento</div>
+                { bollini.map(bollino => ( <Bollino key={bollino.id} bollino={bollino} admin={false}/> )) }
             </div>
         </>
     )
 
 }
 
-export default BolliniPage;
+export default BolliniPresidentePage;

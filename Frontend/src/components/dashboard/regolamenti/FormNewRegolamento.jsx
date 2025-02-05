@@ -1,49 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-function FormNewCDS() {
+function FormNewRegolamento(props) {
+
     const navigate = useNavigate();
-    // dati del form e messaggio di errore per ogni cambo
+    // dati del form
     const [formData, setFormData] = useState({
-        nome: "",
-        durata: 0
+        annoaccademico: "",
+        CDS: props.cds
     })
-    // result contiene il messaggio di errore inviato dal server
+    // messaggi di errore, result contiene la risposta della chiamata HTTP
     const [formErrors, setFormErros] = useState({
-        nome: "",
-        durata: "",
+        annoaccademico: "",
         result: ""
     })
 
-    const checkNome = () => {
-        if(!formData.nome){
+    const checkAnnoAccademico = () => {
+        if(!formData.annoaccademico){
             setFormErros({
                 ...formErrors,
                 nome: "Campo obbligatorio"
-            })
-            return false;
-        }
-        if(formData.nome.length > 45){
-            setFormErros({
-                ...formErrors,
-                nome: "Inserire un nome più corto"
-            })
-            return false;
-        }
-        return true;
-    }
-    const checkDurata = () => {
-        if(!formData.durata){
-            setFormErros({
-                ...formErrors,
-                durata: "Campo obbligatorio"
-            })
-            return false;
-        }
-        if(formData.durata != 3){
-            setFormErros({
-                ...formErrors,
-                durata: "Inserire un dato corretto"
             })
             return false;
         }
@@ -53,8 +29,8 @@ function FormNewCDS() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if(checkNome() && checkDurata()){
-                const response = await fetch(`/api/addCDS`, {
+            if(checkAnnoAccademico()){
+                const response = await fetch(`/api/addRegolamento`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -64,7 +40,10 @@ function FormNewCDS() {
                 });
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
-                if (response.ok) { navigate(`/dashboard`); }
+                // inserimento riuscito
+                if (response.ok) { navigate(`/dashboard/regolamenti/${props.cds}`); }
+                // inserimento fallito
+                // inserita una sottoarea con idSottoarea gia' esistente
                 if (!response.ok) {
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
@@ -84,10 +63,11 @@ function FormNewCDS() {
             ...formData,
             [name]: value
         });
+
         setFormErros({
             ...formErrors,
             [name]: "",
-            result: ""
+            Result: ""
         });
     }
 
@@ -95,45 +75,31 @@ function FormNewCDS() {
         <>
             <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg">
                 <form onSubmit={handleSubmit}>
-                    {/* Nome */}
+                    {/* Anno Accademico */}
                     <div className="mb-4">
-                        <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome*</label>
+                        <label htmlFor="annoaccademico" className="block text-sm font-medium text-gray-700">Anno Accademico*</label>
                         <input
                             type="text"
-                            id="nome"
-                            name="nome"
-                            value={formData.nome}
+                            id="annoaccademico"
+                            name="annoaccademico"
+                            value={formData.annoaccademico}
                             onChange={handleChange}
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
-                        {formErrors.nome && <p className="text-red-500">{formErrors.nome}</p>}
+                        {formErrors.annoaccademico && <p className="text-red-500">{formErrors.annoaccademico}</p>}
                     </div>
-                    {/* Durata */}
-                    <div className="mb-4">
-                        <label htmlFor="durata" className="block text-sm font-medium text-gray-700">Durata*</label>
-                        <input
-                            type="number"
-                            id="durata"
-                            name="durata"
-                            value={formData.durata}
-                            onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        />
-                        {formErrors.durata && <p className="text-red-500">{formErrors.durata}</p>}
-                    </div>
-                    <p className="text-base p-2">* Campi obbligatori</p>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
                         <button
                             type="submit"
                             className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"
                         >
-                            Crea un nuovo corso
+                            CREA 
                         </button>
 
                         <Link
                             className="text-blue-500 hover:text-blue-700"
-                            to={'/dashboard'}
+                            to={`/dashboard/regolamenti/${props.cds}`}
                         >
                             Annulla
                         </Link>
@@ -141,7 +107,10 @@ function FormNewCDS() {
                     </div>
                 </form>
             </div>
+            
         </>
     )
+    
 }
-export default FormNewCDS;
+
+export default FormNewRegolamento;

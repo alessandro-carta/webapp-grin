@@ -8,7 +8,7 @@ function RegolamentoPage(){
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const visual = queryParams.get('Visual');
-    const [admin, setAdmin] = useState(false)
+    const [admin, setAdmin] = useState(false);
     useEffect(() => {
         if (visual === 'admin') setAdmin(true);
     }, [visual]);
@@ -84,9 +84,9 @@ function RegolamentoPage(){
                     <option value="sottoarea">Sottoarea</option>
                 </select>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 p-5">
+            <div className={`grid grid-cols-1 ${admin ? 'md:grid-cols-3' : 'md:grid-cols-2'} p-5`}>
                 <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800 md:col-span-2">Descrizione testuale</div>
-                <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div> 
+                {admin && <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div> }
 
                 {regoleFil.map(r => (
                     <Regola key={r.id} regola={r} check={false} admin={admin}/>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CorsoDiStudio from "../../components/dashboard/CorsoDiStudio";
-import NavbarPresidente from "../../components/NavbarPresidente";
+import CorsoDiStudio from "../../../components/dashboard/corsidistudio/CorsoDiStudio";
+import NavbarPresidente from "../../../components/NavbarPresidente";
 
 function CorsiDiStudioPage(){
     const navigate = useNavigate();
