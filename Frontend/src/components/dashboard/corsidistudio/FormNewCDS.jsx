@@ -64,7 +64,7 @@ function FormNewCDS() {
                 });
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
-                if (response.ok) { navigate(`/dashboard`); }
+                if (response.ok) { navigate(`/dashboard/corsidistudio`); }
                 if (!response.ok) {
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})

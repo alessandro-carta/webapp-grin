@@ -1,9 +1,9 @@
-import NavbarGrin from '../../components/NavbarGrin.jsx'
-import Richiesta from '../../components/richieste/Richiesta.jsx';
+import NavbarPresidente from '../../../components/NavbarPresidente.jsx';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Richiesta from '../../../components/richieste/Richiesta.jsx';
 
-function RichiestePage() {
+function RichiestePresidentePage() {
   const [annoAccademico, setAnnoAccademico] = useState("All");
   const [stato, setStato] = useState("All");
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ function RichiestePage() {
 
   const loadAllRichieste = async () => {
     try {
-      const response = await fetch(`/api/richieste`, {
+      const response = await fetch(`/api/richiestePresidente`, {
           method: 'GET',
           headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -62,14 +62,20 @@ function RichiestePage() {
     if(name === 'filtroStato') setStato(value);
   }
   useEffect(() => filtraDati(), [annoAccademico, stato]);
-  
+
+  // funzione per creare una nuova richiesta
+  const creaNuovaRichiesta = () => { navigate(`/crea-una-nuova-richiesta`)};
   
   if(loading) return <p>LOADING...</p>
   return (
     <>
-      <NavbarGrin />
+      <NavbarPresidente />
+      <div className="flex space-x-4 p-4 items-center justify-center">
+        <p className="text-xl">Azioni: </p>
+        <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={creaNuovaRichiesta}> Invia una nuova richiesta </button>
+      </div>
       <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
-        <p className="text-xl">Anno Accademico: </p>
+        <p className="text-xl"> Anno Accademico:</p>
         <select
             id="filtroAnno"
             name="filtroAnno"
@@ -89,20 +95,17 @@ function RichiestePage() {
             <option value="Elaborazione">Da Elaborare</option>
             <option value="Approvata">Approvate</option>
             <option value="Invalidata">Invalidate</option>
+            <option value="Bozza">Bozza</option>
         </select>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-5 p-5">
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Università</div>
+      <div className="grid grid-cols-1 md:grid-cols-4 p-5">
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Corso di studio</div>
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Anno accademico</div>
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Stato</div>
             <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
-
-            {richieste.map(r => (
-                <Richiesta key={r.id} richiesta={r} admin={true}/>
-            ))}           
+            {richieste.map(r => ( <Richiesta key={r.id} richiesta={r} admin={false}/> ))}           
         </div>
     </>
   )
 }
-export default RichiestePage
+export default RichiestePresidentePage

@@ -7,7 +7,7 @@ export async function getRichieste(){
     const queryRichieste = `
         SELECT Richieste.idRichiesta AS "id", Richieste.Data AS "data", Richieste.Stato AS "stato", Presidenti.Università AS "università", Presidenti.Email AS "email", CorsiDiStudio.Nome AS "corsodistudio", Regolamenti.AnnoAccademico AS "annoaccademico"
         FROM Richieste, Regolamenti, CorsiDiStudio, Presidenti
-        WHERE Regolamento = idRegolamento AND CDS = idCDS AND Presidente = idPresidente `;
+        WHERE Regolamento = idRegolamento AND CDS = idCDS AND Presidente = idPresidente AND Stato <> "Bozza"`;
     const [result] = await db.query(queryRichieste);
     return result;
 }
@@ -30,12 +30,12 @@ export async function getInsegnamenti(regolamento){
     const [result] = await db.query(queryInsegnamenti, [regolamento]);
     return result;
 }
-export async function getInsegnamentoSottoaree(regolamento){
+export async function getInsegnamentoSottoaree(id){
     const querySottoaree = `
         SELECT Sottoaree.idSottoarea AS "id", Sottoaree.Area AS "area", Sottoaree.Nome AS "nome", InsegnamentiSottoaree.CFU AS "cfu"
         FROM Insegnamenti, InsegnamentiSottoaree, Sottoaree
         WHERE idInsegnamento = Insegnamento AND idSottoarea = Sottoarea AND idInsegnamento = ? `;
-    const [result] = await db.query(querySottoaree, [regolamento]);
+    const [result] = await db.query(querySottoaree, [id]);
     return result;
 }
 export async function getInsegnamentiFull(regolamento) {

@@ -19,6 +19,10 @@ function Insegnamento(props){
             <p className="text-xl">({props.insegnamento.cfu} CFU {props.insegnamento.settore})</p>
             {props.insegnamento.sottoaree.length != 0 && <p className="text-base text-blue-800" onClick={showDetailSottoaree}>Sottoaree {clickedSottoaree ? '-' : '+'}</p>}
             {component}
+            {!props.admin && <div>
+                <button className="m-1"> Modifica </button>
+                <button className="m-1"> Elimina </button>
+            </div>}
         </div>
     )
 }

@@ -11,6 +11,13 @@ export async function getRegolamenti(CDS, presidente) {
         WHERE CDS = idCDS AND Presidente = idPresidente AND idCDS = ? AND idPresidente = ? `, [CDS, presidente]);
     return result;
 }
+export async function getRegolamento(id, presidente) {
+    const [result] = await db.query(`
+        SELECT Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur"
+        FROM Regolamenti, CorsiDiStudio
+        WHERE idCDS = CDS AND Presidente = ? AND idRegolamento = ?`, [presidente, id]);
+    return result[0];
+}
 export async function addRegolamento(id, annoaccademico, CDS){
     const [result] = await db.query(`INSERT INTO Regolamenti (idRegolamento, AnnoAccademico, CDS, Anvur) VALUES (?, ?, ?, 1)`, [id, annoaccademico, CDS]);
     return result;
@@ -118,6 +125,34 @@ export async function handleDeleteRegolamento(req, res) {
         // cancellazione avvenuta con successo
         return res.status(204).json({
             success: true
+        });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+}
+export async function handleGetRegolamento(req, res) {
+    const id  = req.params.idRegolamento;
+    const token = req.headers['authorization']?.split(' ')[1];
+    // estrapolo id dal token se valido
+    let presidente;
+    jwt.verify(token, keyJwt, (err, user) => {
+        if (err) return res.status(403).json({ 
+            success: false,
+            error: 'Token non valido' 
+        });
+        presidente = user.userId;
+    });
+    try {
+        // risposta con successo
+        const result = await getRegolamento(id, presidente);
+        return res.status(200).json({ 
+            success: true,
+            data: result
         });
     } catch (error) {
         // errore generale interno al server

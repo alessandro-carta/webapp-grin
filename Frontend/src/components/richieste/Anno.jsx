@@ -34,7 +34,7 @@ function Anno(props){
     if(!loading && !clickedAnno) component = null;
     if(!loading && clickedAnno){
         component = insegnamenti.map((i) => (
-            <Insegnamento key={i.id} insegnamento={i}/>
+            <Insegnamento key={i.id} insegnamento={i} admin={true}/>
         ))}
     return (
         <>

@@ -6,12 +6,13 @@ import { handleAddRegola, handleDeleteRegola, handleGetRegole } from "./Regolame
 import { handleGetRichieste, handleGetRichiesta, handleGetInsegnamenti, handleCheckRegole, handleInvalidRichiesta } from "./Richieste.js";
 import { handleAddBollino, handleBollini, handleInvalidBollino } from "./Bollini.js";
 import { handleAddSottoarea, handleGetSottoarea, handleGetSottoareePerArea, handleGetSottoaree, handleDeleteSottoarea, handleUpdateSottoarea } from "./Sottoaree.js";
-import { handleAdminLogin, handleChangePassword, handlePresidenteLogin } from "./Auth.js";
+import { handleAdminLogin, handleChangePassword, handleGetEmail, handlePresidenteLogin } from "./Auth.js";
 import jwt from 'jsonwebtoken';
 import { keyJwt, port } from "./Config.js";
 import { handleAddCDS, handleDashboard, handleDeleteCDS, hanldeCorsoDiStudio } from "./dashboard/CorsiDiStudio.js";
 import { handleGetBolliniPerPresidente } from "./dashboard/Bollini.js";
-import { handleAddRegolamento, handleDeleteRegolamento, handleGetRegolamenti } from "./dashboard/Regolamenti.js";
+import { handleAddRegolamento, handleDeleteRegolamento, handleGetRegolamenti, handleGetRegolamento } from "./dashboard/RegolamentiCDS.js";
+import { handleAddRichiesta, handleGetRichiestePerPresidente } from "./dashboard/Richieste.js";
 
 const app = express();
 app.use(cors());
@@ -52,6 +53,9 @@ app.post("/api/presidenteLogin", async (req, res) => {
 app.put("/api/changePassword", async (req, res) => {
     return handleChangePassword(req, res);
 })
+app.get("/api/getEmail", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+    return handleGetEmail(req, res);
+})
 
 // DASHBORAD/CORSIDISTUDIO
 // Operazioni
@@ -83,9 +87,24 @@ app.post("/api/addRegolamento/", authenticateToken, authorizeRole(['presidente']
 app.get("/api/regolamenti/:idCDS", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
     return handleGetRegolamenti(req, res);
 })
+app.get("/api/regolamento/:idRegolamento", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+    return handleGetRegolamento(req, res);
+})
 app.delete("/api/deleteRegolamento/:idRegolamento", authenticateToken, authorizeRole(['presidente']), async (req, res) => {
     return handleDeleteRegolamento(req, res);
 })
+
+// DASHBORAD/RICHIESTE
+// Operazioni:
+// 1. Elenco delle richieste di un presidente
+// 2. Aggiungere una nuova richiesta
+app.get("/api/richiestePresidente", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+    return handleGetRichiestePerPresidente(req, res);
+})
+app.post("/api/addRichiesta/", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+    return handleAddRichiesta(req, res);
+})
+
 
 // DASHBOARD/BOLLINI
 // Operazioni:

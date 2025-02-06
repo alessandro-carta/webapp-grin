@@ -75,9 +75,8 @@ function CorsoDiStudioPage(){
         <p className="text-xl">{corsoDiStudio.università}</p>
         <p className="text-xl">Durata: {corsoDiStudio.durata}</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 p-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 p-5">
           <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Anno Accademico</div>
-          <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Insegnamenti</div>
           <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
           {regolamenti.map(regolamento => ( <Regolamento key={regolamento.id} regolamento={regolamento}/>))}           
         </div>

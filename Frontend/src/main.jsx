@@ -26,6 +26,8 @@ import CreateNewCDSPage from './pages/dashboard/corsidistudio/CreateNewCDSPage.j
 import CorsoDiStudioPage from './pages/dashboard/corsidistudio/CorsoDiStudioPage.jsx'
 import CreateNewRegolamentoPage from './pages/dashboard/regolamenti/CreateNewRegolamentoPage.jsx'
 import BolliniPresidentePage from './pages/dashboard/bollini/BolliniPresidentePage.jsx'
+import RichiestePresidentePage from './pages/dashboard/richieste/RichiestePresidentePage.jsx'
+import CreateNewRichiestaPage from './pages/dashboard/richieste/CreateNewRichiestaPage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -127,6 +129,14 @@ const router = createBrowserRouter([
   {
     path: "crea-un-nuovo-regolamento/:idCDS",
     element: <CreateNewRegolamentoPage />
+  },
+  {
+    path: "dashboard/richieste",
+    element: <RichiestePresidentePage />
+  },
+  {
+    path: "crea-una-nuova-richiesta",
+    element: <CreateNewRichiestaPage />
   }
 
 ]

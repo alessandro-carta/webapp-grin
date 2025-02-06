@@ -31,9 +31,6 @@ function Regolamento(props) {
         <>
             <div className="p-1 border-b border-gray-300">{props.regolamento.annoaccademico}</div>
             <div className="p-1 underline border-b border-gray-300">
-                <Link to={``} key={props.regolamento.id}> Visualizza </Link>
-            </div >
-            <div className="p-1 underline border-b border-gray-300">
                 <button className="m-1" onClick={deleteRegolamento}> Elimina </button>
             </div >
         </>

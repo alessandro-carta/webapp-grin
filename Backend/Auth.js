@@ -16,6 +16,13 @@ export async function updatePassword(id, password){
     const [result] = await db.query(`UPDATE Presidenti SET Password = ? WHERE idPresidente = ?`, [password, id]);
     return result;
 }
+export async function getEmail(id){
+    const [result] = await db.query(`
+        SELECT Email AS "email"
+        FROM Presidenti
+        WHERE idPresidente = ?`, [id]);
+    return result[0];
+}
 
 
 
@@ -119,6 +126,33 @@ export async function handleChangePassword(req, res){
         return res.status(500).json({ 
             success: false,
             error: "Si prega di riprovare"
+        });
+    }
+}
+export async function handleGetEmail(req, res) {
+    const token = req.headers['authorization']?.split(' ')[1];
+    // estrapolo id dal token se valido
+    let presidente;
+    jwt.verify(token, keyJwt, (err, user) => {
+        if (err) return res.status(403).json({ 
+            success: false,
+            error: 'Token non valido' 
+        });
+        presidente = user.userId;
+    });
+    try {
+        // risposta con successo
+        const email = await getEmail(presidente);
+        return res.status(200).json({
+            success: true,
+            data: email
+        });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante il recupero delle richieste .",
+            error: error.message || error
         });
     }
 }
