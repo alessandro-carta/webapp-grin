@@ -1,14 +1,25 @@
 import { useState, useEffect } from "react";
 import Insegnamento from "./Insegnamento";
+import { useNavigate } from "react-router-dom";
 
 function Anno(props){
+    const navigate = useNavigate();
     const [clickedAnno, setClickedAnno] = useState(false);
+    
+
+    useEffect(() => {
+        let linkFetch;
+        if(!props.admin) linkFetch = `/api/insegnamentiPresidente/${props.regolamento}`;
+        else linkFetch = `/api/insegnamenti/${props.regolamento}`;
+        loadInsegnamenti(linkFetch);
+    }, [props.edit]);
 
     const [loading, setLoading] = useState(true);
     const [insegnamenti, setInsegnamenti] = useState([]);
-    const loadInsegnamenti = async () => {
+    const loadInsegnamenti = async (linkFetch) => {
+        console.log(linkFetch);
         try {
-            const response = await fetch(`/api/insegnamenti/${props.regolamento}`, {
+            const response = await fetch(linkFetch, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -16,7 +27,7 @@ function Anno(props){
                 }
             })
             // accesso non consentito
-            if(response.status == 403) navigate('/');
+            if(response.status == 403) console.log("no access"); //navigate('/');
             // risposta con successo
             if(response.ok) {
                 const data = await response.json();
@@ -27,14 +38,14 @@ function Anno(props){
             
         } catch (error) { console.log(error); }
     }
-    useEffect(() => loadInsegnamenti, []); // non ha dipendenze, eseguito ad ogni render
+    // useEffect(() => loadInsegnamenti, []); // non ha dipendenze, eseguito ad ogni render
 
     const showDetailAnno = () => { setClickedAnno(!clickedAnno) }
     let component;
     if(!loading && !clickedAnno) component = null;
     if(!loading && clickedAnno){
         component = insegnamenti.map((i) => (
-            <Insegnamento key={i.id} insegnamento={i} admin={true}/>
+            <Insegnamento key={i.id} insegnamento={i} edit={props.edit}/>
         ))}
     return (
         <>

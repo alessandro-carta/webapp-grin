@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import { createBrowserRouter, Router, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import PresidentiPage from './pages/presidenti/PresidentiPage.jsx'
 import PresidentePage from './pages/presidenti/PresidentePage.jsx'
 import CreateNewPresidentePage from './pages/presidenti/CreateNewPresidentePage.jsx'
@@ -28,6 +28,7 @@ import CreateNewRegolamentoPage from './pages/dashboard/regolamenti/CreateNewReg
 import BolliniPresidentePage from './pages/dashboard/bollini/BolliniPresidentePage.jsx'
 import RichiestePresidentePage from './pages/dashboard/richieste/RichiestePresidentePage.jsx'
 import CreateNewRichiestaPage from './pages/dashboard/richieste/CreateNewRichiestaPage.jsx'
+import RichiestaPresidentePage from './pages/dashboard/richieste/RichiestaPresidentePage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -137,6 +138,10 @@ const router = createBrowserRouter([
   {
     path: "crea-una-nuova-richiesta",
     element: <CreateNewRichiestaPage />
+  },
+  {
+    path: "dashboard/richiesta/:idRichiesta",
+    element: <RichiestaPresidentePage />
   }
 
 ]

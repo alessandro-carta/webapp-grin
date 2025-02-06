@@ -133,7 +133,6 @@ export async function handleCheckRegole(req, res) {
 }
 export async function handleInvalidRichiesta(req, res) {
     const { id } = req.body;
-    console.log(id);
     try {
         // risposta con successo
         const richiesta = await getRichiesta(id);

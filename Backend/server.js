@@ -12,7 +12,8 @@ import { keyJwt, port } from "./Config.js";
 import { handleAddCDS, handleDashboard, handleDeleteCDS, hanldeCorsoDiStudio } from "./dashboard/CorsiDiStudio.js";
 import { handleGetBolliniPerPresidente } from "./dashboard/Bollini.js";
 import { handleAddRegolamento, handleDeleteRegolamento, handleGetRegolamenti, handleGetRegolamento } from "./dashboard/RegolamentiCDS.js";
-import { handleAddRichiesta, handleGetRichiestePerPresidente } from "./dashboard/Richieste.js";
+import { handleAddRichiesta, handleGetRichiestaPerPresidente, handleGetRichiestePerPresidente } from "./dashboard/Richieste.js";
+import { handleGetInsegnamentiPresidente } from "./dashboard/Insegnamenti.js";
 
 const app = express();
 app.use(cors());
@@ -81,6 +82,7 @@ app.get("/api/corsodistudio/:idCDS", authenticateToken, authorizeRole(['presiden
 // 1. Aggiungere un regolamento
 // 2. Elenco dei regolamenti di un cds
 // 3. Elimanare un regolamento di un cds
+// 4. Elenco degli insegnamenti di un determinato regolamento
 app.post("/api/addRegolamento/", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
     return handleAddRegolamento(req, res);
 })
@@ -93,6 +95,9 @@ app.get("/api/regolamento/:idRegolamento", authenticateToken, authorizeRole(['pr
 app.delete("/api/deleteRegolamento/:idRegolamento", authenticateToken, authorizeRole(['presidente']), async (req, res) => {
     return handleDeleteRegolamento(req, res);
 })
+app.get("/api/insegnamentiPresidente/:idRegolamento", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+    return handleGetInsegnamentiPresidente(req, res);
+})
 
 // DASHBORAD/RICHIESTE
 // Operazioni:
@@ -104,6 +109,10 @@ app.get("/api/richiestePresidente", authenticateToken, authorizeRole(['president
 app.post("/api/addRichiesta/", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
     return handleAddRichiesta(req, res);
 })
+app.get("/api/richiestaPresidente/:idRichiesta", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+    return handleGetRichiestaPerPresidente(req, res);
+})
+
 
 
 // DASHBOARD/BOLLINI
