@@ -12,12 +12,12 @@ export async function getRichieste(presidente){
     const [result] = await db.query(queryRichieste, [presidente]);
     return result;
 }
-export async function getRichiesta(id, presidente){
+export async function getRichiesta(id){
     const queryRichiesta = `
-        SELECT Regolamenti.idRegolamento AS "regolamento", CorsiDiStudio.Nome AS "corsodistudio", Richieste.idRichiesta AS "id", Richieste.Data AS "data", Richieste.Stato AS "stato", Regolamenti.AnnoAccademico AS "annoaccademico", Presidenti.Università AS "università", Presidenti.Email AS "email", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur"
-        FROM Richieste, Regolamenti, CorsiDiStudio, Presidenti
-        WHERE Regolamento = idRegolamento AND CDS = idCDS AND Presidente = idPresidente AND idRichiesta = ?  AND idPresidente = ? `;
-    const [result] = await db.query(queryRichiesta, [id, presidente]);
+        SELECT Regolamenti.idRegolamento AS "regolamento", CorsiDiStudio.Nome AS "corsodistudio", Richieste.idRichiesta AS "id", Richieste.Data AS "data", Richieste.Stato AS "stato", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur", CorsiDiStudio.Presidente AS "presidente"
+        FROM Richieste, Regolamenti, CorsiDiStudio
+        WHERE Regolamento = idRegolamento AND CDS = idCDS AND idRichiesta = ?`;
+    const [result] = await db.query(queryRichiesta, [id]);
     return result[0];
 }
 export async function addRichiesta(id, regolamento, stato, data) {
@@ -29,16 +29,7 @@ export async function addRichiesta(id, regolamento, stato, data) {
 
 
 export async function handleGetRichiestePerPresidente(req, res) {
-    const token = req.headers['authorization']?.split(' ')[1];
-    // estrapolo id dal token se valido
-    let presidente;
-    jwt.verify(token, keyJwt, (err, user) => {
-        if (err) return res.status(403).json({ 
-            success: false,
-            error: 'Token non valido' 
-        });
-        presidente = user.userId;
-    });
+    const presidente = req.user.userId;
     try {
         // risposta con successo
         const richieste = await getRichieste(presidente);
@@ -57,26 +48,9 @@ export async function handleGetRichiestePerPresidente(req, res) {
 }
 export async function handleAddRichiesta(req, res) {
     const { regolamento, data } = req.body;
-    const token = req.headers['authorization']?.split(' ')[1];
     const id = uuidv4();
-    // estrapolo id dal token se valido
-    let presidente;
-    jwt.verify(token, keyJwt, (err, user) => {
-        if (err) return res.status(403).json({ 
-            success: false,
-            error: 'Token non valido' 
-        });
-        presidente = user.userId;
-    });
     try {
         // risposta con successo
-        // controllo che chi ha mandato la richiesta sia 
-        // effettivamente il presidente del CDS collegato al regolamento
-        const corso = await getRegolamento(regolamento, presidente);
-        if(corso == undefined) return res.status(403).json({ 
-            success: false,
-            error: 'Accesso non autorizzato' 
-        });
         const result = await addRichiesta(id, regolamento, "Bozza", data);
         return res.status(204).json({ 
             success: true
@@ -99,19 +73,9 @@ export async function handleAddRichiesta(req, res) {
 }
 export async function handleGetRichiestaPerPresidente(req, res) {
     const id = req.params.idRichiesta;
-    const token = req.headers['authorization']?.split(' ')[1];
-    // estrapolo id dal token se valido
-    let presidente;
-    jwt.verify(token, keyJwt, (err, user) => {
-        if (err) return res.status(403).json({ 
-            success: false,
-            error: 'Token non valido' 
-        });
-        presidente = user.userId;
-    });
     try {
         // risposta con successo
-        const richiesta = await getRichiesta(id, presidente);
+        const richiesta = await getRichiesta(id);
         return res.status(200).json({
             success: true,
             data: richiesta

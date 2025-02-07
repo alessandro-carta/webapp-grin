@@ -9,10 +9,10 @@ import { handleAddSottoarea, handleGetSottoarea, handleGetSottoareePerArea, hand
 import { handleAdminLogin, handleChangePassword, handleGetEmail, handlePresidenteLogin } from "./Auth.js";
 import jwt from 'jsonwebtoken';
 import { keyJwt, port } from "./Config.js";
-import { handleAddCDS, handleDashboard, handleDeleteCDS, hanldeCorsoDiStudio } from "./dashboard/CorsiDiStudio.js";
+import { getCorsoDiStudio, handleAddCDS, handleDashboard, handleDeleteCDS, hanldeCorsoDiStudio } from "./dashboard/CorsiDiStudio.js";
 import { handleGetBolliniPerPresidente } from "./dashboard/Bollini.js";
-import { handleAddRegolamento, handleDeleteRegolamento, handleGetRegolamenti, handleGetRegolamento } from "./dashboard/RegolamentiCDS.js";
-import { handleAddRichiesta, handleGetRichiestaPerPresidente, handleGetRichiestePerPresidente } from "./dashboard/Richieste.js";
+import { getRegolamento, handleAddRegolamento, handleDeleteRegolamento, handleGetRegolamenti, handleGetRegolamento } from "./dashboard/RegolamentiCDS.js";
+import { getRichiesta, handleAddRichiesta, handleGetRichiestaPerPresidente, handleGetRichiestePerPresidente } from "./dashboard/Richieste.js";
 import { handleGetInsegnamentiPresidente } from "./dashboard/Insegnamenti.js";
 
 const app = express();
@@ -22,6 +22,7 @@ app.listen(port, () => {
     console.log(`Server in ascolto sulla porta > ${port}`);
 })
 
+// middleware che controlla la validità del token
 const authenticateToken = (req, res, next) => {
     const token = req.headers['authorization']?.split(' ')[1];
     if (!token) return res.status(403).json({ error: 'Token mancante' });
@@ -31,6 +32,7 @@ const authenticateToken = (req, res, next) => {
       next();
     });
 };
+// middleware che controlla il ruolo del client
 const authorizeRole = (roles) => {
     return (req, res, next) => {
       if (!roles.includes(req.user.role)) {
@@ -39,6 +41,63 @@ const authorizeRole = (roles) => {
       next();
     };
 };
+// middleware che controlla il presidente del CDS
+const authorizePresidenteCDS = async (req, res, next) => {
+    let id;
+    if(req.body.CDS == undefined) id = req.params.idCDS;
+    else id = req.body.CDS;
+    const presidente = req.user.userId;
+    try {
+        const cds = await getCorsoDiStudio(id);
+        if (cds.presidente !== presidente) return res.status(403).json({ message: "Non sei il presidente di questo CDS" });
+        next();
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+}
+// middleware che controlla il presidente del regolamento
+const authorizePresidenteRegolamento = async (req, res, next) => {
+    let id;
+    if(req.body.regolamento == undefined) id = req.params.idRegolamento;
+    else id = req.body.regolamento;
+    const presidente = req.user.userId;
+    try {
+        const regolamento = await getRegolamento(id);
+        if (regolamento.presidente !== presidente) return res.status(403).json({ message: "Non sei il presidente di questo regolamento" });
+        next();
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+}
+// middleware che controlla il presidente della richiesta
+const authorizePresidenteRichiesta = async (req, res, next) => {
+    let id;
+    if(req.body.richiesta == undefined) id = req.params.idRichiesta;
+    else id = req.body.idRichiesta;
+    const presidente = req.user.userId;
+    try {
+        const richiesta = await getRichiesta(id);
+        if (richiesta.presidente !== presidente) return res.status(403).json({ message: "Non sei il presidente di questa richiesta" });
+        next();
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+}
 
 // AUTH
 // Operazioni:
@@ -70,10 +129,10 @@ app.get("/api/dashboard", authenticateToken, authorizeRole(['presidente']),  asy
 app.post("/api/addCDS", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
     return handleAddCDS(req, res);
 })
-app.delete("/api/deleteCDS/:idCDS", authenticateToken, authorizeRole(['presidente']), async (req, res) => {
+app.delete("/api/deleteCDS/:idCDS", authenticateToken, authorizeRole(['presidente']), authorizePresidenteCDS, async (req, res) => {
     return handleDeleteCDS(req, res);
 })
-app.get("/api/corsodistudio/:idCDS", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+app.get("/api/corsodistudio/:idCDS", authenticateToken, authorizeRole(['presidente']), authorizePresidenteCDS, async (req, res) => {
     return hanldeCorsoDiStudio(req, res);
 })
 
@@ -81,21 +140,22 @@ app.get("/api/corsodistudio/:idCDS", authenticateToken, authorizeRole(['presiden
 // Operazioni
 // 1. Aggiungere un regolamento
 // 2. Elenco dei regolamenti di un cds
-// 3. Elimanare un regolamento di un cds
-// 4. Elenco degli insegnamenti di un determinato regolamento
-app.post("/api/addRegolamento/", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+// 3. Informazioni di un determinato regolamento
+// 4. Elimanare un regolamento di un cds
+// 5. Elenco degli insegnamenti di un determinato regolamento
+app.post("/api/addRegolamento/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteCDS, async (req, res) => {
     return handleAddRegolamento(req, res);
 })
-app.get("/api/regolamenti/:idCDS", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+app.get("/api/regolamenti/:idCDS", authenticateToken, authorizeRole(['presidente']), authorizePresidenteCDS, async (req, res) => {
     return handleGetRegolamenti(req, res);
 })
-app.get("/api/regolamento/:idRegolamento", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+app.get("/api/regolamento/:idRegolamento", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRegolamento, async (req, res) => {
     return handleGetRegolamento(req, res);
 })
-app.delete("/api/deleteRegolamento/:idRegolamento", authenticateToken, authorizeRole(['presidente']), async (req, res) => {
+app.delete("/api/deleteRegolamento/:idRegolamento", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRegolamento, async (req, res) => {
     return handleDeleteRegolamento(req, res);
 })
-app.get("/api/insegnamentiPresidente/:idRegolamento", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+app.get("/api/insegnamentiPresidente/:idRegolamento", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRegolamento, async (req, res) => {
     return handleGetInsegnamentiPresidente(req, res);
 })
 
@@ -103,13 +163,14 @@ app.get("/api/insegnamentiPresidente/:idRegolamento", authenticateToken, authori
 // Operazioni:
 // 1. Elenco delle richieste di un presidente
 // 2. Aggiungere una nuova richiesta
-app.get("/api/richiestePresidente", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+// 3. Informazioni di una determinata richiesta
+app.get("/api/richiestePresidente", authenticateToken, authorizeRole(['presidente']), async (req, res) => {
     return handleGetRichiestePerPresidente(req, res);
 })
-app.post("/api/addRichiesta/", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+app.post("/api/addRichiesta/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRegolamento, async (req, res) => {
     return handleAddRichiesta(req, res);
 })
-app.get("/api/richiestaPresidente/:idRichiesta", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+app.get("/api/richiestaPresidente/:idRichiesta", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
     return handleGetRichiestaPerPresidente(req, res);
 })
 
@@ -118,7 +179,7 @@ app.get("/api/richiestaPresidente/:idRichiesta", authenticateToken, authorizeRol
 // DASHBOARD/BOLLINI
 // Operazioni:
 // 1. Elenco dei bollini di un presidente
-app.get("/api/bolliniPresidente", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
+app.get("/api/bolliniPresidente", authenticateToken, authorizeRole(['presidente']), async (req, res) => {
     return handleGetBolliniPerPresidente(req, res);
 })
 

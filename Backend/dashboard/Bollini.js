@@ -12,16 +12,7 @@ export async function getBollini(presidente) {
 }
 
 export async function handleGetBolliniPerPresidente(req, res) {
-    const token = req.headers['authorization']?.split(' ')[1];
-    // estrapolo id dal token se valido
-    let presidente;
-    jwt.verify(token, keyJwt, (err, user) => {
-        if (err) return res.status(403).json({ 
-            success: false,
-            error: 'Token non valido' 
-        });
-        presidente = user.userId;
-    });
+    const presidente = req.user.userId;
     try {
         // risposta con successo
         const result = await getBollini(presidente);

@@ -4,12 +4,12 @@ import { db } from "../database.js";
 import { v4 as uuidv4 } from 'uuid';
 import { getCorsoDiStudio } from './CorsiDiStudio.js';
 
-export async function getInsegnamenti(presidente, regolamento){
+export async function getInsegnamenti(regolamento){
     const queryInsegnamenti = `
         SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.CFU AS "cfutot", Insegnamenti.Settore AS "settore"
-        FROM Regolamenti, Insegnamenti, CorsiDiStudio
-        WHERE idRegolamento = Regolamento AND idCDS = CDS AND Presidente = ? AND idRegolamento = ? `;
-    const [result] = await db.query(queryInsegnamenti, [presidente, regolamento]);
+        FROM Regolamenti, Insegnamenti
+        WHERE idRegolamento = Regolamento AND idRegolamento = ? `;
+    const [result] = await db.query(queryInsegnamenti, [regolamento]);
     return result;
 }
 export async function getInsegnamentoSottoaree(id){
@@ -20,11 +20,11 @@ export async function getInsegnamentoSottoaree(id){
     const [result] = await db.query(querySottoaree, [id]);
     return result;
 }
-export async function getInsegnamentiFull(presidente, regolamento) {
+export async function getInsegnamentiFull(regolamento) {
     // contiene l'elenco degli insegnamenti
     // per ogni insegnamento l'elenco delle sottoaree con cfu
     let insegnamentiFull = []; 
-    const insegnamenti = await getInsegnamenti(presidente, regolamento);
+    const insegnamenti = await getInsegnamenti(regolamento);
     for(let insegnamento of insegnamenti){
         const sottoaree = await getInsegnamentoSottoaree(insegnamento.id);
         insegnamentiFull.push({...insegnamento, sottoaree: sottoaree});
@@ -37,19 +37,9 @@ export async function getInsegnamentiFull(presidente, regolamento) {
 
 export async function handleGetInsegnamentiPresidente(req, res) {
     const regolamento  = req.params.idRegolamento;
-    const token = req.headers['authorization']?.split(' ')[1];
-    // estrapolo id dal token se valido
-    let presidente;
-    jwt.verify(token, keyJwt, (err, user) => {
-        if (err) return res.status(403).json({ 
-            success: false,
-            error: 'Token non valido' 
-        });
-        presidente = user.userId;
-    });
     try {
         // risposta con successo
-        const result = await getInsegnamentiFull(presidente, regolamento);
+        const result = await getInsegnamentiFull(regolamento);
         return res.status(200).json({ 
             success: true,
             data: result

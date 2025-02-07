@@ -11,11 +11,11 @@ export async function getCorsiDiStudio(presidente) {
         WHERE idPresidente = Presidente AND idPresidente = ?`, [presidente]);
     return result;
 }
-export async function getCorsoDiStudio(id, presidente) {
+export async function getCorsoDiStudio(id) {
     const [result] = await db.query(`
-        SELECT CorsiDiStudio.idCDS AS "id", CorsiDiStudio.Nome AS "corsodistudio", Presidenti.Università AS "università", CorsiDiStudio.AnnoDurata AS "durata"
+        SELECT CorsiDiStudio.idCDS AS "id", CorsiDiStudio.Nome AS "corsodistudio", Presidenti.Università AS "università", CorsiDiStudio.AnnoDurata AS "durata", CorsiDiStudio.Presidente AS "presidente"
         FROM CorsiDiStudio, Presidenti
-        WHERE idPresidente = Presidente AND idCDS = ? AND idPresidente = ?`, [id, presidente]);
+        WHERE idPresidente = Presidente AND idCDS = ?`, [id]);
     return result[0];
 }
 export async function addCDS(id, nome, durara, presidente){
@@ -31,16 +31,7 @@ export async function deleteCDS(id) {
 
 
 export async function handleDashboard(req, res) {
-    const token = req.headers['authorization']?.split(' ')[1];
-    // estrapolo id dal token se valido
-    let presidente;
-    jwt.verify(token, keyJwt, (err, user) => {
-            if (err) return res.status(403).json({ 
-                success: false,
-                error: 'Token non valido' 
-            });
-            presidente = user.userId;
-    });
+    const presidente = req.user.userId;
     try {
         // risposta con successo
         const result = await getCorsiDiStudio(presidente);
@@ -59,17 +50,8 @@ export async function handleDashboard(req, res) {
 }
 export async function handleAddCDS(req, res) {
     const { nome, durata } = req.body;
-    const token = req.headers['authorization']?.split(' ')[1];
     const id = uuidv4();
-    // estrapolo id dal token se valido
-    let presidente;
-    jwt.verify(token, keyJwt, (err, user) => {
-            if (err) return res.status(403).json({ 
-                success: false,
-                error: 'Token non valido' 
-            });
-            presidente = user.userId;
-    });
+    const presidente = req.user.userId;
     try {
         // risposta con successo
         const result = await addCDS(id, nome, durata, presidente);
@@ -87,24 +69,8 @@ export async function handleAddCDS(req, res) {
 }
 export async function handleDeleteCDS(req, res) {
     const id  = req.params.idCDS;
-    const token = req.headers['authorization']?.split(' ')[1];
-    // estrapolo id dal token se valido
-    let presidente;
-    jwt.verify(token, keyJwt, (err, user) => {
-        if (err) return res.status(403).json({ 
-            success: false,
-            error: 'Token non valido' 
-        });
-        presidente = user.userId;
-    });
+    const presidente = req.user.userId;
     try {
-        // controllo che chi ha mandato la richiesta sia 
-        // effettivamente il presidente del CDS
-        const corso = await getCorsoDiStudio(id, presidente);
-        if(corso == undefined) return res.status(403).json({ 
-            success: false,
-            error: 'Accesso non autorizzato' 
-        });
         const result = await deleteCDS(id);
         // cancellazione avvenuta con successo
         return res.status(204).json({
@@ -121,18 +87,9 @@ export async function handleDeleteCDS(req, res) {
 }
 export async function hanldeCorsoDiStudio(req, res) {
     const id  = req.params.idCDS;
-    const token = req.headers['authorization']?.split(' ')[1];
-    // estrapolo id dal token se valido
-    let presidente;
-    jwt.verify(token, keyJwt, (err, user) => {
-        if (err) return res.status(403).json({ 
-            success: false,
-            error: 'Token non valido' 
-        });
-        presidente = user.userId;
-    });
+    const presidente = req.user.userId;;
     try {
-        const result = await getCorsoDiStudio(id, presidente);
+        const result = await getCorsoDiStudio(id);
         // risposta avvenuta con successo
         return res.status(200).json({
             success: true,
@@ -146,5 +103,4 @@ export async function hanldeCorsoDiStudio(req, res) {
             error: error.message || error
         });
     }
-    
 }

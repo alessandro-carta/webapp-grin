@@ -17,7 +17,6 @@ function Anno(props){
     const [loading, setLoading] = useState(true);
     const [insegnamenti, setInsegnamenti] = useState([]);
     const loadInsegnamenti = async (linkFetch) => {
-        console.log(linkFetch);
         try {
             const response = await fetch(linkFetch, {
                 method: 'GET',

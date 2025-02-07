@@ -33,7 +33,7 @@ export async function handleAdminLogin(req, res) {
     const password = req.body.password; // password inserita
 
     if(passAdmin === password){
-        const token = jwt.sign({ userId: 'grinadmin', role: 'admin' }, keyJwt, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: 'grinadmin', role: 'admin' }, keyJwt, { expiresIn: '4h' });
         return res.status(200).json({
             success: true,
             data: token
@@ -63,7 +63,7 @@ export async function handlePresidenteLogin(req, res) {
         if(result.passPres == null){
             // controllo first passowrd
             if(password === result.firstpassword){
-                const token = jwt.sign({ userId: result.id, role: 'presidente' }, keyJwt, { expiresIn: '1h' });
+                const token = jwt.sign({ userId: result.id, role: 'presidente' }, keyJwt, { expiresIn: '4h' });
                 return res.status(200).json({
                     success: true,
                     data: {token: token, changePassword: true}
@@ -78,7 +78,7 @@ export async function handlePresidenteLogin(req, res) {
             // controllo con password
             const verifyPassword = await bcrypt.compare(password, result.passPres);
             if(verifyPassword){
-                const token = jwt.sign({ userId: result.id, role: 'presidente' }, keyJwt, { expiresIn: '1h' });
+                const token = jwt.sign({ userId: result.id, role: 'presidente' }, keyJwt, { expiresIn: '4h' });
                 return res.status(200).json({
                     success: true,
                     data: {token: token, changePassword: false}
