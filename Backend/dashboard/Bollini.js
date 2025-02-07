@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken';
-import { keyJwt } from '../Config.js';
 import { db } from "../database.js";
 
 export async function getBollini(presidente) {

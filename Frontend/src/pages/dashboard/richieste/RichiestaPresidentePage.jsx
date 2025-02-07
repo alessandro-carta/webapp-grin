@@ -34,6 +34,39 @@ function RichiestaPresidentePage() {
 
     const [pageTitle, setPageTitle] = useState('Richiesta');
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
+    // funzione per salvare una richiesta
+    const saveRichiesta = async () => {
+        try {
+            const response = await fetch(`/api/saveRichiesta`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({richiesta: idRichiesta})
+            });
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            if(response.ok) { navigate('/dashboard/richieste'); }
+        } catch (error) { console.log(error); }
+    }
+    // funzione per eliminare una richiesta
+    const deleteRichiesta = async () => {
+        try {
+            const response = await fetch(`/api/deleteRichiesta/${idRichiesta}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+            });
+            // accesso non consentito
+            if(response.status == 403) navigate('/');
+            if(response.ok) { navigate('/dashboard/richieste'); }
+        } catch (error) { console.log(error); }
+    }
+    // funzione aggiungere un nuovo insegnamento
+    const addInsegnamento = () => { navigate(`/crea-un-nuovo-insegnamento/${idRichiesta}`)}
 
     const anni = []; // contiene il numero di anni di durata di un CDS
     if(loading) return <p>LOADING...</p>
@@ -47,9 +80,9 @@ function RichiestaPresidentePage() {
                 <div className="flex space-x-4 p-4 items-center justify-center">
                     <p className="text-xl">Azioni: </p>
                     <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"> Invia richiesta </button>
-                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"> Aggiungi insegnamento </button>
-                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"> Salva come bozza </button>
-                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"> Elimina richiesta </button>
+                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={addInsegnamento}> Aggiungi insegnamento </button>
+                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={saveRichiesta}> Salva come bozza </button>
+                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={deleteRichiesta}> Elimina richiesta </button>
                 </div> }
                 <p className="text-xl text-blue-800">{richiesta.corsodistudio} - Regolamento AA: {richiesta.annoaccademico}</p>
                 <p className="text-xl">Data richiesta: {richiesta.data.getDate()}/{richiesta.data.getMonth()+1}/{richiesta.data.getFullYear()} - Stato: {richiesta.stato}</p>

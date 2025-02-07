@@ -12,7 +12,7 @@ function Anno(props){
         if(!props.admin) linkFetch = `/api/insegnamentiPresidente/${props.regolamento}`;
         else linkFetch = `/api/insegnamenti/${props.regolamento}`;
         loadInsegnamenti(linkFetch);
-    }, [props.edit]);
+    }, [props.admin]);
 
     const [loading, setLoading] = useState(true);
     const [insegnamenti, setInsegnamenti] = useState([]);

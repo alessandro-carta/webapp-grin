@@ -29,6 +29,7 @@ import BolliniPresidentePage from './pages/dashboard/bollini/BolliniPresidentePa
 import RichiestePresidentePage from './pages/dashboard/richieste/RichiestePresidentePage.jsx'
 import CreateNewRichiestaPage from './pages/dashboard/richieste/CreateNewRichiestaPage.jsx'
 import RichiestaPresidentePage from './pages/dashboard/richieste/RichiestaPresidentePage.jsx'
+import CreateNewInsegnamentoPage from './pages/dashboard/richieste/CreateNewInsegnamentoPage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -142,8 +143,11 @@ const router = createBrowserRouter([
   {
     path: "dashboard/richiesta/:idRichiesta",
     element: <RichiestaPresidentePage />
+  },
+  {
+    path: "crea-un-nuovo-insegnamento/:idRichiesta",
+    element: <CreateNewInsegnamentoPage />
   }
-
 ]
 )
 

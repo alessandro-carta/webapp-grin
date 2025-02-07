@@ -12,7 +12,7 @@ import { keyJwt, port } from "./Config.js";
 import { getCorsoDiStudio, handleAddCDS, handleDashboard, handleDeleteCDS, hanldeCorsoDiStudio } from "./dashboard/CorsiDiStudio.js";
 import { handleGetBolliniPerPresidente } from "./dashboard/Bollini.js";
 import { getRegolamento, handleAddRegolamento, handleDeleteRegolamento, handleGetRegolamenti, handleGetRegolamento } from "./dashboard/RegolamentiCDS.js";
-import { getRichiesta, handleAddRichiesta, handleGetRichiestaPerPresidente, handleGetRichiestePerPresidente } from "./dashboard/Richieste.js";
+import { getRichiesta, handleAddRichiesta, handleDeleteRichiesta, handleGetRichiestaPerPresidente, handleGetRichiestePerPresidente, handleSaveRichiesta } from "./dashboard/Richieste.js";
 import { handleGetInsegnamentiPresidente } from "./dashboard/Insegnamenti.js";
 
 const app = express();
@@ -44,7 +44,7 @@ const authorizeRole = (roles) => {
 // middleware che controlla il presidente del CDS
 const authorizePresidenteCDS = async (req, res, next) => {
     let id;
-    if(req.body.CDS == undefined) id = req.params.idCDS;
+    if(req.params.idCDS != undefined) id = req.params.idCDS;
     else id = req.body.CDS;
     const presidente = req.user.userId;
     try {
@@ -63,7 +63,7 @@ const authorizePresidenteCDS = async (req, res, next) => {
 // middleware che controlla il presidente del regolamento
 const authorizePresidenteRegolamento = async (req, res, next) => {
     let id;
-    if(req.body.regolamento == undefined) id = req.params.idRegolamento;
+    if(req.params.idRegolamento != undefined) id = req.params.idRegolamento;
     else id = req.body.regolamento;
     const presidente = req.user.userId;
     try {
@@ -82,8 +82,8 @@ const authorizePresidenteRegolamento = async (req, res, next) => {
 // middleware che controlla il presidente della richiesta
 const authorizePresidenteRichiesta = async (req, res, next) => {
     let id;
-    if(req.body.richiesta == undefined) id = req.params.idRichiesta;
-    else id = req.body.idRichiesta;
+    if(req.params.idRichiesta != undefined) id = req.params.idRichiesta;
+    else id = req.body.richiesta;
     const presidente = req.user.userId;
     try {
         const richiesta = await getRichiesta(id);
@@ -164,6 +164,8 @@ app.get("/api/insegnamentiPresidente/:idRegolamento", authenticateToken, authori
 // 1. Elenco delle richieste di un presidente
 // 2. Aggiungere una nuova richiesta
 // 3. Informazioni di una determinata richiesta
+// 4. Salvare in stato di bozza una richiesta
+// 4. Elimare una richiesta
 app.get("/api/richiestePresidente", authenticateToken, authorizeRole(['presidente']), async (req, res) => {
     return handleGetRichiestePerPresidente(req, res);
 })
@@ -172,6 +174,12 @@ app.post("/api/addRichiesta/", authenticateToken, authorizeRole(['presidente']),
 })
 app.get("/api/richiestaPresidente/:idRichiesta", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
     return handleGetRichiestaPerPresidente(req, res);
+})
+app.put("/api/saveRichiesta/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
+    return handleSaveRichiesta(req, res);
+})
+app.delete("/api/deleteRichiesta/:idRichiesta", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
+    return handleDeleteRichiesta(req, res);
 })
 
 
@@ -255,7 +263,7 @@ app.put("/api/updateSottoarea", authenticateToken, authorizeRole(['admin']), asy
 // SETTORI
 // Operazioni:
 // 1. Elenco di tutti i settori
-app.get("/api/settori", authenticateToken, authorizeRole(['admin']), async (req, res) => {
+app.get("/api/settori", authenticateToken, authorizeRole(['admin','presidente']), async (req, res) => {
     return handleGetSettori(req, res);
 })
 
