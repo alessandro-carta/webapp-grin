@@ -31,6 +31,9 @@ export async function getInsegnamentiFull(regolamento) {
     }
     return insegnamentiFull;
 }
+export async function addInsegnamento(nome, annoerogazione, CFU, settore, regolamento, sottoaree) {
+    // transazione
+}
 
 
 
@@ -52,4 +55,13 @@ export async function handleGetInsegnamentiPresidente(req, res) {
             error: error.message || error
         });
     }
+}
+export async function handleAddInsegnamento(req, res) {
+    const {nome, CFUTot, settore, richiesta, annoerogazione, sottoaree} = req.body;
+    console.log(nome);
+    console.log(CFUTot);
+    console.log(settore);
+    console.log(richiesta);
+    console.log(annoerogazione);
+    console.log(sottoaree);
 }

@@ -13,7 +13,7 @@ import { getCorsoDiStudio, handleAddCDS, handleDashboard, handleDeleteCDS, hanld
 import { handleGetBolliniPerPresidente } from "./dashboard/Bollini.js";
 import { getRegolamento, handleAddRegolamento, handleDeleteRegolamento, handleGetRegolamenti, handleGetRegolamento } from "./dashboard/RegolamentiCDS.js";
 import { getRichiesta, handleAddRichiesta, handleDeleteRichiesta, handleGetRichiestaPerPresidente, handleGetRichiestePerPresidente, handleSaveRichiesta } from "./dashboard/Richieste.js";
-import { handleGetInsegnamentiPresidente } from "./dashboard/Insegnamenti.js";
+import { handleAddInsegnamento, handleGetInsegnamentiPresidente } from "./dashboard/Insegnamenti.js";
 
 const app = express();
 app.use(cors());
@@ -143,6 +143,7 @@ app.get("/api/corsodistudio/:idCDS", authenticateToken, authorizeRole(['presiden
 // 3. Informazioni di un determinato regolamento
 // 4. Elimanare un regolamento di un cds
 // 5. Elenco degli insegnamenti di un determinato regolamento
+// 6. Aggiungere un nuovo insegnamento
 app.post("/api/addRegolamento/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteCDS, async (req, res) => {
     return handleAddRegolamento(req, res);
 })
@@ -157,6 +158,9 @@ app.delete("/api/deleteRegolamento/:idRegolamento", authenticateToken, authorize
 })
 app.get("/api/insegnamentiPresidente/:idRegolamento", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRegolamento, async (req, res) => {
     return handleGetInsegnamentiPresidente(req, res);
+})
+app.post("/api/addInsegnamento/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
+    return handleAddInsegnamento(req, res);
 })
 
 // DASHBORAD/RICHIESTE
