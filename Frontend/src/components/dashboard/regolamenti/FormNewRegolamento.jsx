@@ -90,6 +90,7 @@ function FormNewRegolamento(props) {
                     </div>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
+                        <p className="text-base mt-2">* Campi obbligatori</p>
                         <button
                             type="submit"
                             className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"

@@ -30,6 +30,8 @@ import RichiestePresidentePage from './pages/dashboard/richieste/RichiestePresid
 import CreateNewRichiestaPage from './pages/dashboard/richieste/CreateNewRichiestaPage.jsx'
 import RichiestaPresidentePage from './pages/dashboard/richieste/RichiestaPresidentePage.jsx'
 import CreateNewInsegnamentoPage from './pages/dashboard/richieste/CreateNewInsegnamentoPage.jsx'
+import UpdateInsegnamentoPage from './pages/dashboard/richieste/UpdateInsegnamentoPage.jsx'
+
 
 const router = createBrowserRouter([
   {
@@ -147,6 +149,10 @@ const router = createBrowserRouter([
   {
     path: "crea-un-nuovo-insegnamento/:idRichiesta",
     element: <CreateNewInsegnamentoPage />
+  },
+  {
+    path: "modifica-insegnamento/:idRichiesta/:idInsegnamento",
+    element: <UpdateInsegnamentoPage />
   }
 ]
 )

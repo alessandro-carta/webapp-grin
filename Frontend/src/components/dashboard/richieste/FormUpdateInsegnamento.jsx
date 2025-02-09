@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-function FormNewInsegnamento(props){
+function FormUpdateInsegnamento(props){
     const navigate = useNavigate();
     const [settori, setSettori] = useState([]); // elenco dei settori
     const [aree, setAree] = useState([]); // elenco delle aree
@@ -32,15 +32,15 @@ function FormNewInsegnamento(props){
     useEffect( () => loadRichiesta, []); // eseguito ogni volta che cambia idRichiesta
     // dati del form
     const [formData, setFormData] = useState({
-        nome: "",
-        CFUTot: 0,
-        settore: "",
-        annoerogazione: "",
+        nome: props.insegnamento.nome,
+        CFUTot: props.insegnamento.cfutot,
+        settore: props.insegnamento.settore,
+        annoerogazione: props.insegnamento.annoerogazione,
         richiesta: props.richiesta,
-        sottoaree: [],
+        sottoaree: props.insegnamento.sottoaree,
         area: "",
         sottoarea: "",
-        CFU: 0
+        cfu: 0
     })
     // messaggi di errore, result contiene la risposta della chiamata HTTP
     const [formErrors, setFormErros] = useState({
@@ -153,7 +153,7 @@ function FormNewInsegnamento(props){
         return true;
     }
     const checkSottoarea = (id) => {
-        if(id === "" || formData.CFU <= 0){
+        if(id === "" || formData.cfu <= 0){
             setFormErros({
                 ...formErrors,
                 sottoaree: "Inserire i campi obbligatori"
@@ -195,7 +195,7 @@ function FormNewInsegnamento(props){
                 ...formData,
                 [name]: value,
                 sottoarea: "",
-                CFU: 0
+                cfu: 0
             });
             loadAllSottoaree(value);
         }
@@ -210,13 +210,14 @@ function FormNewInsegnamento(props){
         e.preventDefault();
         try {
             if(checkNome() && checkCFUTot() && checkSettore() && checkAnnoErogazione){
-                const response = await fetch(`/api/addInsegnamento/`, {
-                    method: 'POST',
+                const response = await fetch(`/api/updateInsegnamento/`, {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
                     body: JSON.stringify({
+                                        id: props.insegnamento.id,
                                         nome: formData.nome, 
                                         CFUTot: formData.CFUTot,
                                         settore: formData.settore,
@@ -246,7 +247,7 @@ function FormNewInsegnamento(props){
         if(checkSottoarea(id)){
             setFormData({
                 ...formData,
-                sottoaree: [...formData.sottoaree, {id: id, nome: sottoarea, CFU: formData.CFU}]
+                sottoaree: [...formData.sottoaree, {id: id, nome: sottoarea, cfu: formData.cfu}]
             });
             setFormErros({
                 ...formErrors,
@@ -356,9 +357,9 @@ function FormNewInsegnamento(props){
                                     </select>
                                     <input
                                         type="number"
-                                        id="CFU"
-                                        name="CFU"
-                                        value={formData.CFU}
+                                        id="cfu"
+                                        name="cfu"
+                                        value={formData.cfu}
                                         onChange={handleChange}
                                         className="p-2 border mt-2 w-full border-gray-300 rounded-lg"
                                         placeholder="CFU*"
@@ -376,7 +377,7 @@ function FormNewInsegnamento(props){
                             {formData.sottoaree.length != 0 && <label htmlFor="settore" className="block text-sm font-medium text-gray-700">Sottoaree: </label>}
                             {formData.sottoaree.map((elemento, index) => ( 
                                 <div className="flex flex-col md:flex-row justify-center items-center p-2">
-                                    <p className="text-base p-2" key={index}>{elemento.nome} (CFU: {elemento.CFU})</p> 
+                                    <p className="text-base p-2" key={index}>{elemento.nome} (CFU: {elemento.cfu})</p> 
                                     <button type="button" className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700" onClick={() => deleteInsSottoarea(elemento.id)}>
                                         Elimina
                                     </button>
@@ -387,7 +388,7 @@ function FormNewInsegnamento(props){
                         {/* Bottone di invio e annulla */}
                         <div className="mb-4">
                             <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700">
-                                CREA 
+                                Modifica 
                             </button>
                             <Link className="text-blue-500 hover:text-blue-700" to={`/dashboard/richiesta/${props.richiesta}`}>
                                 Annulla
@@ -404,4 +405,4 @@ function FormNewInsegnamento(props){
 
 }
 
-export default FormNewInsegnamento;
+export default FormUpdateInsegnamento;

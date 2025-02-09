@@ -87,7 +87,7 @@ function RichiestaPresidentePage() {
                 <p className="text-xl text-blue-800">{richiesta.corsodistudio} - Regolamento AA: {richiesta.annoaccademico}</p>
                 <p className="text-xl">Data richiesta: {richiesta.data.getDate()}/{richiesta.data.getMonth()+1}/{richiesta.data.getFullYear()} - Stato: {richiesta.stato}</p>
                 <p className="text-xl">Durata corso: {richiesta.duratacorso}</p>
-                { anni.map(a => ( <Anno key={a} regolamento={richiesta.regolamento} anno={a} edit={(richiesta.stato === "Bozza" || richiesta.stato === "Invalidata")} admin={false}/> )) }
+                { anni.map(a => ( <Anno key={a} richiesta={richiesta.id} regolamento={richiesta.regolamento} anno={a} edit={(richiesta.stato === "Bozza" || richiesta.stato === "Invalidata")} admin={false}/> )) }
             </>
         )
     }

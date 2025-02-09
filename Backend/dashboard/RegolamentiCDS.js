@@ -13,7 +13,7 @@ export async function getRegolamenti(CDS) {
 }
 export async function getRegolamento(id) {
     const [result] = await db.query(`
-        SELECT Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur", CorsiDiStudio.Presidente AS "presidente"
+        SELECT CorsiDiStudio.idCDS AS "CDS", Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur", CorsiDiStudio.Presidente AS "presidente"
         FROM Regolamenti, CorsiDiStudio
         WHERE idCDS = CDS AND idRegolamento = ?`, [id]);
     return result[0];
@@ -101,6 +101,13 @@ export async function handleDeleteRegolamento(req, res) {
             success: true
         });
     } catch (error) {
+        // errore richieste presenti
+        if(error.code == 'ER_ROW_IS_REFERENCED_2') {
+            return res.status(400).json({
+                success: false,
+                message: 'Impossibile eliminare, richieste presenti'
+            });
+        }
         // errore generale interno al server
         return res.status(500).json({
             success: false,

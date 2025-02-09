@@ -79,7 +79,7 @@ function RichiestaPage() {
                 <p className="text-xl">Data richiesta: {richiesta.data.getDate()}/{richiesta.data.getMonth()+1}/{richiesta.data.getFullYear()} - Stato: {richiesta.stato}</p>
                 <p className="text-xl">{richiesta.università} - {richiesta.email}</p>
                 <p className="text-xl">Durata corso: {richiesta.duratacorso} - Totale CFU: {totCFU}</p>
-                { anni.map(a => ( <Anno key={a} regolamento={richiesta.regolamento} anno={a} admin={true} edit={false}/> )) }
+                { anni.map(a => ( <Anno key={a} richiesta={richiesta.id} regolamento={richiesta.regolamento} anno={a} admin={true} edit={false}/> )) }
             </>
         )
     }

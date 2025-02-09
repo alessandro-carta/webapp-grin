@@ -4,29 +4,6 @@ import { useState, useEffect } from "react";
 
 
 function NavbarPresidente(){
-
-    const [email, setEmail] = useState();
-    const loadEmail = async () => {
-        try {
-            const response = await fetch(`/api/getEmail`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-            // accesso non consentito
-            if(response.status == 403) navigate('/');
-            // risposta con successo
-            if(response.ok) {
-                const data = await response.json();
-                setEmail(data.data.email);
-            }
-            
-        } catch (error) { console.log(error); }
-    }
-    useEffect(() => loadEmail, []);
-
     // restitusce la barra di navigazione del presidente
     return (
         <div className="fixed top-0 left-0 w-full bg-white shadow-md z-50 p-4">
@@ -38,11 +15,9 @@ function NavbarPresidente(){
                     <NavLink to={`/regolamento/?Visual=presidente`} className={({isActive}) => isActive ? 'text-blue-800 hover:text-blue-800' : 'text-black hover:text-gray-300'}> Regolamento </NavLink>
                     <NavLink to={`/dashboard/bollini`} className={({isActive}) => isActive ? 'text-blue-800 hover:text-blue-800' : 'text-black hover:text-gray-300'}> Bollini </NavLink>
                 </div>
-                <div className="space-x-6 flex">
-                    <p>{email}</p>
+                <div className="space-x-6">
                     <Logout />
                 </div>
-               
             </div>
         </div>
     )

@@ -13,7 +13,7 @@ import { getCorsoDiStudio, handleAddCDS, handleDashboard, handleDeleteCDS, hanld
 import { handleGetBolliniPerPresidente } from "./dashboard/Bollini.js";
 import { getRegolamento, handleAddRegolamento, handleDeleteRegolamento, handleGetRegolamenti, handleGetRegolamento } from "./dashboard/RegolamentiCDS.js";
 import { getRichiesta, handleAddRichiesta, handleDeleteRichiesta, handleGetRichiestaPerPresidente, handleGetRichiestePerPresidente, handleSaveRichiesta } from "./dashboard/Richieste.js";
-import { handleAddInsegnamento, handleGetInsegnamentiPresidente } from "./dashboard/Insegnamenti.js";
+import { handleAddInsegnamento, handleDeleteInsegnamento, handleGetInsegnamentiPresidente, handleGetInsegnamentoPresidente, handleUpdateInsegnamento } from "./dashboard/Insegnamenti.js";
 
 const app = express();
 app.use(cors());
@@ -144,6 +144,7 @@ app.get("/api/corsodistudio/:idCDS", authenticateToken, authorizeRole(['presiden
 // 4. Elimanare un regolamento di un cds
 // 5. Elenco degli insegnamenti di un determinato regolamento
 // 6. Aggiungere un nuovo insegnamento
+// 7. Eliminare un insegnamento
 app.post("/api/addRegolamento/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteCDS, async (req, res) => {
     return handleAddRegolamento(req, res);
 })
@@ -161,6 +162,15 @@ app.get("/api/insegnamentiPresidente/:idRegolamento", authenticateToken, authori
 })
 app.post("/api/addInsegnamento/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
     return handleAddInsegnamento(req, res);
+})
+app.delete("/api/deleteInsegnamento/:idInsegnamento", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
+    return handleDeleteInsegnamento(req, res);
+})
+app.get("/api/insegnamento/:idRichiesta/:idInsegnamento", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
+    return handleGetInsegnamentoPresidente(req, res);
+})
+app.put("/api/updateInsegnamento/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
+    return handleUpdateInsegnamento(req, res);
 })
 
 // DASHBORAD/RICHIESTE

@@ -77,6 +77,13 @@ export async function handleDeleteCDS(req, res) {
             success: true
         });
     } catch (error) {
+        // errore regolamenti presenti
+        if(error.code == 'ER_ROW_IS_REFERENCED_2') {
+            return res.status(400).json({
+                success: false,
+                message: 'Impossibile eliminare, regolamenti presenti'
+            });
+        }
         // errore generale interno al server
         return res.status(500).json({
             success: false,

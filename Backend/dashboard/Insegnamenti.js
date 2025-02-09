@@ -1,8 +1,8 @@
-import jwt from 'jsonwebtoken';
-import { keyJwt } from '../Config.js';
 import { db } from "../database.js";
 import { v4 as uuidv4 } from 'uuid';
 import { getCorsoDiStudio } from './CorsiDiStudio.js';
+import { getRegolamento } from './RegolamentiCDS.js';
+import { getRichiesta } from '../Richieste.js';
 
 export async function getInsegnamenti(regolamento){
     const queryInsegnamenti = `
@@ -31,9 +31,70 @@ export async function getInsegnamentiFull(regolamento) {
     }
     return insegnamentiFull;
 }
-export async function addInsegnamento(nome, annoerogazione, CFU, settore, regolamento, sottoaree) {
-    // transazione
+export async function getInsegnamento(id){
+    const queryInsegnamenti = `
+        SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.CFU AS "cfutot", Insegnamenti.Settore AS "settore"
+        FROM Insegnamenti
+        WHERE idInsegnamento = ? `;
+    const [result] = await db.query(queryInsegnamenti, [id]);
+    return result;
 }
+export async function getInsegnamentoFull(id) {
+    // contiene insegnamento con l'elenco delle sottoaree con cfu
+    const [insegnamento] = await getInsegnamento(id);
+    const sottoaree = await getInsegnamentoSottoaree(id);
+    return {...insegnamento, sottoaree: sottoaree}
+}
+
+export async function addInsegnamento(id, nome, annoerogazione, CFU, settore, regolamento, sottoaree) {
+    // transazione
+    try {
+        await db.beginTransaction();
+        const queryInsegnamento = 'INSERT INTO Insegnamenti (idInsegnamento, Nome, AnnoErogazione, CFU, Settore, Regolamento) VALUES (?, ?, ?, ?, ?, ?)';
+        await db.query(queryInsegnamento, [id, nome, annoerogazione, CFU, settore, regolamento]);
+        if(sottoaree.length > 0){
+            const queryInsegnamentoSottoarea = 'INSERT INTO InsegnamentiSottoaree (Insegnamento, Sottoarea, CFU) VALUES ?';
+            const valoriSottoaree = sottoaree.map(sottoarea => [id, sottoarea.id, sottoarea.CFU]);
+            await db.query(queryInsegnamentoSottoarea, [valoriSottoaree]);
+        }
+        await db.commit();
+        return true;
+    } catch (error) {
+        // transazione fallita
+        await db.rollback();
+        return false;
+    }
+}
+export async function updateInsegnamento(id, nome, annoerogazione, CFU, settore, sottoaree) {
+    // transazione
+    try {
+        await db.beginTransaction();
+        await db.query(`
+            UPDATE Insegnamenti 
+            SET Nome = ?, AnnoErogazione = ?, CFU = ?, Settore = ?
+            WHERE idInsegnamento = ?`, [nome, annoerogazione, CFU, settore, id]);
+        await db.query(`
+            DELETE FROM InsegnamentiSottoaree
+            WHERE Insegnamento = ?`, [id]);
+        if(sottoaree.length > 0){
+            const valoriSottoaree = sottoaree.map(sottoarea => [id, sottoarea.id, sottoarea.cfu]);
+            await db.query(`
+                INSERT INTO InsegnamentiSottoaree (Insegnamento, Sottoarea, CFU) 
+                VALUES ?`, [valoriSottoaree]);
+        }
+        await db.commit();
+        return true;
+    } catch (error) {
+        // transazione fallita
+        await db.rollback();
+        return false;
+    }
+}
+export async function deleteInsegnamento(id) {
+    const [result] = await db.query(`DELETE FROM Insegnamenti WHERE idInsegnamento = ?`,[id]);
+    return result;
+}
+
 
 
 
@@ -58,10 +119,115 @@ export async function handleGetInsegnamentiPresidente(req, res) {
 }
 export async function handleAddInsegnamento(req, res) {
     const {nome, CFUTot, settore, richiesta, annoerogazione, sottoaree} = req.body;
-    console.log(nome);
-    console.log(CFUTot);
-    console.log(settore);
-    console.log(richiesta);
-    console.log(annoerogazione);
-    console.log(sottoaree);
+    const id =  uuidv4();
+    try {
+        const resultRichiesta = await getRichiesta(richiesta);
+        if(resultRichiesta.stato === "Elaborazione" || resultRichiesta.stato === "Approvata"){
+            // la richiesta non può essere modificata
+            return res.status(400).json({
+                success: false,
+                message: "Richiesta non può essere modificata"
+            });
+        }
+        const resultRegolamento = await getRegolamento(resultRichiesta.regolamento);
+        const resultCDS = await getCorsoDiStudio(resultRegolamento.CDS);
+        if(annoerogazione > resultCDS.durata){
+            // anno erogazione dell'insegnamento non 
+            // compatibile con la durata del CDS
+            return res.status(400).json({
+                success: false,
+                message: "Anno di erogazione errato"
+            });
+        }
+        const result = await addInsegnamento(id, nome, annoerogazione, CFUTot, settore, resultRichiesta.regolamento, sottoaree);
+        if(result) return res.status(204).json({ success: true });
+        else return res.status(500).json({
+                success: true,
+                message: "Si è verificato un errore durante l'elaborazione della richiesta"
+        });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+}
+export async function handleDeleteInsegnamento(req, res) {
+    const id = req.params.idInsegnamento;
+    const richiesta = req.body.richiesta;
+    try {
+        const resultRichiesta = await getRichiesta(richiesta);
+        if(resultRichiesta.stato === "Elaborazione" || resultRichiesta.stato === "Approvata"){
+            // la richiesta non può essere modificata
+            return res.status(400).json({
+                success: false,
+                message: "Richiesta non può essere modificata"
+            });
+        }
+        await deleteInsegnamento(id);
+        return res.status(204).json({ success: true });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+}
+export async function handleGetInsegnamentoPresidente(req, res) {
+    const id = req.params.idInsegnamento;
+    try {
+        // risposta con successo
+        const result = await getInsegnamentoFull(id);
+        return res.status(200).json({ 
+            success: true,
+            data: result
+        });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+}
+export async function handleUpdateInsegnamento(req, res) {
+    const {id, nome, CFUTot, settore, richiesta, annoerogazione, sottoaree} = req.body;
+    try {
+        const resultRichiesta = await getRichiesta(richiesta);
+        if(resultRichiesta.stato === "Elaborazione" || resultRichiesta.stato === "Approvata"){
+            // la richiesta non può essere modificata
+            return res.status(400).json({
+                success: false,
+                message: "Richiesta non può essere modificata"
+            });
+        }
+        const resultRegolamento = await getRegolamento(resultRichiesta.regolamento);
+        const resultCDS = await getCorsoDiStudio(resultRegolamento.CDS);
+        if(annoerogazione > resultCDS.durata){
+            // anno erogazione dell'insegnamento non 
+            // compatibile con la durata del CDS
+            return res.status(400).json({
+                success: false,
+                message: "Anno di erogazione errato"
+            });
+        }
+        const result = await updateInsegnamento(id, nome, annoerogazione, CFUTot, settore, sottoaree);
+        if(result) return res.status(204).json({ success: true });
+        else return res.status(500).json({
+                success: true,
+                message: "Si è verificato un errore durante l'elaborazione della richiesta"
+        });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
 }

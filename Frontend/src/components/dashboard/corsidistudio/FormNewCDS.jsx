@@ -122,6 +122,7 @@ function FormNewCDS() {
                         {formErrors.durata && <p className="text-red-500">{formErrors.durata}</p>}
                     </div>
                     <p className="text-base p-2">* Campi obbligatori</p>
+                    <p className="text-base mb-2">cliccando su CREA, si dichiara che il Corso Di Studio è accreditato all'ANVUR.</p>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
                         <button
