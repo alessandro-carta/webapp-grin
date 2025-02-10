@@ -46,15 +46,15 @@ export async function getInsegnamentoFull(id) {
     return {...insegnamento, sottoaree: sottoaree}
 }
 
-export async function addInsegnamento(id, nome, annoerogazione, CFU, settore, regolamento, sottoaree) {
+export async function addInsegnamento(id, nome, annoerogazione, cfutot, settore, regolamento, sottoaree) {
     // transazione
     try {
         await db.beginTransaction();
-        const queryInsegnamento = 'INSERT INTO Insegnamenti (idInsegnamento, Nome, AnnoErogazione, CFU, Settore, Regolamento) VALUES (?, ?, ?, ?, ?, ?)';
-        await db.query(queryInsegnamento, [id, nome, annoerogazione, CFU, settore, regolamento]);
+        const queryInsegnamento = 'INSERT INTO Insegnamento (idInsegnamento, Nome, AnnoErogazione, CFU, Settore, Regolamento) VALUES (?, ?, ?, ?, ?, ?)';
+        await db.query(queryInsegnamento, [id, nome, annoerogazione, cfutot, settore, regolamento]);
         if(sottoaree.length > 0){
             const queryInsegnamentoSottoarea = 'INSERT INTO InsegnamentiSottoaree (Insegnamento, Sottoarea, CFU) VALUES ?';
-            const valoriSottoaree = sottoaree.map(sottoarea => [id, sottoarea.id, sottoarea.CFU]);
+            const valoriSottoaree = sottoaree.map(sottoarea => [id, sottoarea.id, sottoarea.cfu]);
             await db.query(queryInsegnamentoSottoarea, [valoriSottoaree]);
         }
         await db.commit();
@@ -118,11 +118,11 @@ export async function handleGetInsegnamentiPresidente(req, res) {
     }
 }
 export async function handleAddInsegnamento(req, res) {
-    const {nome, CFUTot, settore, richiesta, annoerogazione, sottoaree} = req.body;
+    const { nome, cfutot, settore, richiesta, annoerogazione, sottoaree } = req.body;
     const id =  uuidv4();
     try {
         const resultRichiesta = await getRichiesta(richiesta);
-        if(resultRichiesta.stato === "Elaborazione" || resultRichiesta.stato === "Approvata"){
+        if(resultRichiesta.stato != "Bozza"){
             // la richiesta non può essere modificata
             return res.status(400).json({
                 success: false,
@@ -139,7 +139,7 @@ export async function handleAddInsegnamento(req, res) {
                 message: "Anno di erogazione errato"
             });
         }
-        const result = await addInsegnamento(id, nome, annoerogazione, CFUTot, settore, resultRichiesta.regolamento, sottoaree);
+        const result = await addInsegnamento(id, nome, annoerogazione, cfutot, settore, resultRichiesta.regolamento, sottoaree);
         if(result) return res.status(204).json({ success: true });
         else return res.status(500).json({
                 success: true,
@@ -159,7 +159,7 @@ export async function handleDeleteInsegnamento(req, res) {
     const richiesta = req.body.richiesta;
     try {
         const resultRichiesta = await getRichiesta(richiesta);
-        if(resultRichiesta.stato === "Elaborazione" || resultRichiesta.stato === "Approvata"){
+        if(resultRichiesta.stato != "Bozza"){
             // la richiesta non può essere modificata
             return res.status(400).json({
                 success: false,
@@ -199,7 +199,7 @@ export async function handleUpdateInsegnamento(req, res) {
     const {id, nome, CFUTot, settore, richiesta, annoerogazione, sottoaree} = req.body;
     try {
         const resultRichiesta = await getRichiesta(richiesta);
-        if(resultRichiesta.stato === "Elaborazione" || resultRichiesta.stato === "Approvata"){
+        if(resultRichiesta.stato != "Bozza"){
             // la richiesta non può essere modificata
             return res.status(400).json({
                 success: false,

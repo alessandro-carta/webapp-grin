@@ -8,6 +8,7 @@ function Regolamento(props) {
     const [errDelete, setErrDelete] = useState(false); // tiene traccia se un'eliminazione non è andata a buon fine per un errore
     const [message, setMessage] = useState('');
 
+    const duplicateRegolamento = async () => { navigate(`/duplica-regolamento/${props.regolamento.CDS}/${props.regolamento.id}`) }
     const deleteRegolamento = async () => {
         try {
             const response = await fetch(`/api/deleteRegolamento/${props.regolamento.id}`, {
@@ -34,6 +35,7 @@ function Regolamento(props) {
     if (isDeleted) return null
     if(errDelete){
         return (<>
+            <div className="p-1 border-b border-gray-300">{props.regolamento.annoaccademico}</div>
             <div className="p-2 underline border-b border-gray-300 text-red-500">
                 {message}
             </div >
@@ -46,8 +48,12 @@ function Regolamento(props) {
         <>
             <div className="p-1 border-b border-gray-300">{props.regolamento.annoaccademico}</div>
             <div className="p-1 underline border-b border-gray-300">
+                <button className="m-1" onClick={duplicateRegolamento}> Duplica </button>
+            </div >
+            <div className="p-1 underline border-b border-gray-300">
                 <button className="m-1" onClick={deleteRegolamento}> Elimina </button>
             </div >
+            
         </>
     )
 }

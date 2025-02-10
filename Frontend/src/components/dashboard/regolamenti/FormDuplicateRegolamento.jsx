@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-function FormNewRegolamento(props) {
+function FormDuplicateRegolamento(props) {
 
     const navigate = useNavigate();
     // dati del form
     const [formData, setFormData] = useState({
         annoaccademico: "",
-        CDS: props.cds
+        regolamento: props.regolamento,
+        cds: props.cds
     })
     // messaggi di errore, result contiene la risposta della chiamata HTTP
     const [formErrors, setFormErros] = useState({
@@ -31,7 +32,7 @@ function FormNewRegolamento(props) {
         e.preventDefault();
         try {
             if(checkAnnoAccademico()){
-                const response = await fetch(`/api/addRegolamento`, {
+                const response = await fetch(`/api/duplicateRegolamento`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -41,10 +42,9 @@ function FormNewRegolamento(props) {
                 });
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
-                // inserimento riuscito
+                // duplicazione riuscita
                 if (response.ok) { navigate(`/dashboard/regolamenti/${props.cds}`); }
-                // inserimento fallito
-                // inserita una sottoarea con idSottoarea gia' esistente
+                // duplicazione fallita
                 if (!response.ok) {
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
@@ -97,7 +97,7 @@ function FormNewRegolamento(props) {
                             type="submit"
                             className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"
                         >
-                            CREA 
+                            DUPLICA 
                         </button>
 
                         <Link
@@ -116,4 +116,4 @@ function FormNewRegolamento(props) {
     
 }
 
-export default FormNewRegolamento;
+export default FormDuplicateRegolamento;

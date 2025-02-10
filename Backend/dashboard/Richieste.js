@@ -1,3 +1,4 @@
+import { checkRegole } from "../CheckRichiesta.js";
 import { db } from "../database.js"; 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -21,8 +22,8 @@ export async function addRichiesta(id, regolamento, stato, data) {
     const [result] = await db.query(`INSERT INTO Richieste (idRichiesta, Regolamento, Stato, Data) VALUES (?, ?, ?, ?)`, [id, regolamento, stato, data]);
     return result;
 }
-export async function saveRichiesta(id){
-    const [result] = await db.query(`UPDATE Richieste SET Stato = "Bozza" WHERE idRichiesta = ?`, [id]);
+export async function updateRichiesta(id, stato){
+    const [result] = await db.query(`UPDATE Richieste SET Stato = ? WHERE idRichiesta = ?`, [stato, id]);
     return result;
 }
 export async function deleteRichiesta(id) {
@@ -105,7 +106,7 @@ export async function handleSaveRichiesta(req, res) {
                 message: "Azione non permessa"
             });
         }
-        await saveRichiesta(id);
+        await updateRichiesta(id, "Bozza");
         return res.status(204).json({
             success: true
         });
@@ -135,6 +136,36 @@ export async function handleDeleteRichiesta(req, res) {
         });
     } catch (error) {
         // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+}
+export async function handleSendRichiesta(req, res) {
+    const id = req.body.richiesta;
+
+    try {
+        // risposta avvenuta con successo
+        // controllo che la richiesta rispetti le regole per l'erogazione del bollino
+        const resultRegole = await checkRegole(id);
+        const objRichiesta = await getRichiesta(id);
+        const checkFinal = resultRegole.regole.filter((regola) => regola.check == false);
+        if(checkFinal.length == 0 && resultRegole.anvur && objRichiesta.stato === 'Bozza'){
+            // invio la richiesta
+            await updateRichiesta(id, "Elaborazione");
+            return res.status(204).json({
+                success: true,
+            });
+        }
+        return res.status(400).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta"
+        });
+    } catch (error) {
+        // errore generale interno al server
+        console.log(error);
         return res.status(500).json({
             success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",

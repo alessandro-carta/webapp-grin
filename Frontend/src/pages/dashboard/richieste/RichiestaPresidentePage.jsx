@@ -34,7 +34,7 @@ function RichiestaPresidentePage() {
 
     const [pageTitle, setPageTitle] = useState('Richiesta');
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
-    // funzione per salvare una richiesta
+    // funzione per salvare una richiesta in stato di bozza
     const saveRichiesta = async () => {
         try {
             const response = await fetch(`/api/saveRichiesta`, {
@@ -67,6 +67,8 @@ function RichiestaPresidentePage() {
     }
     // funzione aggiungere un nuovo insegnamento
     const addInsegnamento = () => { navigate(`/crea-un-nuovo-insegnamento/${idRichiesta}`)}
+    // funzione controllo regole
+    const checkRegole = () => { navigate(`/dashboard/controllo-regole/${idRichiesta}`)}
 
     const anni = []; // contiene il numero di anni di durata di un CDS
     if(loading) return <p>LOADING...</p>
@@ -75,13 +77,19 @@ function RichiestaPresidentePage() {
         return (
             <>
                 <NavbarPresidente />
-                { /* Azioni possibili solo per richieste ancora non inviate o invalidate */
-                (richiesta.stato === "Bozza" || richiesta.stato === "Invalidata") &&  
+                { /* Azioni possibili solo per richieste in stato di bozza */
+                (richiesta.stato === "Bozza") &&  
                 <div className="flex space-x-4 p-4 items-center justify-center">
                     <p className="text-xl">Azioni: </p>
-                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"> Invia richiesta </button>
+                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={checkRegole}> Invia richiesta </button>
                     <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={addInsegnamento}> Aggiungi insegnamento </button>
-                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={saveRichiesta}> Salva come bozza </button>
+                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={deleteRichiesta}> Elimina richiesta </button>
+                </div> }
+                { /* Azioni possibili solo per richieste invalidate */
+                (richiesta.stato === "Invalidata") &&  
+                <div className="flex space-x-4 p-4 items-center justify-center">
+                    <p className="text-xl">Azioni: </p>
+                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={saveRichiesta}> Modifica Richiesta </button>
                     <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={deleteRichiesta}> Elimina richiesta </button>
                 </div> }
                 <p className="text-xl text-blue-800">{richiesta.corsodistudio} - Regolamento AA: {richiesta.annoaccademico}</p>

@@ -31,6 +31,8 @@ import CreateNewRichiestaPage from './pages/dashboard/richieste/CreateNewRichies
 import RichiestaPresidentePage from './pages/dashboard/richieste/RichiestaPresidentePage.jsx'
 import CreateNewInsegnamentoPage from './pages/dashboard/richieste/CreateNewInsegnamentoPage.jsx'
 import UpdateInsegnamentoPage from './pages/dashboard/richieste/UpdateInsegnamentoPage.jsx'
+import ControlloRegolePresidentePage from './pages/dashboard/richieste/ControlloRegolePresidentePage.jsx'
+import CreateDuplicateRegolamentoPage from './pages/dashboard/regolamenti/CreateDuplicateRegolamentoPage.jsx'
 
 
 const router = createBrowserRouter([
@@ -153,6 +155,14 @@ const router = createBrowserRouter([
   {
     path: "modifica-insegnamento/:idRichiesta/:idInsegnamento",
     element: <UpdateInsegnamentoPage />
+  },
+  {
+    path: "dashboard/controllo-regole/:idRichiesta",
+    element: <ControlloRegolePresidentePage />
+  },
+  {
+    path: "duplica-regolamento/:idCDS/:idRegolamento",
+    element: <CreateDuplicateRegolamentoPage />
   }
 ]
 )

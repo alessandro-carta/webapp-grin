@@ -2,7 +2,7 @@ import { db } from "../database.js";
 
 export async function getBollini(presidente) {
     const queryBollini = `
-        SELECT Bollini.idBollino AS "id", Bollini.Erogato AS "erogato", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", Regolamenti.idRegolamento AS "regolamento"
+        SELECT Bollini.idBollino AS "id", Bollini.Erogato AS "erogato", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", Bollini.Richiesta AS "richiesta"
         FROM Bollini, Richieste, Regolamenti, CorsiDiStudio
         WHERE idRichiesta = Richiesta AND idRegolamento = Regolamento AND idCDS = CDS AND Presidente = ? `;
     const [result] = await db.query(queryBollini, [presidente]);

@@ -33,19 +33,19 @@ function FormNewInsegnamento(props){
     // dati del form
     const [formData, setFormData] = useState({
         nome: "",
-        CFUTot: 0,
+        cfutot: 0,
         settore: "",
         annoerogazione: "",
         richiesta: props.richiesta,
         sottoaree: [],
         area: "",
         sottoarea: "",
-        CFU: 0
+        cfu: 0
     })
     // messaggi di errore, result contiene la risposta della chiamata HTTP
     const [formErrors, setFormErros] = useState({
         nome: "",
-        CFUTot: "",
+        cfutot: "",
         settore: "",
         sottoaree: "",
         annoerogazione: ""
@@ -123,10 +123,10 @@ function FormNewInsegnamento(props){
         return true;
     }
     const checkCFUTot = () => {
-        if(formData.CFUTot <= 0){
+        if(formData.cfutot <= 0){
             setFormErros({
                 ...formErrors,
-                CFUTot: "Inserire un numero positivo"
+                cfutot: "Inserire un numero positivo"
             })
             return false;
         }
@@ -153,7 +153,7 @@ function FormNewInsegnamento(props){
         return true;
     }
     const checkSottoarea = (id) => {
-        if(id === "" || formData.CFU <= 0){
+        if(id === "" || formData.cfutot <= 0){
             setFormErros({
                 ...formErrors,
                 sottoaree: "Inserire i campi obbligatori"
@@ -195,7 +195,7 @@ function FormNewInsegnamento(props){
                 ...formData,
                 [name]: value,
                 sottoarea: "",
-                CFU: 0
+                cfu: 0
             });
             loadAllSottoaree(value);
         }
@@ -218,7 +218,7 @@ function FormNewInsegnamento(props){
                     },
                     body: JSON.stringify({
                                         nome: formData.nome, 
-                                        CFUTot: formData.CFUTot,
+                                        cfutot: formData.cfutot,
                                         settore: formData.settore,
                                         annoerogazione: formData.annoerogazione,
                                         richiesta: formData.richiesta,
@@ -246,7 +246,7 @@ function FormNewInsegnamento(props){
         if(checkSottoarea(id)){
             setFormData({
                 ...formData,
-                sottoaree: [...formData.sottoaree, {id: id, nome: sottoarea, CFU: formData.CFU}]
+                sottoaree: [...formData.sottoaree, {id: id, nome: sottoarea, cfu: formData.cfu}]
             });
             setFormErros({
                 ...formErrors,
@@ -286,16 +286,16 @@ function FormNewInsegnamento(props){
                         </div>
                         {/* CFU Totali */}
                         <div className="mb-4">
-                            <label htmlFor="CFUTot" className="block text-sm font-medium text-gray-700">CFU Totali*</label>
+                            <label htmlFor="cfutot" className="block text-sm font-medium text-gray-700">CFU Totali*</label>
                             <input
                                 type="number"
-                                id="CFUTot"
-                                name="CFUTot"
-                                value={formData.CFUTot}
+                                id="cfutot"
+                                name="cfutot"
+                                value={formData.cfutot}
                                 onChange={handleChange}
                                 className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
-                            {formErrors.CFUTot && <p className="text-red-500">{formErrors.CFUTot}</p>}
+                            {formErrors.cfutot && <p className="text-red-500">{formErrors.cfutot}</p>}
                         </div>
                         {/* Settore */}
                         <div className="mb-4">
@@ -356,9 +356,9 @@ function FormNewInsegnamento(props){
                                     </select>
                                     <input
                                         type="number"
-                                        id="CFU"
-                                        name="CFU"
-                                        value={formData.CFU}
+                                        id="cfu"
+                                        name="cfu"
+                                        value={formData.cfu}
                                         onChange={handleChange}
                                         className="p-2 border mt-2 w-full border-gray-300 rounded-lg"
                                         placeholder="CFU*"
@@ -376,7 +376,7 @@ function FormNewInsegnamento(props){
                             {formData.sottoaree.length != 0 && <label htmlFor="settore" className="block text-sm font-medium text-gray-700">Sottoaree: </label>}
                             {formData.sottoaree.map((elemento, index) => ( 
                                 <div className="flex flex-col md:flex-row justify-center items-center p-2">
-                                    <p className="text-base p-2" key={index}>{elemento.nome} (CFU: {elemento.CFU})</p> 
+                                    <p className="text-base p-2" key={index}>{elemento.nome} (CFU: {elemento.cfu})</p> 
                                     <button type="button" className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700" onClick={() => deleteInsSottoarea(elemento.id)}>
                                         Elimina
                                     </button>

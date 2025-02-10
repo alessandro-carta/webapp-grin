@@ -11,9 +11,9 @@ import jwt from 'jsonwebtoken';
 import { keyJwt, port } from "./Config.js";
 import { getCorsoDiStudio, handleAddCDS, handleDashboard, handleDeleteCDS, hanldeCorsoDiStudio } from "./dashboard/CorsiDiStudio.js";
 import { handleGetBolliniPerPresidente } from "./dashboard/Bollini.js";
-import { getRegolamento, handleAddRegolamento, handleDeleteRegolamento, handleGetRegolamenti, handleGetRegolamento } from "./dashboard/RegolamentiCDS.js";
-import { getRichiesta, handleAddRichiesta, handleDeleteRichiesta, handleGetRichiestaPerPresidente, handleGetRichiestePerPresidente, handleSaveRichiesta } from "./dashboard/Richieste.js";
-import { handleAddInsegnamento, handleDeleteInsegnamento, handleGetInsegnamentiPresidente, handleGetInsegnamentoPresidente, handleUpdateInsegnamento } from "./dashboard/Insegnamenti.js";
+import { getRegolamento, handleAddRegolamento, handleDeleteRegolamento, handleDuplicateRegolamento, handleGetRegolamenti, handleGetRegolamento } from "./dashboard/RegolamentiCDS.js";
+import { getRichiesta, handleAddRichiesta, handleDeleteRichiesta, handleGetRichiestaPerPresidente, handleGetRichiestePerPresidente, handleSaveRichiesta, handleSendRichiesta } from "./dashboard/Richieste.js";
+import { getInsegnamenti, getInsegnamento, handleAddInsegnamento, handleDeleteInsegnamento, handleGetInsegnamentiPresidente, handleGetInsegnamentoPresidente, handleUpdateInsegnamento } from "./dashboard/Insegnamenti.js";
 
 const app = express();
 app.use(cors());
@@ -145,6 +145,9 @@ app.get("/api/corsodistudio/:idCDS", authenticateToken, authorizeRole(['presiden
 // 5. Elenco degli insegnamenti di un determinato regolamento
 // 6. Aggiungere un nuovo insegnamento
 // 7. Eliminare un insegnamento
+// 8. Informazioni di un determinato insegnamento
+// 9. Modificare un insegnamento
+// 10. Duplica un regolamento
 app.post("/api/addRegolamento/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteCDS, async (req, res) => {
     return handleAddRegolamento(req, res);
 })
@@ -172,6 +175,9 @@ app.get("/api/insegnamento/:idRichiesta/:idInsegnamento", authenticateToken, aut
 app.put("/api/updateInsegnamento/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
     return handleUpdateInsegnamento(req, res);
 })
+app.post("/api/duplicateRegolamento/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRegolamento, async (req, res) => {
+    return handleDuplicateRegolamento(req, res);
+})
 
 // DASHBORAD/RICHIESTE
 // Operazioni:
@@ -179,7 +185,9 @@ app.put("/api/updateInsegnamento/", authenticateToken, authorizeRole(['president
 // 2. Aggiungere una nuova richiesta
 // 3. Informazioni di una determinata richiesta
 // 4. Salvare in stato di bozza una richiesta
-// 4. Elimare una richiesta
+// 5. Elimare una richiesta
+// 6. Controllo regole di una richiesta
+// 7. Inviare una richiesta
 app.get("/api/richiestePresidente", authenticateToken, authorizeRole(['presidente']), async (req, res) => {
     return handleGetRichiestePerPresidente(req, res);
 })
@@ -194,6 +202,12 @@ app.put("/api/saveRichiesta/", authenticateToken, authorizeRole(['presidente']),
 })
 app.delete("/api/deleteRichiesta/:idRichiesta", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
     return handleDeleteRichiesta(req, res);
+})
+app.get("/api/checkRegolePresidente/:idRichiesta", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
+    return handleCheckRegole(req, res);
+})
+app.put("/api/sendRichiesta/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
+    return handleSendRichiesta(req, res);
 })
 
 

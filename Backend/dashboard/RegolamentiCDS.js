@@ -1,8 +1,7 @@
-import jwt from 'jsonwebtoken';
-import { keyJwt } from '../Config.js';
 import { db } from "../database.js";
 import { v4 as uuidv4 } from 'uuid';
-import { getCorsoDiStudio } from './CorsiDiStudio.js';
+import { getInsegnamentiFull } from "../Richieste.js";
+import { addInsegnamento } from "./Insegnamenti.js";
 
 export async function getRegolamenti(CDS) {
     const [result] = await db.query(`
@@ -25,6 +24,34 @@ export async function addRegolamento(id, annoaccademico, CDS){
 export async function deleteRegolamento(id) {
     const [result] = await db.query(`DELETE FROM Regolamenti WHERE idRegolamento = ?`,[id]);
     return result;
+}
+export async function duplicateRegolamento(id, annoaccademico, regolamento){
+    try {
+        await db.beginTransaction();
+        const resultRegolamento = await getRegolamento(regolamento);
+        await db.query(`
+            INSERT INTO Regolamenti (idRegolamento, AnnoAccademico, CDS, Anvur)
+            VALUES (?, ?, ?, 1) `, [id, annoaccademico, resultRegolamento.CDS]);
+        const resultInsegnamenti = await getInsegnamentiFull(regolamento);
+        for(let i = 0; i < resultInsegnamenti.length; i++){
+            const idI = uuidv4();
+            await db.query(`
+                INSERT INTO Insegnamenti (idInsegnamento, Nome, AnnoErogazione, CFU, Settore, Regolamento) 
+                VALUES (?, ?, ?, ?, ?, ?)`, [idI, resultInsegnamenti[i].nome, resultInsegnamenti[i].annoerogazione, resultInsegnamenti[i].cfutot, resultInsegnamenti[i].settore, id]);
+            if(resultInsegnamenti[i].sottoaree.length > 0){
+                const valoriSottoaree = resultInsegnamenti[i].sottoaree.map(sottoarea => [idI, sottoarea.id, sottoarea.cfu]);
+                await db.query(`
+                    INSERT INTO InsegnamentiSottoaree (Insegnamento, Sottoarea, CFU) 
+                    VALUES ? `, [valoriSottoaree]);
+            }            
+        }
+        await db.commit();
+        return true;
+    } catch (error) {
+        // transazione fallita
+        await db.rollback();
+        return false;
+    }
 }
 
 
@@ -108,6 +135,26 @@ export async function handleDeleteRegolamento(req, res) {
                 message: 'Impossibile eliminare, richieste presenti'
             });
         }
+        // errore generale interno al server
+        return res.status(500).json({
+            success: false,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+}
+export async function handleDuplicateRegolamento(req, res) {
+    const { annoaccademico, regolamento } = req.body;
+    const id = uuidv4();
+    try {
+        const result = await duplicateRegolamento(id, annoaccademico, regolamento);
+        if(result) return res.status(204).json({ success: true });
+        else return res.status(500).json({
+            success: true,
+            message: "Si è verificato un errore durante l'elaborazione della richiesta"
+        });
+
+    } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
             success: false,
