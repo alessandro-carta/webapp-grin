@@ -50,7 +50,7 @@ export async function addInsegnamento(id, nome, annoerogazione, cfutot, settore,
     // transazione
     try {
         await db.beginTransaction();
-        const queryInsegnamento = 'INSERT INTO Insegnamento (idInsegnamento, Nome, AnnoErogazione, CFU, Settore, Regolamento) VALUES (?, ?, ?, ?, ?, ?)';
+        const queryInsegnamento = 'INSERT INTO Insegnamenti (idInsegnamento, Nome, AnnoErogazione, CFU, Settore, Regolamento) VALUES (?, ?, ?, ?, ?, ?)';
         await db.query(queryInsegnamento, [id, nome, annoerogazione, cfutot, settore, regolamento]);
         if(sottoaree.length > 0){
             const queryInsegnamentoSottoarea = 'INSERT INTO InsegnamentiSottoaree (Insegnamento, Sottoarea, CFU) VALUES ?';

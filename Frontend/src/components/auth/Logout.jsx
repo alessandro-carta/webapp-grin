@@ -9,7 +9,7 @@ function Logout(){
     }
     
     return (
-        <p className="text-red-700 text-base" onClick={logoutAccount}>Logout</p>
+        <p className="error__message text-base" onClick={logoutAccount}>Logout</p>
     )
 }
 

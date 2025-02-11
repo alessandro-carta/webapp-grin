@@ -93,33 +93,33 @@ function FormNewCDS() {
 
     return(
         <>
-            <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg">
+            <div className="form__container">
                 <form onSubmit={handleSubmit}>
                     {/* Nome */}
                     <div className="mb-4">
-                        <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome*</label>
+                        <label htmlFor="nome" className="form__label">Nome*</label>
                         <input
                             type="text"
                             id="nome"
                             name="nome"
                             value={formData.nome}
                             onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="form__input"
                         />
-                        {formErrors.nome && <p className="text-red-500">{formErrors.nome}</p>}
+                        {formErrors.nome && <p className="error__message">{formErrors.nome}</p>}
                     </div>
                     {/* Durata */}
                     <div className="mb-4">
-                        <label htmlFor="durata" className="block text-sm font-medium text-gray-700">Durata*</label>
+                        <label htmlFor="durata" className="form__label">Durata*</label>
                         <input
                             type="number"
                             id="durata"
                             name="durata"
                             value={formData.durata}
                             onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="form__input"
                         />
-                        {formErrors.durata && <p className="text-red-500">{formErrors.durata}</p>}
+                        {formErrors.durata && <p className="error__message">{formErrors.durata}</p>}
                     </div>
                     <p className="text-base p-2">* Campi obbligatori</p>
                     <p className="text-base mb-2">cliccando su CREA, si dichiara che il Corso Di Studio è accreditato all'ANVUR.</p>
@@ -127,18 +127,18 @@ function FormNewCDS() {
                     <div className="mb-4">
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"
+                            className="button__principale w-full"
                         >
                             CREA
                         </button>
 
                         <Link
-                            className="text-blue-500 hover:text-blue-700"
+                            className="link"
                             to={'/dashboard/corsidistudio'}
                         >
                             Annulla
                         </Link>
-                        {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
+                        {formErrors.result && <p className="error__message">{formErrors.result}</p>}
                     </div>
                 </form>
             </div>

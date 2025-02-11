@@ -12,9 +12,9 @@ function App() {
   return (
     <>
       <div className='flex flex-col items-center gap-4 justify-center'>
-        <p className="text-blue-800 text-4xl">{pageTitle}</p>
+        <p className="title text-3xl">{pageTitle}</p>
         <FormLoginPresidente />
-        <Link className="text-blue-500 hover:text-blue-700" to={'/admin-login'}>
+        <Link className="link" to={'/admin-login'}>
           Accedi come admin
         </Link>
       </div>

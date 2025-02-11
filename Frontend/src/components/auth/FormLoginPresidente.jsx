@@ -81,44 +81,44 @@ function FormLoginPresidente() {
 
     return(
         <>
-            <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg">
+            <div className="form__container">
                 <form onSubmit={handleSubmit}>
                     {/* Email */}
                     <div className="mb-4">
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email*</label>
+                        <label htmlFor="email" className="form__label">Email*</label>
                         <input
                             type="email"
                             id="email"
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="form__input"
                         />
-                        {formErrors.email && <p className="text-red-500">{formErrors.email}</p>}
+                        {formErrors.email && <p className="error__message">{formErrors.email}</p>}
                     </div>
                     {/* Passowrd */}
                     <div className="mb-4">
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password*</label>
+                        <label htmlFor="password" className="form__label">Password*</label>
                         <input
                             type="password"
                             id="password"
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="form__input"
                         />
-                        {formErrors.password && <p className="text-red-500">{formErrors.password}</p>}
+                        {formErrors.password && <p className="error__message">{formErrors.password}</p>}
                     </div>
                     <p className="text-base p-2">* Campi obbligatori</p>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"
+                            className="w-full button__principale"
                         >
                             Accedi
                         </button>
-                        {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
+                        {formErrors.result && <p className="error__message">{formErrors.result}</p>}
                     </div>
                 </form>
             </div>

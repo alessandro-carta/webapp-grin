@@ -9,7 +9,7 @@ function LoginAdminPage(){
     return(
         <>
             <div className="flex flex-col items-center gap-4 justify-center">
-                <p className="text-blue-800 text-4xl">{pageTitle}</p>
+                <p className="title text-3xl">{pageTitle}</p>
                 <FormLoginAdmin />
             </div>
         </>

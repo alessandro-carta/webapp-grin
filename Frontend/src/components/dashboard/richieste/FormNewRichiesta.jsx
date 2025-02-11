@@ -135,50 +135,52 @@ function FormNewRichiesta(props) {
     if(loading) return <p>LOADING...</p>
     return(
         <>
-            <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg">
+            <div className="form__container">
                 <form onSubmit={handleSubmit}>
                     {/* Corsi Di Studio */}
                     <div className="mb-4">
-                        <label htmlFor="corsodistudio" className="block text-sm font-medium text-gray-700">Corso Di Studio*</label>
+                        <label htmlFor="corsodistudio" className="form__label">Corso Di Studio*</label>
                         <select
                             id="corsodistudio"
                             name="corsodistudio"
                             value={formData.corsodistudio}
                             onChange={handleChange}
+                            className="form__select"
                         >
-                            <option value="">Seleziona un elemento</option>
+                            <option value="">Seleziona un corso</option>
                             {corsiDiStudio.map(corso => (
                                 <option key={corso.id} value={corso.id}>{corso.corsodistudio}</option> ))}
                         </select>
-                        {formErrors.corsodistudio && <p className="text-red-500">{formErrors.corsodistudio}</p>}
+                        {formErrors.corsodistudio && <p className="error__message">{formErrors.corsodistudio}</p>}
                     </div>
                     {/* Regolamento */}
                     <div className="mb-4">
-                        <label htmlFor="regolamento" className="block text-sm font-medium text-gray-700">Regolamento*</label>
+                        <label htmlFor="regolamento" className="form__label">Regolamento*</label>
                         <select
                             id="regolamento"
                             name="regolamento"
                             value={formData.regolamento}
                             onChange={handleChange}
+                            className="form__select"
                         >
-                            <option value="">Seleziona un elemento</option>
+                            <option value="">Seleziona un regolamento</option>
                             {regolamenti.map(reg => (
                                 <option key={reg.id} value={reg.id}>{reg.annoaccademico}</option> ))}
                         </select>
-                        {formErrors.regolamento && <p className="text-red-500">{formErrors.regolamento}</p>}
+                        {formErrors.regolamento && <p className="error__message">{formErrors.regolamento}</p>}
                     </div>
                     <p className="text-base p-2">* Campi obbligatori</p>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"
+                            className="w-full button__principale"
                         >
                             CREA 
                         </button>
 
                         <Link
-                            className="text-blue-500 hover:text-blue-700"
+                            className="link"
                             to={`/dashboard/richieste`}
                         >
                             Annulla

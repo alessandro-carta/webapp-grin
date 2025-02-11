@@ -72,7 +72,7 @@ function RichiestePresidentePage() {
       <NavbarPresidente />
       <div className="flex space-x-4 p-4 items-center justify-center">
         <p className="text-xl">Azioni: </p>
-        <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={creaNuovaRichiesta}> Invia una nuova richiesta </button>
+        <button className="button__principale" onClick={creaNuovaRichiesta}> Invia una nuova richiesta </button>
       </div>
       <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
         <p className="text-xl"> Anno Accademico:</p>
@@ -99,10 +99,10 @@ function RichiestePresidentePage() {
         </select>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 p-5">
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Corso di studio</div>
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Anno accademico</div>
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Stato</div>
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
+            <div className="text__header__table">Corso di studio</div>
+            <div className="text__header__table">Anno accademico</div>
+            <div className="text__header__table">Stato</div>
+            <div className="text__header__table">Richiesta</div>
             {richieste.map(r => ( <Richiesta key={r.id} richiesta={r} admin={false}/> ))}           
         </div>
     </>

@@ -81,18 +81,18 @@ function RichiestaPresidentePage() {
                 (richiesta.stato === "Bozza") &&  
                 <div className="flex space-x-4 p-4 items-center justify-center">
                     <p className="text-xl">Azioni: </p>
-                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={checkRegole}> Invia richiesta </button>
-                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={addInsegnamento}> Aggiungi insegnamento </button>
-                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={deleteRichiesta}> Elimina richiesta </button>
+                    <button className="button__principale" onClick={checkRegole}> Invia richiesta </button>
+                    <button className="button__principale" onClick={addInsegnamento}> Aggiungi insegnamento </button>
+                    <button className="button__principale" onClick={deleteRichiesta}> Elimina richiesta </button>
                 </div> }
                 { /* Azioni possibili solo per richieste invalidate */
                 (richiesta.stato === "Invalidata") &&  
                 <div className="flex space-x-4 p-4 items-center justify-center">
                     <p className="text-xl">Azioni: </p>
-                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={saveRichiesta}> Modifica Richiesta </button>
-                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={deleteRichiesta}> Elimina richiesta </button>
+                    <button className="button__principale" onClick={saveRichiesta}> Modifica Richiesta </button>
+                    <button className="button__principale" onClick={deleteRichiesta}> Elimina richiesta </button>
                 </div> }
-                <p className="text-xl text-blue-800">{richiesta.corsodistudio} - Regolamento AA: {richiesta.annoaccademico}</p>
+                <p className="text-xl title">{richiesta.corsodistudio} - Regolamento AA: {richiesta.annoaccademico}</p>
                 <p className="text-xl">Data richiesta: {richiesta.data.getDate()}/{richiesta.data.getMonth()+1}/{richiesta.data.getFullYear()} - Stato: {richiesta.stato}</p>
                 <p className="text-xl">Durata corso: {richiesta.duratacorso}</p>
                 { anni.map(a => ( <Anno key={a} richiesta={richiesta.id} regolamento={richiesta.regolamento} anno={a} edit={(richiesta.stato === "Bozza" || richiesta.stato === "Invalidata")} admin={false}/> )) }

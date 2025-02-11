@@ -74,34 +74,34 @@ function FormDuplicateRegolamento(props) {
 
     return(
         <>
-            <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg">
+            <div className="form__container">
                 <form onSubmit={handleSubmit}>
                     {/* Anno Accademico */}
                     <div className="mb-4">
-                        <label htmlFor="annoaccademico" className="block text-sm font-medium text-gray-700">Anno Accademico*</label>
-                        <label className="block text-sm font-medium text-gray-700">Formato: AAAA/AAAA</label>
+                        <label htmlFor="annoaccademico" className="form__label">Anno Accademico*</label>
+                        <label className="form__label">Formato: AAAA/AAAA</label>
                         <input
                             type="text"
                             id="annoaccademico"
                             name="annoaccademico"
                             value={formData.annoaccademico}
                             onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="form__input"
                         />
-                        {formErrors.annoaccademico && <p className="text-red-500">{formErrors.annoaccademico}</p>}
+                        {formErrors.annoaccademico && <p className="error__message">{formErrors.annoaccademico}</p>}
                     </div>
                     {/* Bottone di invio e annulla */}
+                    <p className="text-base mt-2">* Campi obbligatori</p>
                     <div className="mb-4">
-                        <p className="text-base mt-2">* Campi obbligatori</p>
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"
+                            className="w-full button__principale"
                         >
                             DUPLICA 
                         </button>
 
                         <Link
-                            className="text-blue-500 hover:text-blue-700"
+                            className="link"
                             to={`/dashboard/regolamenti/${props.cds}`}
                         >
                             Annulla

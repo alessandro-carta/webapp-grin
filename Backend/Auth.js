@@ -117,7 +117,6 @@ export async function handleChangePassword(req, res){
             });
         }
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        console.log(hashedPassword);
         const result = await updatePassword(id, hashedPassword);
         return res.status(204).json({ 
             success: true,

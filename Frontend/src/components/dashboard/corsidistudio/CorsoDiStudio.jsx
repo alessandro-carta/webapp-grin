@@ -33,27 +33,27 @@ function CorsoDiStudio(props) {
     if (isDeleted) return null
     if(errDelete){
         return (<>
-            <div className="p-1 border-b border-gray-300">{props.corso.corsodistudio}</div>
-            <div className="p-1 border-b border-gray-300">{props.corso.università}</div>
-            <div className="p-1 border-b border-gray-300">{props.corso.durata}</div>
-            <div className="p-2 underline border-b border-gray-300 text-red-500">
+            <div className="text__content__table">{props.corso.corsodistudio}</div>
+            <div className="text__content__table">{props.corso.università}</div>
+            <div className="text__content__table">{props.corso.durata}</div>
+            <div className="text__content__table underline error__message">
                 {message}
             </div >
-            <div className="p-2 underline border-b border-gray-300  text-red-500">
-                <button className="m-1" onClick={() => {setErrDelete(false);}}> OK </button>
+            <div className="text__content__table underline error__message">
+                <button className="button__action error__message" onClick={() => {setErrDelete(false);}}> OK </button>
             </div >
         </>)
     }
     return (
         <>
-            <div className="p-1 border-b border-gray-300">{props.corso.corsodistudio}</div>
-            <div className="p-1 border-b border-gray-300">{props.corso.università}</div>
-            <div className="p-1 border-b border-gray-300">{props.corso.durata}</div>
-            <div className="p-1 underline border-b border-gray-300">
-                <Link to={`/dashboard/regolamenti/${props.corso.id}`} key={props.corso.id}> Visualizza </Link>
+            <div className="text__content__table">{props.corso.corsodistudio}</div>
+            <div className="text__content__table">{props.corso.università}</div>
+            <div className="text__content__table">{props.corso.durata}</div>
+            <div className="text__content__table underline">
+                <Link to={`/dashboard/regolamenti/${props.corso.id}`} key={props.corso.id} className='link'> Visualizza </Link>
             </div >
-            <div className="p-1 underline border-b border-gray-300">
-                <button className="m-1" onClick={deleteCDS}> Elimina </button>
+            <div className="text__content__table">
+                <button className="button__action" onClick={deleteCDS}> Elimina </button>
             </div >
         </>
     )

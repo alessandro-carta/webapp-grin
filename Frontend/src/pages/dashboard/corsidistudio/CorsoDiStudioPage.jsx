@@ -69,16 +69,15 @@ function CorsoDiStudioPage(){
         <NavbarPresidente />
         <div className="flex space-x-4 p-4 items-center justify-center">
           <p className="text-xl">Azioni: </p>
-          <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewRegolamento}> Crea un nuovo regolamento </button>
+          <button className="button__principale" onClick={createNewRegolamento}> Crea un nuovo regolamento </button>
         </div>
-        <p className='text-xl text-blue-800'>{corsoDiStudio.corsodistudio}</p>
+        <p className='text-xl title'>{corsoDiStudio.corsodistudio}</p>
         <p className="text-xl">{corsoDiStudio.università}</p>
         <p className="text-xl">Durata: {corsoDiStudio.durata}</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 p-5">
-          <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Anno Accademico</div>
-          <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
-          <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 p-5">
+          <div className="text__header__table">Anno Accademico</div>
+          <div className="text__header__table">Azioni</div>
           {regolamenti.map(regolamento => ( <Regolamento key={regolamento.id} regolamento={regolamento}/>))}           
         </div>
       </>

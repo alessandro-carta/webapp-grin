@@ -18,7 +18,7 @@ function FormChangePassword() {
         if(!formData.password || !passwordPattern.test(formData.password)){
             setFormErros({
                 ...formErrors,
-                password: "Inserisci una email valida"
+                password: "Inserisci una password valida"
             })
             return false;
         }
@@ -65,20 +65,20 @@ function FormChangePassword() {
 
     return(
         <>
-            <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg">
+            <div className="form__container">
                 <form onSubmit={handleSubmit}>
                     {/* Passowrd */}
                     <div className="mb-4">
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Inserisci la nuova password*</label>
+                        <label htmlFor="password" className="form__label">Inserisci la nuova password*</label>
                         <input
                             type="password"
                             id="password"
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="form__input"
                         />
-                        {formErrors.password && <p className="text-red-500">{formErrors.password}</p>}
+                        {formErrors.password && <p className="error__message">{formErrors.password}</p>}
                     </div>
                     <p className="text-base p-2">Deve contenerene almeno 8 caratteri, almeno una lettera maiuscola, almeno un numero e un carattere speciale.</p>
                     <p className="text-base p-2">* Campi obbligatori</p>
@@ -86,7 +86,7 @@ function FormChangePassword() {
                     <div className="mb-4">
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"
+                            className="w-full button__principale"
                         >
                             Cambia
                         </button>

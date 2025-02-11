@@ -8,7 +8,7 @@ function PasswordChangePage(){
     return(
         <>
             <div className="flex flex-col items-center gap-4 justify-center">
-                <p className="text-blue-800 text-4xl">Azione Richiesta: {pageTitle}</p>
+                <p className="title text-3xl">Azione Richiesta: {pageTitle}</p>
                 <FormChangePassword />
             </div>
         </>

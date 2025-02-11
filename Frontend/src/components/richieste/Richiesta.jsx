@@ -7,12 +7,12 @@ function Richiesta(props) {
     else linkRichiesta = `/dashboard/richiesta/${props.richiesta.id}`
     return (
         <>
-            { props.admin && <div className="p-1 border-b border-gray-300">{props.richiesta.università}</div> }
-            <div className="p-1 border-b border-gray-300">{props.richiesta.corsodistudio}</div>
-            <div className="p-1 border-b border-gray-300">{props.richiesta.annoaccademico}</div>
-            <div className="p-1 border-b border-gray-300">{props.richiesta.stato}</div>
-            <div className="p-1 underline border-b border-gray-300">
-                <Link to={linkRichiesta} key={props.richiesta.id}> Visualizza </Link>
+            { props.admin && <div className="text__content__table">{props.richiesta.università}</div> }
+            <div className="text__content__table">{props.richiesta.corsodistudio}</div>
+            <div className="text__content__table">{props.richiesta.annoaccademico}</div>
+            <div className="text__content__table">{props.richiesta.stato}</div>
+            <div className="text__content__table underline">
+                <Link to={linkRichiesta} key={props.richiesta.id} className='link'> Visualizza </Link>
             </div >
         </>
     )

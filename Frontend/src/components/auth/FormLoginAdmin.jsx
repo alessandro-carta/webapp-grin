@@ -68,37 +68,37 @@ function FormLoginAdmin() {
 
     return(
         <>
-            <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg">
+            <div className="form__container">
                 <form onSubmit={handleSubmit}>
                     {/* Passowrd */}
                     <div className="mb-4">
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password*</label>
+                        <label htmlFor="password" className="form__label">Password*</label>
                         <input
                             type="password"
                             id="password"
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="form__input"
                         />
-                        {formErrors.password && <p className="text-red-500">{formErrors.password}</p>}
+                        {formErrors.password && <p className="error__message">{formErrors.password}</p>}
                     </div>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"
+                            className="w-full button__principale"
                         >
                             Accedi
                         </button>
 
                         <Link
-                            className="text-blue-500 hover:text-blue-700"
+                            className="link"
                             to={'/'}
                         >
                             Annulla
                         </Link>
-                        {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
+                        {formErrors.result && <p className="error__message">{formErrors.result}</p>}
                     </div>
                 </form>
             </div>
