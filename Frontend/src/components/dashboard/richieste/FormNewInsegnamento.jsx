@@ -153,7 +153,7 @@ function FormNewInsegnamento(props){
         return true;
     }
     const checkSottoarea = (id) => {
-        if(id === "" || formData.cfutot <= 0){
+        if(id === "" || formData.cfu <= 0){
             setFormErros({
                 ...formErrors,
                 sottoaree: "Inserire i campi obbligatori"
@@ -173,7 +173,7 @@ function FormNewInsegnamento(props){
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        if(name === "area" || name === "sottoarea" || name === "CFU"){
+        if(name === "area" || name === "sottoarea" || name === "cfu"){
             setFormErros({
                 ...formErrors,
                 [name]: "aa",
@@ -269,76 +269,76 @@ function FormNewInsegnamento(props){
         for(let i = 0; i < duratacorso; i++) anni.push(i+1);
         return(
             <>
-                <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg">
+                <div className="form__container">
                     <form onSubmit={handleSubmit}>
                         {/* Nome insegnamento */}
                         <div className="mb-4">
-                            <label htmlFor="nomeInsegnamento" className="block text-sm font-medium text-gray-700">Nome insegnamento*</label>
+                            <label htmlFor="nomeInsegnamento" className="form__label">Nome insegnamento*</label>
                             <input
                                 type="text"
                                 id="nome"
                                 name="nome"
                                 value={formData.nome}
                                 onChange={handleChange}
-                                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="form__input"
                             />
-                            {formErrors.nome && <p className="text-red-500">{formErrors.nome}</p>}
+                            {formErrors.nome && <p className="error__message">{formErrors.nome}</p>}
                         </div>
                         {/* CFU Totali */}
                         <div className="mb-4">
-                            <label htmlFor="cfutot" className="block text-sm font-medium text-gray-700">CFU Totali*</label>
+                            <label htmlFor="cfutot" className="form__label">CFU Totali*</label>
                             <input
                                 type="number"
                                 id="cfutot"
                                 name="cfutot"
                                 value={formData.cfutot}
                                 onChange={handleChange}
-                                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="form__input"
                             />
-                            {formErrors.cfutot && <p className="text-red-500">{formErrors.cfutot}</p>}
+                            {formErrors.cfutot && <p className="error__message">{formErrors.cfutot}</p>}
                         </div>
                         {/* Settore */}
                         <div className="mb-4">
-                            <label htmlFor="settore" className="block text-sm font-medium text-gray-700">Settore*</label>
+                            <label htmlFor="settore" className="form__label">Settore*</label>
                             <select
                                 id="settore"
                                 name="settore"
                                 value={formData.settore}
                                 onChange={handleChange}
-                                className="p-2 w-full border border-gray-300 rounded-lg"
+                                className="form__select"
                             >
                                 <option value="">Seleziona un settore</option>
                                 {settori.map(s => (
                                     <option key={s.id} value={s.id}>{s.id}</option> ))}
                             </select>
-                            {formErrors.settore && <p className="text-red-500">{formErrors.settore}</p>}
+                            {formErrors.settore && <p className="error__message">{formErrors.settore}</p>}
                         </div>
                         {/* Anno Erogazione */}
                         <div className="mb-4">
-                            <label htmlFor="annoerogazione" className="block text-sm font-medium text-gray-700">Anno di erogazione*</label>
+                            <label htmlFor="annoerogazione" className="form__label">Anno di erogazione*</label>
                             <select
                                 id="annoerogazione"
                                 name="annoerogazione"
                                 value={formData.annoerogazione}
                                 onChange={handleChange}
-                                className="p-2 w-full border border-gray-300 rounded-lg"
+                                className="form__select"
                             >
                                 <option value="">Seleziona un anno di erogazione</option>
                                 {anni.map(a => (
                                     <option key={a} value={a}>{a}</option> ))}
                             </select>
-                            {formErrors.annoerogazione && <p className="text-red-500">{formErrors.annoerogazione}</p>}
+                            {formErrors.annoerogazione && <p className="error__message">{formErrors.annoerogazione}</p>}
                         </div>
                         {/* Aggiungi una sottoarea all'insegnamento */}
                         <div className="mb-4">
                             <div className="flex flex-col items-center">
-                                <label htmlFor="insegnamentosottoarea" className="block text-sm font-medium text-gray-700">Aggiungi sottoarea: </label>
+                                <label htmlFor="insegnamentosottoarea" className="form__label">Aggiungi sottoarea: </label>
                                 <select
                                     id="area"
                                     name="area"
                                     value={formData.area}
                                     onChange={handleChange}
-                                    className="p-2 w-full border border-gray-300 rounded-lg" 
+                                    className="form__select mb-2" 
                                 >
                                     <option value="">Seleziona area</option>
                                     {aree.map(a => ( <option key={a.id} value={a.id}>{a.nome}</option> ))}
@@ -349,7 +349,7 @@ function FormNewInsegnamento(props){
                                         name="sottoarea"
                                         value={formData.sottoarea}
                                         onChange={handleChange}
-                                        className="p-2 mt-2 w-full border border-gray-300 rounded-lg"
+                                        className="form__select mb-2"
                                     >
                                         <option value="">Seleziona sottoarea*</option>
                                         {sottoaree.map(s => ( <option key={s.id} value={s.id+"-"+s.nome}>{s.nome}</option> ))}
@@ -360,24 +360,24 @@ function FormNewInsegnamento(props){
                                         name="cfu"
                                         value={formData.cfu}
                                         onChange={handleChange}
-                                        className="p-2 border mt-2 w-full border-gray-300 rounded-lg"
+                                        className="form__input mb-4"
                                         placeholder="CFU*"
                                     />
-                                    <button type="button" className="w-full mt-2 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700" onClick={addNewInsSottoarea}>
+                                    <button type="button" className="button__principale" onClick={addNewInsSottoarea}>
                                         Aggiungi
                                     </button>
                                 </>}
                             </div>
-                            {formErrors.sottoaree && <p className="text-red-500">{formErrors.sottoaree}</p>}
+                            {formErrors.sottoaree && <p className="error__message">{formErrors.sottoaree}</p>}
                         </div>
                         
                         {/* Elenco delle sottoarea */}
                         <div className="mb-4">
-                            {formData.sottoaree.length != 0 && <label htmlFor="settore" className="block text-sm font-medium text-gray-700">Sottoaree: </label>}
+                            {formData.sottoaree.length != 0 && <label htmlFor="settore" className="form__label">Sottoaree: </label>}
                             {formData.sottoaree.map((elemento, index) => ( 
                                 <div className="flex flex-col md:flex-row justify-center items-center p-2">
                                     <p className="text-base p-2" key={index}>{elemento.nome} (CFU: {elemento.cfu})</p> 
-                                    <button type="button" className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700" onClick={() => deleteInsSottoarea(elemento.id)}>
+                                    <button type="button" className="button__action" onClick={() => deleteInsSottoarea(elemento.id)}>
                                         Elimina
                                     </button>
                                 </div>
@@ -386,22 +386,19 @@ function FormNewInsegnamento(props){
                         <p className="text-base p-2">* Campi obbligatori</p>
                         {/* Bottone di invio e annulla */}
                         <div className="mb-4">
-                            <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700">
+                            <button type="submit" className="w-full button__principale">
                                 CREA 
                             </button>
-                            <Link className="text-blue-500 hover:text-blue-700" to={`/dashboard/richiesta/${props.richiesta}`}>
+                            <Link className="link" to={`/dashboard/richiesta/${props.richiesta}`}>
                                 Annulla
                             </Link>
-                            {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
+                            {formErrors.result && <p className="error__message">{formErrors.result}</p>}
                         </div>
                     </form>
                 </div>
-                
             </>
         )
     }
-    
-
 }
 
 export default FormNewInsegnamento;

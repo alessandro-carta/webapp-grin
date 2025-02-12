@@ -117,51 +117,52 @@ function FormUpdateSottoarea(props) {
     if(loading) return <p>LOADING...</p>
     return(
         <>
-            <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg">
+            <div className="form__container">
                 <form onSubmit={handleSubmit}>
                     {/* Nome */}
                     <div className="mb-4">
-                        <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome*</label>
+                        <label htmlFor="nome" className="form__label">Nome*</label>
                         <input
                             type="text"
                             id="nome"
                             name="nome"
                             value={formData.nome}
                             onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="form__input"
                         />
-                        {formErrors.nome && <p className="text-red-500">{formErrors.nome}</p>}
+                        {formErrors.nome && <p className="error__message">{formErrors.nome}</p>}
                     </div>
                     {/* Area */}
                     <div className="mb-4">
-                        <label htmlFor="area" className="block text-sm font-medium text-gray-700">Area*</label>
+                        <label htmlFor="area" className="form__label">Area*</label>
                         <select
                             id="area"
                             name="area"
                             value={formData.area}
                             onChange={handleChange}
+                            className="form__select"
                         >
                             {aree.map(area => (
                                 <option key={area.id} value={area.id}>{area.nome}</option> ))}
                         </select>
-                        {formErrors.area && <p className="text-red-500">{formErrors.area}</p>}
+                        {formErrors.area && <p className="error__message">{formErrors.area}</p>}
                     </div>
                     {/* Bottone di invio e annulla */}
                     <p className="text-base p-2">* Campi obbligatori</p>
                     <div className="mb-4">
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"
+                            className="w-full button__principale"
                         >
                             MODIFICA
                         </button>
                         <Link
-                            className="text-blue-500 hover:text-blue-700"
+                            className="link"
                             to={`/sottoaree/${props.sottoarea.area}/?Visual=admin`}
                         >
                             Annulla
                         </Link>
-                        {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
+                        {formErrors.result && <p className="error__message">{formErrors.result}</p>}
                     </div>
                 </form>
             </div>

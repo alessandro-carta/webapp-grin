@@ -92,15 +92,12 @@ function RichiestePage() {
         </select>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-5 p-5">
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Università</div>
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Corso di studio</div>
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Anno accademico</div>
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Stato</div>
-            <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
-
-            {richieste.map(r => (
-                <Richiesta key={r.id} richiesta={r} admin={true}/>
-            ))}           
+            <div className="text__header__table">Università</div>
+            <div className="text__header__table">Corso di studio</div>
+            <div className="text__header__table">Anno accademico</div>
+            <div className="text__header__table">Stato</div>
+            <div className="text__header__table">Richiesta</div>
+            {richieste.map(r => ( <Richiesta key={r.id} richiesta={r} admin={true}/> ))}           
         </div>
     </>
   )

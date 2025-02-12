@@ -26,27 +26,23 @@ function Bollino(props){
     let btnRevoca = null;
     if(props.bollino.erogato){
         if(props.admin) linkRichiesta = <>
-            <Link to={`/richiesta/${props.bollino.richiesta}`} key={props.bollino.id}> Visualizza </Link>
+            <Link to={`/richiesta/${props.bollino.richiesta}`} key={props.bollino.id} className="link"> Visualizza </Link>
         </>;
         else linkRichiesta = <>
-            <Link to={`/dashboard/richiesta/${props.bollino.richiesta}`} key={props.bollino.id}> Visualizza </Link>
+            <Link to={`/dashboard/richiesta/${props.bollino.richiesta}`} key={props.bollino.id} className="link"> Visualizza </Link>
         </>;
         btnRevoca = <>
-            <button className="m-1" onClick={invalidBollino}> Revoca </button>
+            <button className="button__action" onClick={invalidBollino}> Revoca </button>
         </>;
     }
     return (
         <>
-            { props.admin && <div className="p-1 border-b border-gray-300">{props.bollino.università}</div> }
-            <div className="p-1 border-b border-gray-300">{props.bollino.corsodistudio}</div>
-            <div className="p-1 border-b border-gray-300">{props.bollino.annoaccademico}</div>
-            <div className="p-1 border-b border-gray-300">{props.bollino.erogato ? "Erogato" : "Revocato"}</div>
-            <div className="p-1 underline border-b border-gray-300">
-                {linkRichiesta}
-            </div>
-            { props.admin && <div className="p-1 underline border-b border-gray-300">
-                {btnRevoca}
-            </div > }
+            { props.admin && <div className="text__content__table"> {props.bollino.università} </div> }
+            <div className="text__content__table">{props.bollino.corsodistudio}</div>
+            <div className="text__content__table">{props.bollino.annoaccademico}</div>
+            <div className="text__content__table">{props.bollino.erogato ? "Erogato" : "Revocato"}</div>
+            <div className="text__content__table underline"> {linkRichiesta} </div>
+            { props.admin && <div className="text__content__table"> {btnRevoca} </div > }
         </>
     )
 

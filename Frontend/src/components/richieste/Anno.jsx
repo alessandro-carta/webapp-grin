@@ -48,11 +48,9 @@ function Anno(props){
         ))}
     return (
         <>
-            <div className="border p-1 m-2 border-gray-300">
-                <p className="text-2xl text-blue-800" onClick={showDetailAnno}>Insegnamenti Anno: {props.anno} {clickedAnno ? '-' : '+'}</p>
-                <div className="flex flex-wrap items-start justify-center md:justify-start">
-                    {component}
-                </div>
+            <div className="anno__container">
+                <p className="text-2xl title" onClick={showDetailAnno}>Insegnamenti Anno: {props.anno} {clickedAnno ? '-' : '+'}</p>
+                <div className="flex flex-wrap items-start justify-center"> {component} </div>
             </div>
         </>
     )

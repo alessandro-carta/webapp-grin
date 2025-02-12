@@ -27,18 +27,17 @@ function Regola(props) {
     if (isDeleted) return null
     return (
         <>
-            <div className="p-1 border-b border-gray-300 md:col-span-2">{props.regola.descrizione}</div>
+            <div className="text__content__table md:col-span-2">{props.regola.descrizione}</div>
             {/* Visualizzazione nel caso di modifiche al regolamento*/}
             {!props.check && props.admin &&
-            <div className="p-1 underline border-b border-gray-300">
-                <button className="m-1" onClick={deleteRegola}> Elimina </button>
+            <div className="text__content__table">
+                <button className="button__action" onClick={deleteRegola}> Elimina </button>
             </div> }
             {/* Visualizzazione nel caso di controllo requisiti*/}
             {props.check &&
-            <div className="p-1 border-b border-gray-300">
-                <p className="text-blue-700">Esito: {props.regola.check ? "Positivo" : "Negativo"}</p>
+            <div className="text__content__table">
+                <p className="text-base subtitle">Esito: {props.regola.check ? "Positivo" : "Negativo"}</p>
             </div> }
-            
         </>
     )
 }

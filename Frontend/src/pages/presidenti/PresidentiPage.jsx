@@ -44,17 +44,14 @@ function PresidentiPage() {
       <NavbarGrin />
       <div className="flex space-x-4 p-4 items-center justify-center">
         <p className="text-xl">Azioni: </p>
-        <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewPresidente}> Crea nuovo account </button>
+        <button className="button__principale" onClick={createNewPresidente}> Crea nuovo account </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 p-5">
-          <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Presidente</div>
-          <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Email</div>
-          <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Università</div>
-          <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800"></div>
-
-          {presidenti.map(p => (
-              <Presidente key={p.id} presidente={p}/>
-          ))}           
+          <div className="text__header__table">Presidente</div>
+          <div className="text__header__table">Email</div>
+          <div className="text__header__table">Università</div>
+          <div className="text__header__table">Azioni</div>
+          {presidenti.map(p => ( <Presidente key={p.id} presidente={p}/> ))}           
       </div>
     </>
   )

@@ -80,7 +80,7 @@ function ControlloRegolePresidentePage(){
     // btn per inviare la richiesta
     let btnSendRichiesta = null;
     if(resultErogazione() && statoRichiesta === 'Bozza') btnSendRichiesta = <>
-        <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={sendRichiesta}> Invia Richiesta </button>
+        <button className="button__principale" onClick={sendRichiesta}> Invia Richiesta </button>
     </>;
 
     const [pageTitle, setPageTitle] = useState('Controllo delle regole');
@@ -91,20 +91,20 @@ function ControlloRegolePresidentePage(){
         <>
             <NavbarPresidente />
             <div className="grid grid-cols-1 md:grid-cols-3 p-5">
-                <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800 md:col-span-2">Descrizione testuale</div>
-                <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div>
+                <div className="text__header__table md:col-span-2">Descrizione testuale</div>
+                <div className="text__header__table"></div>
                 {regole.map(r => (
                     <Regola key={r.idRegola} regola={r} check={true}/>
                 ))}
             </div>
-            <p className="text-2xl text-blue-700">Il corso di studio {checkAnvur ? "è" : "non è"} accreditato all'ANVUR</p>
-            <p className="text-2xl text-blue-700">La richiesta {resultErogazione() ? "è" : "non è"} valida</p>
+            <p className="text-xl subtitle">Il corso di studio {checkAnvur ? "è" : "non è"} accreditato all'ANVUR</p>
+            <p className="text-xl subtitle">La richiesta {resultErogazione() ? "è" : "non è"} valida</p>
 
             <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
                 <p className="text-xl">Azioni: </p>
                 {btnSendRichiesta}
             </div>
-            <Link className="text-blue-500 hover:text-blue-700" to={`/dashboard/richiesta/${idRichiesta}`}>
+            <Link className="link" to={`/dashboard/richiesta/${idRichiesta}`}>
                     Annulla
             </Link>
             

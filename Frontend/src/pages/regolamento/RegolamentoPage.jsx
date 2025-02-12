@@ -60,8 +60,8 @@ function RegolamentoPage(){
     if(admin) azioni = <>
         <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
             <p className="text-xl">Azioni: </p>
-            <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewRegolaCFU}> Aggiungi una regola per CFU </button>
-            <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewRegolaCount}> Aggiungi una regola per numero </button>
+            <button className="button__principale" onClick={createNewRegolaCFU}> Aggiungi una regola per CFU </button>
+            <button className="button__principale" onClick={createNewRegolaCount}> Aggiungi una regola per numero </button>
         </div>
     </>;
     else azioni = null;
@@ -85,12 +85,9 @@ function RegolamentoPage(){
                 </select>
             </div>
             <div className={`grid grid-cols-1 ${admin ? 'md:grid-cols-3' : 'md:grid-cols-2'} p-5`}>
-                <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800 md:col-span-2">Descrizione testuale</div>
-                {admin && <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div> }
-
-                {regoleFil.map(r => (
-                    <Regola key={r.id} regola={r} check={false} admin={admin}/>
-                ))}       
+                <div className="text__header__table md:col-span-2">Descrizione testuale</div>
+                {admin && <div className="text__header__table">Azioni</div> }
+                {regoleFil.map(r => ( <Regola key={r.id} regola={r} check={false} admin={admin}/> ))}       
             </div>
         </>
     )

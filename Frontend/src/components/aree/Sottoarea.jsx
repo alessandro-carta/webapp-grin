@@ -37,24 +37,22 @@ function Sottoarea(props) {
     if (isDeleted) return null
     if(errDelete){
         return (<>
-            <div className="p-2 border-b border-gray-300 text-red-500">{props.sottoarea.id}</div>
-            <div className="p-2 border-b border-gray-300 text-red-500">{props.sottoarea.nome}</div>
-            <div className="p-2 underline border-b border-gray-300 text-red-500">
-                {message}
-            </div >
-            <div className="p-2 underline border-b border-gray-300  text-red-500">
-                <button className="m-1" onClick={() => {setErrDelete(false);}}> OK </button>
+            <div className="text__content__table error__message">{props.sottoarea.id}</div>
+            <div className="text__content__table error__message">{props.sottoarea.nome}</div>
+            <div className="text__content__table error__message underline"> {message} </div >
+            <div className="text__content__table">
+                <button className="button__action error__message" onClick={() => {setErrDelete(false);}}> OK </button>
             </div >
         </>)
     }
-
     return (
         <>
-            <div className="p-2 border-b border-gray-300">{props.sottoarea.id}</div>
-            <div className="p-2 border-b border-gray-300">{props.sottoarea.nome}</div>
-            { props.admin && <div className="p-2 underline border-b border-gray-300">
-                <button className="m-1" onClick={updateSottoarea}> Modifica </button>
-                <button className="m-1" onClick={deleteSottoarea}> Elimina </button>
+            <div className="text__content__table">{props.sottoarea.id}</div>
+            <div className="text__content__table">{props.sottoarea.nome}</div>
+            { props.admin && 
+            <div className="text__content__table">
+                <button className="button__action" onClick={updateSottoarea}> Modifica </button>
+                <button className="button__action" onClick={deleteSottoarea}> Elimina </button>
             </div > }
         </>
     )

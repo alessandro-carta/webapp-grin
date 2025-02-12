@@ -39,28 +39,27 @@ function Area(props) {
     if (isDeleted) return null
     if(errDelete){
         return (<>
-            <div className="p-2 border-b border-gray-300 text-red-500">{props.area.id}</div>
-            <div className="p-2 border-b border-gray-300 text-red-500">{props.area.nome}</div>
-            <div className="p-2 underline border-b border-gray-300 text-red-500">
-                {message}
-            </div >
-            <div className="p-2 underline border-b border-gray-300  text-red-500">
-                <button className="m-1" onClick={() => {setErrDelete(false);}}> OK </button>
+            <div className="text__content__table error__message">{props.area.id}</div>
+            <div className="text__content__table error__message">{props.area.nome}</div>
+            <div className="text__content__table error__message underline">{message}</div >
+            <div className="text__content__table">
+                <button className="button__action error__message" onClick={() => {setErrDelete(false);}}> OK </button>
             </div >
         </>)
     }
 
     return (
         <>
-            <div className="p-2 border-b border-gray-300">{props.area.id}</div>
-            <div className="p-2 border-b border-gray-300">{props.area.nome}</div>
-            <div className="p-2 underline border-b border-gray-300">
-                <Link to={`/sottoaree/${props.area.id}/?Visual=${props.admin ? "admin" : "presidente"}`}> Elenco sottoaree </Link>
+            <div className="text__content__table">{props.area.id}</div>
+            <div className="text__content__table">{props.area.nome}</div>
+            <div className="text__content__table underline">
+                <Link to={`/sottoaree/${props.area.id}/?Visual=${props.admin ? "admin" : "presidente"}`} className='link'> Elenco sottoaree </Link>
             </div >
 
-            {props.admin && <div className="p-2 underline border-b border-gray-300">
-                <button className="m-1" onClick={updateArea}> Modifica </button>
-                <button className="m-1" onClick={deleteArea}> Elimina </button>
+            {props.admin && 
+            <div className="text__content__table">
+                <button className="button__action" onClick={updateArea}> Modifica </button>
+                <button className="button__action" onClick={deleteArea}> Elimina </button>
             </div>} 
         </>
     )

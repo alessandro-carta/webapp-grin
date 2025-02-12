@@ -8,12 +8,12 @@ function Presidente(props) {
     
     return (
         <>
-            <div className="p-1 border-b border-gray-300">{props.presidente.nome} {props.presidente.cognome}</div>
-            <div className="p-1 border-b border-gray-300">{props.presidente.email}</div>
-            <div className="p-1 border-b border-gray-300">{props.presidente.università}</div>
-            <div className="p-1 underline border-b border-gray-300">
-                <Link to={`/presidenti/${props.presidente.id}`} key={props.presidente.id}> Visualizza </Link>
-                <button className="m-1" onClick={updatePresidente}> Modifica </button>
+            <div className="text__content__table">{props.presidente.nome} {props.presidente.cognome}</div>
+            <div className="text__content__table">{props.presidente.email}</div>
+            <div className="text__content__table">{props.presidente.università}</div>
+            <div className="text__content__table underline">
+                <Link to={`/presidenti/${props.presidente.id}`} key={props.presidente.id} className='link'> Visualizza </Link>
+                <button className="button__action" onClick={updatePresidente}> Modifica </button>
             </div >
         </>
     )

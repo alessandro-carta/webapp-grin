@@ -40,14 +40,14 @@ function Insegnamento(props){
     }
     if(isDeleted) return null;
     return(
-        <div className="flex-1 bg-gray-100 rounded-lg p-4 m-2 max-w-[250px] min-w-[250px] w-full sm:w-auto hover:border border-blue-600">
+        <div className="card__insegnamento w-full sm:w-auto">
             <p className="text-xl font-medium">{props.insegnamento.nome}</p> 
             <p className="text-xl">{props.insegnamento.cfutot} CFU ({props.insegnamento.settore})</p>
-            {props.insegnamento.sottoaree.length != 0 && <p className="text-base text-blue-800" onClick={showDetailSottoaree}>Sottoaree {clickedSottoaree ? '-' : '+'}</p>}
+            {props.insegnamento.sottoaree.length != 0 && <p className="text-base link" onClick={showDetailSottoaree}>Sottoaree {clickedSottoaree ? '-' : '+'}</p>}
             {component}
             {props.edit && <div>
-                <button className="m-1" onClick={updateInsegnamento}> Modifica </button>
-                <button className="m-1" onClick={deleteInsegnamento}> Elimina </button>
+                <button className="link p-1" onClick={updateInsegnamento}> Modifica </button>
+                <button className="link p-1" onClick={deleteInsegnamento}> Elimina </button>
             </div>}
         </div>
     )

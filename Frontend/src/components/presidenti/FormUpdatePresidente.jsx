@@ -135,76 +135,76 @@ function FormUpdatePresidente(props) {
 
     return(
         <>
-            <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg">
+            <div className="form__container">
                 <form onSubmit={handleSubmit}>
                     {/* Nome */}
                     <div className="mb-4">
-                        <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome*</label>
+                        <label htmlFor="nome" className="form__label">Nome*</label>
                         <input
                             type="text"
                             id="nome"
                             name="nome"
                             value={formData.nome}
                             onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="form__input"
                         />
-                        {formErrors.nome && <p className="text-red-500">{formErrors.nome}</p>}
+                        {formErrors.nome && <p className="error__message">{formErrors.nome}</p>}
                     </div>
                     {/* Cognome */}
                     <div className="mb-4">
-                        <label htmlFor="cognome" className="block text-sm font-medium text-gray-700">Cognome*</label>
+                        <label htmlFor="cognome" className="form__label">Cognome*</label>
                         <input
                             type="text"
                             id="cognome"
                             name="cognome"
                             value={formData.cognome}
                             onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="form__input"
                         />
-                        {formErrors.cognome && <p className="text-red-500">{formErrors.cognome}</p>}
+                        {formErrors.cognome && <p className="error__message">{formErrors.cognome}</p>}
                     </div>
                     {/* Email */}
                     <div className="mb-4">
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email*</label>
+                        <label htmlFor="email" className="form__label">Email*</label>
                         <input
                             type="text"
                             id="email"
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="form__input"
                         />
-                        {formErrors.email && <p className="text-red-500">{formErrors.email}</p>}
+                        {formErrors.email && <p className="error__message">{formErrors.email}</p>}
                     </div>
                     {/* Università */}
                     <div className="mb-4">
-                        <label htmlFor="università" className="block text-sm font-medium text-gray-700">Università*</label>
+                        <label htmlFor="università" className="form__label">Università*</label>
                         <input
                             type="text"
                             id="università"
                             name="università"
                             value={formData.università}
                             onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="form__input"
                         />
-                        {formErrors.università && <p className="text-red-500">{formErrors.università}</p>}
+                        {formErrors.università && <p className="error__message">{formErrors.università}</p>}
                     </div>
                     <p className="text-base p-2">* Campi obbligatori</p>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700"
+                            className="w-full button__principale"
                         >
                             Modifica account
                         </button>
                         <Link
-                            className="text-blue-500 hover:text-blue-700"
+                            className="link"
                             to={'/presidenti'}
                         >
                             Annulla
                         </Link>
-                        {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
+                        {formErrors.result && <p className="error__message">{formErrors.result}</p>}
                     </div>
                 </form>
             </div>

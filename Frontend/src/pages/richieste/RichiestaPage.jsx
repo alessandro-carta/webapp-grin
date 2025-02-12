@@ -73,9 +73,9 @@ function RichiestaPage() {
                 <NavbarGrin />
                 <div className="flex space-x-4 p-4 items-center justify-center">
                     <p className="text-xl">Azioni: </p>
-                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={checkRichiesta}> Controlla regole </button>
+                    <button className="button__principale" onClick={checkRichiesta}> Controlla regole </button>
                 </div>
-                <p className="text-xl text-blue-800">{richiesta.corsodistudio} - Regolamento AA: {richiesta.annoaccademico}</p>
+                <p className="text-xl title">{richiesta.corsodistudio} - Regolamento AA: {richiesta.annoaccademico}</p>
                 <p className="text-xl">Data richiesta: {richiesta.data.getDate()}/{richiesta.data.getMonth()+1}/{richiesta.data.getFullYear()} - Stato: {richiesta.stato}</p>
                 <p className="text-xl">{richiesta.università} - {richiesta.email}</p>
                 <p className="text-xl">Durata corso: {richiesta.duratacorso} - Totale CFU: {totCFU}</p>

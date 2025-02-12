@@ -1,8 +1,9 @@
 import NavbarGrin from '../../components/NavbarGrin.jsx';
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 
 function PresidentePage() {
+    const navigate = useNavigate();
     const { idPresidente } = useParams();
     const [presidente, setPresidente] = useState();
     const [loading, setLoading] = useState(true);
@@ -49,7 +50,7 @@ function PresidentePage() {
             // accesso non consentito
             if(response.status == 403) navigate('/');
             // risposta con successo
-            if(response.ok) setPresidente(data)
+            if(response.ok) navigate('/presidenti');
             
         } catch (error) { console.log(error); }
     }
@@ -70,7 +71,7 @@ function PresidentePage() {
             // accesso non consentito
             if(response.status == 403) navigate('/');
             // risposta con successo
-            if(response.ok) setPresidente(data)
+            if(response.ok) navigate('/presidenti');
             
         } catch (error) { console.log(error); }
     }
@@ -79,7 +80,7 @@ function PresidentePage() {
     return (
         <>
             <NavbarGrin />
-            <p className='text-xl text-blue-800'>{presidente.università}</p>
+            <p className='text-2xl title'>{presidente.università}</p>
             <p className="text-xl">Presidente: {presidente.nome} {presidente.cognome}</p>
             <p className="text-xl">Contatto: {presidente.email}</p>
             <p className="text-xl">Password per primo accesso: {presidente.firstpassword}</p>
@@ -87,8 +88,8 @@ function PresidentePage() {
             <div className="flex space-x-4 p-4 items-center justify-center">
                 <p className="text-xl">Azioni: </p>
                 { presidente.attivo == 1 ? 
-                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={offPresidente}> Disabilita account </button> :
-                    <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={onPresidente}> Riattiva account </button> }
+                    <button className="button__principale" onClick={offPresidente}> Disabilita account </button> :
+                    <button className="button__principale" onClick={onPresidente}> Riattiva account </button> }
             </div>
         </>
     )

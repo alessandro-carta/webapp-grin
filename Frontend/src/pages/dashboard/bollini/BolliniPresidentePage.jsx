@@ -60,10 +60,10 @@ function BolliniPresidentePage(){
                 </select>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 p-5">
-                <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Corso Di Studio</div>
-                <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Anno Accademico</div>
-                <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Stato</div>
-                <div className="font-semibold text-lg text-blue-800 p-1 border-b-2 border-blue-800">Regolamento</div>
+                <div className="text__header__table">Corso Di Studio</div>
+                <div className="text__header__table">Anno Accademico</div>
+                <div className="text__header__table">Stato</div>
+                <div className="text__header__table">Regolamento</div>
                 { bollini.map(bollino => ( <Bollino key={bollino.id} bollino={bollino} admin={false}/> )) }
             </div>
         </>

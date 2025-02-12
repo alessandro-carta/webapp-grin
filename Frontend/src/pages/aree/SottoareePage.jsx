@@ -77,19 +77,17 @@ function SottoareePage(){
     return(
         <>
             {navbar}
-            <p className='text-4xl text-blue-800 p-2'>{pageTitle}</p>
-            { admin && <div className="flex space-x-4 p-4 items-center justify-center">
+            <p className='text-4xl title'>{pageTitle}</p>
+            { admin && 
+            <div className="flex space-x-4 p-4 items-center justify-center">
                 <p className="text-xl">Azioni: </p>
-                <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" onClick={createNewSottoArea}> Nuova Sottoarea </button>
+                <button className="button__principale" onClick={createNewSottoArea}> Nuova Sottoarea </button>
             </div>}
             <div className={`grid grid-cols-1 ${admin ? 'md:grid-cols-3' : 'md:grid-cols-2'} p-5`}>
-                <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800">Sigla</div>
-                <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800">Nome</div>
-                { admin && <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800"></div> }
-
-                {sottoaree.map(s => (
-                    <Sottoarea key={s.id} sottoarea={s} admin={admin}/>
-                ))}           
+                <div className="text__header__table">Sigla</div>
+                <div className="text__header__table">Nome</div>
+                { admin && <div className="text__header__table">Azioni</div> }
+                {sottoaree.map(s => ( <Sottoarea key={s.id} sottoarea={s} admin={admin}/> ))}           
             </div>
 
         </>

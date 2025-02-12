@@ -208,16 +208,16 @@ function FormNewRegola(props) {
             <>
                 {/* Numero dei CFU */}
                 <div className="mb-4">
-                    <label htmlFor="cfu" className="block text-sm font-medium text-gray-700">Numero minimo di CFU *</label>
+                    <label htmlFor="cfu" className="form__label">Numero minimo di CFU *</label>
                     <input
                         type="number"
                         id="cfu"
                         name="cfu"
                         value={formData.cfu}
                         onChange={handleChange}
-                        className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="form__input"
                     />
-                    {formErrors.input && <p className="text-red-500">{formErrors.input}</p>}
+                    {formErrors.input && <p className="error__message">{formErrors.input}</p>}
                 </div>
             </>
     }
@@ -226,54 +226,53 @@ function FormNewRegola(props) {
             <>
                 {/* Numero dei CFU */}
                 <div className="mb-4">
-                    <label htmlFor="cfu" className="block text-sm font-medium text-gray-700">Numero minimo di CFU *</label>
+                    <label htmlFor="cfu" className="form__label">Numero minimo di CFU *</label>
                     <input
                         type="number"
                         id="cfu"
                         name="cfu"
                         value={formData.cfu}
                         onChange={handleChange}
-                        className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="form__input"
                     />
                     {formErrors.input && <p className="text-red-500">{formErrors.input}</p>}
                 </div>
                 {/* Numero del count */}
                 <div className="mb-4">
-                    <label htmlFor="count" className="block text-sm font-medium text-gray-700">Numero minimo *</label>
+                    <label htmlFor="count" className="form__label">Numero minimo *</label>
                     <input
                         type="number"
                         id="count"
                         name="count"
                         value={formData.count}
                         onChange={handleChange}
-                        className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="form__input"
                     />
-                    {formErrors.input && <p className="text-red-500">{formErrors.input}</p>}
+                    {formErrors.input && <p className="error__message">{formErrors.input}</p>}
                 </div>
             </>
     }
     return (
         <>
-            <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg">
+            <div className="form__container">
                 <form onSubmit={handleSubmit}>
                     {component}
-                    
                     {/* Descrizione */}
                     <div className="mb-4">
-                        <label htmlFor="descrizione" className="block text-sm font-medium text-gray-700">Descrizione *</label>
+                        <label htmlFor="descrizione" className="form__label">Descrizione *</label>
                         <textarea
                             type="text"
                             id="descrizione"
                             name="descrizione"
                             value={formData.descrizione}
                             onChange={handleChange}
-                            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="form__input"
                         />
-                        {formErrors.descrizione && <p className="text-red-500">{formErrors.descrizione}</p>}
+                        {formErrors.descrizione && <p className="error__message">{formErrors.descrizione}</p>}
                     </div>
                     {/* Selezione il tipo della regola */}
                     <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700">Tipologia della regola: *</label>
+                        <label className="form__label">Tipologia della regola: *</label>
                         {tipologie.map(tipo => (
                             <div key={tipo} className="flex items-center space-x-2 mb-2">
                                 <input 
@@ -285,14 +284,14 @@ function FormNewRegola(props) {
                                     onChange={handleChange}
                                     className="h-4 w-4"
                                 />
-                                <label htmlFor={tipo} className="block text-sm font-medium text-gray-700">Regola per {tipo}</label>
+                                <label htmlFor={tipo} className="block text-sm font-medium">Regola per {tipo}</label>
                             </div>
                         ))}
-                        {formErrors.tipologia && <p className="text-red-500">{formErrors.tipologia}</p>}
+                        {formErrors.tipologia && <p className="error__message">{formErrors.tipologia}</p>}
                     </div>
                     {/* Selezione l'elenco delle aree/sottoaree/settori */}
                     <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700">Scegli: *</label>
+                        <label className="form__label">Scegli: *</label>
                         <div className="flex flex-wrap space-x-4">
                             {sel.map((item) => (
                                 <div key={item.id} className="flex items-center">
@@ -305,24 +304,24 @@ function FormNewRegola(props) {
                                     onChange={handleChange}
                                     className="mr-2"
                                 />
-                                <label htmlFor={item.id}>{item.nome}</label>
+                                <label htmlFor={item.id} className="block text-sm font-medium">{item.nome}</label>
                                 </div>
                             ))}
                         </div>
-                        {formErrors.selezioni && <p className="text-red-500">{formErrors.selezioni}</p>}
+                        {formErrors.selezioni && <p className="error__message">{formErrors.selezioni}</p>}
                     </div>
                     <button 
                         type="submit"
-                        className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700" >
-                        Aggiungi Regola
+                        className="w-full button__principale" >
+                        CREA
                     </button>
                     <Link
-                        className="text-blue-500 hover:text-blue-700"
+                        className="link"
                         to={`/regolamento/?Visual=admin`}
                     >
                         Annulla
                     </Link>
-                    {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
+                    {formErrors.result && <p className="error__message">{formErrors.result}</p>}
                 </form>
             </div>
         </>
