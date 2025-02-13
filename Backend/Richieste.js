@@ -62,13 +62,12 @@ export async function handleGetRichieste(req, res) {
         // risposta con successo
         const richieste = await getRichieste();
         return res.status(200).json({
-            success: true,
+            message: "Elenco delle richieste",
             data: richieste
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante il recupero delle richieste .",
             error: error.message || error
         });
@@ -80,14 +79,14 @@ export async function handleGetRichiesta(req, res) {
     try {
         // risposta con successo
         const richiesta = await getRichiesta(id);
+        if(richiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
         return res.status(200).json({
-            success: true,
+            message: "Richiesta",
             data: richiesta
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante il recupero della richiesta .",
             error: error.message || error
         });
@@ -99,17 +98,15 @@ export async function handleGetInsegnamenti(req, res) {
         // risposta con successo
         const insegnamenti = await getInsegnamentiFull(regolamento);
         return res.status(200).json({
-            success: true,
+            message: "Elenco insegnamenti",
             data: insegnamenti
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante il recupero degli insegnamenti.",
             error: error.message || error
         });
-        
     }
 }
 export async function handleCheckRegole(req, res) {
@@ -118,13 +115,17 @@ export async function handleCheckRegole(req, res) {
         // risposta con successo
         const result = await checkRegole(richiesta);
         return res.status(200).json({
-            success: true,
+            message: "Risultato controllo regole",
             data: result
         });
     } catch (error) {
+        if(error.code == 404){
+            return res.status(404).json({
+                message: error.message,
+            });
+        }
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante il recupero della richiesta .",
             error: error.message || error
         });
@@ -136,20 +137,20 @@ export async function handleInvalidRichiesta(req, res) {
     try {
         // risposta con successo
         const richiesta = await getRichiesta(id);
+        if(richiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
         if(richiesta.stato == 'Elaborazione'){
             const result = await updateRichiesta(id, 'Invalidata');
             return res.status(204).json({
-                success: true
+                message: "Richiesta invalidata",
+                data: id
             });
         }
         return res.status(400).json({
-            success: false,
             message: "Non è stato possibile accettare la modifica, dati errati",
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta.",
             error: error.message || error
         });

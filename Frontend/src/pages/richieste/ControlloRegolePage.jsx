@@ -128,7 +128,7 @@ function ControlloRegolePage(){
                 {btnEroga}
                 {btnInvalida}
             </div>
-            <Link className="link" to={`/richiesta/${idRichiesta}`}>
+            <Link className="link" to={`/r/${idRichiesta}`}>
                     Annulla
             </Link>
             

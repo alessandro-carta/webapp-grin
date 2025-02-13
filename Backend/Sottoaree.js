@@ -42,13 +42,12 @@ export async function handleGetSottoareePerArea(req, res) {
         // risposta del server ha avuto successo
         const sottoaree = await getSottoareePerArea(area);
         return res.status(200).json({
-            success: true,
+            message: "Elenco delle sottoaree",
             data: sottoaree
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante il recupero delle aree.",
             error: error.message || error
         });
@@ -60,14 +59,17 @@ export async function handleGetSottoarea(req, res) {
     try {
         // risposta del server ha avuto successo
         const sottoarea = await getSottoarea(id);
+        if(sottoarea == null){
+            return res.status(404).json({
+                message: "Sottoarea non trovata"
+            });
+        }
         return res.status(200).json({
-            success: true,
             data: sottoarea
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante il recupero delle aree.",
             error: error.message || error
         });
@@ -79,13 +81,12 @@ export async function handleGetSottoaree(req, res) {
         // risposta del server ha avuto successo
         const sottoaree = await getSottoaree();
         return res.status(200).json({
-            success: true,
+            message: "Elenco delle sottoaree",
             data: sottoaree
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante il recupero delle sottoaree.",
             error: error.message || error
         });
@@ -97,15 +98,16 @@ export async function handleAddSottoarea(req, res) {
     try {
         // inserimento avvenuto con successo
         const result = await addSottoarea(id, nome, area);
-        return res.status(204).json({
-            success: true
+        return res.status(201).json({
+            message: "Sottoarea aggiunta con successo",
+            data: id
         });
     } catch (error) {
         // errore idSottoarea già presente
         if(error.code == 'ER_DUP_ENTRY') {
             return res.status(400).json({
-                success: false,
-                message: 'Sigla già esistente, riprovare con un\'altra'
+                message: 'Sigla già esistente, riprovare con un\'altra',
+                error: error.message || error
             });
         }
         // errore generale interno al server
@@ -120,10 +122,13 @@ export async function handleDeleteSottoarea(req, res) {
     const id  = req.params.idSottoarea;
     try {
         const result = await deleteSottoarea(id);
+        if(result.affectedRows == 0){
+            return res.status(404).json({
+                message: "Sottoarea non trovata"
+            });
+        }
         // cancellazione avvenuta con successo
-        return res.status(204).json({
-            success: true
-        });
+        return res.status(204).json({});
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
@@ -138,13 +143,18 @@ export async function handleUpdateSottoarea(req, res) {
     try {
         // modifica avvenuta con successo
         const result = await updateSottoarea(id, nome, area);
-        return res.status(204).json({
-            success: true
+        if(result.affectedRows == 0){
+            return res.status(404).json({
+                message: "Sottoarea non trovata"
+            });
+        }
+        return res.status(201).json({
+            message: "Sottoarea modificata con successo",
+            data: id
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });

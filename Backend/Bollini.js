@@ -12,11 +12,11 @@ export async function addBollino(id, erogato, richiesta) {
         const queryRichiesta = `UPDATE Richieste SET Stato = "Approvata" WHERE idRichiesta = ?`;
         await db.query(queryRichiesta, [richiesta]);
         await db.commit();
-        return true;
+        return {ok: true, error: ""};
     } catch (error) {
         // transazione fallita
         await db.rollback();
-        return false;
+        return {ok: false, error: error};
     }
 }
 export async function getBollini() {
@@ -49,24 +49,23 @@ export async function handleAddBollino(req, res) {
         if(checkFinal.length == 0 && resultRegole.anvur && objRichiesta.stato === 'Elaborazione'){
             // creo un nuovo bollino
             const result = await addBollino(id, erogato, richiesta);
-            if(result)
-                return res.status(204).json({
-                    success: true,
+            if(result.ok)
+                return res.status(201).json({
+                    message: "Bollino creato con successo",
+                    data: id
                 });
             else 
                 return res.status(500).json({
-                    success: false,
                     message: "Si è verificato un errore durante l'elaborazione della richiesta",
+                    error: result.error
                 });
         }
         return res.status(400).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta"
+            message: "Non può essere erogato il bollino"
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });
@@ -78,13 +77,12 @@ export async function handleBollini(req, res) {
         // risposta con successo
         const result = await getBollini();
         return res.status(200).json({
-            success: true,
+            message: "Elenco dei bollini",
             data: result
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante il recupero dei bollini.",
             error: error.message || error
         });
@@ -92,17 +90,15 @@ export async function handleBollini(req, res) {
     }
 }
 export async function handleInvalidBollino(req, res) {
-    const id = req.params.idBollino;
+    const { id } = req.body;
     try {
         const result = await updateBollino(id, 0);
+        if(result.affectedRows == 0) return res.status(404).json({ message: "Bollino non trovato" });
         // modifica avvenuta con successo
-        return res.status(200).json({
-            success: true
-        });
+        return res.status(204).json({ });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });

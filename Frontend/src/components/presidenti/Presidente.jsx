@@ -12,7 +12,7 @@ function Presidente(props) {
             <div className="text__content__table">{props.presidente.email}</div>
             <div className="text__content__table">{props.presidente.università}</div>
             <div className="text__content__table underline">
-                <Link to={`/presidenti/${props.presidente.id}`} key={props.presidente.id} className='link'> Visualizza </Link>
+                <Link to={`/p/${props.presidente.id}`} key={props.presidente.id} className='link'> Visualizza </Link>
                 <button className="button__action" onClick={updatePresidente}> Modifica </button>
             </div >
         </>

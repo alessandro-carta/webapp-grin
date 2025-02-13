@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 function FormNewPresidente() {
     const navigate = useNavigate();
-    // dati del form e messaggio di errore per ogni cambo
+    // dati del form e messaggio di errore per ogni campo
     const [formData, setFormData] = useState({
         nome: "",
         cognome: "",
@@ -106,7 +106,10 @@ function FormNewPresidente() {
                 });
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
-                if (response.ok) { navigate('/presidenti'); }
+                if (response.ok) { 
+                    const data = await response.json();
+                    navigate(`/p/${data.data}`); 
+                }
                 if (!response.ok) {
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})

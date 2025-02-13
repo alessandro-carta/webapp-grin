@@ -1,14 +1,14 @@
 import express from "express"
 import cors from "cors"
+import jwt from 'jsonwebtoken';
+import { keyJwt, port } from "./Config.js";
 import { handleGetPresidenti, handleGetPresidente, handleAddPresidente, handleUpdatePresidente} from "./Presidenti.js";
 import { handleGetAree, handleGetArea, handleAddArea, handleDeleteArea, handleUpdateArea, handleGetSettori } from "./Aree.js";
-import { handleAddRegola, handleDeleteRegola, handleGetRegole } from "./Regolamento.js";
+import { handleAddRegola, handleDeleteRegola, handleGetRegole } from "./Regole.js";
 import { handleGetRichieste, handleGetRichiesta, handleGetInsegnamenti, handleCheckRegole, handleInvalidRichiesta } from "./Richieste.js";
 import { handleAddBollino, handleBollini, handleInvalidBollino } from "./Bollini.js";
 import { handleAddSottoarea, handleGetSottoarea, handleGetSottoareePerArea, handleGetSottoaree, handleDeleteSottoarea, handleUpdateSottoarea } from "./Sottoaree.js";
 import { handleAdminLogin, handleChangePassword, handleGetEmail, handlePresidenteLogin } from "./Auth.js";
-import jwt from 'jsonwebtoken';
-import { keyJwt, port } from "./Config.js";
 import { getCorsoDiStudio, handleAddCDS, handleDashboard, handleDeleteCDS, hanldeCorsoDiStudio } from "./dashboard/CorsiDiStudio.js";
 import { handleGetBolliniPerPresidente } from "./dashboard/Bollini.js";
 import { getRegolamento, handleAddRegolamento, handleDeleteRegolamento, handleDuplicateRegolamento, handleGetRegolamenti, handleGetRegolamento } from "./dashboard/RegolamentiCDS.js";
@@ -344,6 +344,6 @@ app.post("/api/addBollino", authenticateToken, authorizeRole(['admin']), async (
 app.get("/api/bollini", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleBollini(req, res);
 })
-app.put("/api/invalidBollino/:idBollino", authenticateToken, authorizeRole(['admin']), async (req, res) => {
+app.put("/api/invalidBollino/", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleInvalidBollino(req, res);
 })

@@ -21,7 +21,7 @@ if(menuMobile){
 }
 // restitusce la barra di navigazione dell'admin
 return (
-    <div className="fixed top-0 left-0 w-full bg-white md:shadow-md z-50 p-4">
+    <div className="fixed top-0 left-0 w-full bg-white md:shadow-sm z-50 p-4">
         <div className="container mx-auto flex justify-between items-center">
             <div className="hidden md:flex space-x-6">
                 <NavLink to={`/presidenti`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}> Account presidenti </NavLink>

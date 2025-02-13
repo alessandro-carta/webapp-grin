@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function Richiesta(props) {
     let linkRichiesta = '';
-    if(props.admin) linkRichiesta = `/richiesta/${props.richiesta.id}`;
+    if(props.admin) linkRichiesta = `/r/${props.richiesta.id}`;
     else linkRichiesta = `/dashboard/richiesta/${props.richiesta.id}`
     return (
         <>

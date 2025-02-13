@@ -45,7 +45,7 @@ const router = createBrowserRouter([
     element: <PresidentiPage />
   },
   {
-    path: "presidenti/:idPresidente",
+    path: "p/:idPresidente",
     element: <PresidentePage />
   },
   {
@@ -97,7 +97,7 @@ const router = createBrowserRouter([
     element: <RichiestePage />
   },
   {
-    path: "richiesta/:idRichiesta",
+    path: "r/:idRichiesta",
     element: <RichiestaPage />
   },
   {

@@ -6,12 +6,13 @@ function Bollino(props){
     
     const invalidBollino = async () => {
         try {
-            const response = await fetch(`/api/invalidBollino/${props.bollino.id}`, {
+            const response = await fetch(`/api/invalidBollino`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({id: props.bollino.id})
             })
             // accesso non consentito
             if(response.status == 403) navigate('/');
@@ -26,7 +27,7 @@ function Bollino(props){
     let btnRevoca = null;
     if(props.bollino.erogato){
         if(props.admin) linkRichiesta = <>
-            <Link to={`/richiesta/${props.bollino.richiesta}`} key={props.bollino.id} className="link"> Visualizza </Link>
+            <Link to={`/r/${props.bollino.richiesta}`} key={props.bollino.id} className="link"> Visualizza </Link>
         </>;
         else linkRichiesta = <>
             <Link to={`/dashboard/richiesta/${props.bollino.richiesta}`} key={props.bollino.id} className="link"> Visualizza </Link>

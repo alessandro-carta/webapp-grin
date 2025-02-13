@@ -1,5 +1,5 @@
 import { db } from "./database.js";
-import { getRegoleFull } from "./Regolamento.js";
+import { getRegoleFull } from "./Regole.js";
 import { getRichiesta } from "./Richieste.js";
 
 export async function CFUperArea(idRegolamento, minCFUperArea) {
@@ -39,6 +39,7 @@ export async function checkRegole(richiesta){
     const regole = await getRegoleFull(); // insieme delle regole
     // controllo per ANVUR
     const resRichiesta = await getRichiesta(richiesta);
+    if(resRichiesta == null) throw {message: "Richiesta non trovata", code: 404};
     let result = {anvur: resRichiesta.anvur ? true : false, regole: []};
 
     for(let regola of regole){
