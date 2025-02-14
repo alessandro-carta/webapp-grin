@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { data, Link, useNavigate } from "react-router-dom";
 
 function FormNewCDS() {
     const navigate = useNavigate();
@@ -64,7 +64,10 @@ function FormNewCDS() {
                 });
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
-                if (response.ok) { navigate(`/dashboard/corsidistudio`); }
+                if (response.ok) { 
+                    const data = await response.json();
+                    navigate(`/dashboard/c/${data.data}`); 
+                }
                 if (!response.ok) {
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})

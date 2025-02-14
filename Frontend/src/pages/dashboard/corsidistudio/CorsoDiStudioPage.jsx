@@ -60,7 +60,7 @@ function CorsoDiStudioPage(){
 
     // funzione crea un nuovo regolamento
     const createNewRegolamento = () => {
-        navigate(`/crea-un-nuovo-regolamento/${idCDS}`);
+        navigate(`/dashboard/c/${idCDS}/crea-un-nuovo-regolamento`);
     }
 
     if(loading) return <p>LOADING...</p>

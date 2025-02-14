@@ -50,7 +50,7 @@ function CorsoDiStudio(props) {
             <div className="text__content__table">{props.corso.università}</div>
             <div className="text__content__table">{props.corso.durata}</div>
             <div className="text__content__table underline">
-                <Link to={`/dashboard/regolamenti/${props.corso.id}`} key={props.corso.id} className='link'> Visualizza </Link>
+                <Link to={`/dashboard/c/${props.corso.id}`} key={props.corso.id} className='link'> Visualizza </Link>
             </div >
             <div className="text__content__table">
                 <button className="button__action" onClick={deleteCDS}> Elimina </button>

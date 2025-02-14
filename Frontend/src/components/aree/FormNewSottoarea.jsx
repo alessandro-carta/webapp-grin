@@ -8,7 +8,7 @@ function FormNewSottoarea(props) {
     const [loading, setLoading] = useState(true); 
 
     let linkAnnulla;
-    if(props.area) linkAnnulla = `/sottoaree/${props.area}/?Visual=admin`;
+    if(props.area) linkAnnulla = `/a/${props.area}/sottoaree/?Visual=admin`;
     else linkAnnulla = `/aree/?Visual=admin`;
 
     const loadAllAree = async () => {
@@ -102,7 +102,7 @@ function FormNewSottoarea(props) {
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
                 // inserimento riuscito
-                if (response.ok) { navigate(`/sottoaree/${formData.area}/?Visual=admin`); }
+                if (response.ok) { navigate(`/a/${formData.area}/sottoaree/?Visual=admin`); }
                 // inserimento fallito
                 // inserita una sottoarea con idSottoarea gia' esistente
                 if (!response.ok) {

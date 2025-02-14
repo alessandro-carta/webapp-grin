@@ -67,7 +67,7 @@ function SottoareePage(){
         loadAllSottoaree();
     } , []); // Non ha dipendenze, eseguito ad ogni render
 
-    const createNewSottoArea = () => { navigate(`/crea-una-nuova-sottoarea/${idArea}`); }
+    const createNewSottoArea = () => { navigate(`/a/${idArea}/crea-una-nuova-sottoarea`); }
 
     let navbar;
     if(admin) navbar = <NavbarGrin />

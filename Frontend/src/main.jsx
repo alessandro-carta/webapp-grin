@@ -73,11 +73,11 @@ const router = createBrowserRouter([
     element: <CreateNewSottoareaPage />
   },
   {
-    path: "crea-una-nuova-sottoarea/:idArea",
+    path: "a/:idArea/crea-una-nuova-sottoarea",
     element: <CreateNewSottoareaPage />
   },
   {
-    path: "sottoaree/:idArea",
+    path: "a/:idArea/sottoaree",
     element: <SottoareePage />
   },
   {
@@ -125,15 +125,15 @@ const router = createBrowserRouter([
     element: <BolliniPresidentePage />
   },
   {
-    path: "dashboard/regolamenti/:idCDS",
+    path: "dashboard/c/:idCDS",
     element: <CorsoDiStudioPage />
   },
   {
-    path: "crea-un-nuovo-corso",
+    path: "dashboard/crea-un-nuovo-corso",
     element: <CreateNewCDSPage />
   },
   {
-    path: "crea-un-nuovo-regolamento/:idCDS",
+    path: "dashboard/c/:idCDS/crea-un-nuovo-regolamento",
     element: <CreateNewRegolamentoPage />
   },
   {
@@ -161,7 +161,7 @@ const router = createBrowserRouter([
     element: <ControlloRegolePresidentePage />
   },
   {
-    path: "duplica-regolamento/:idCDS/:idRegolamento",
+    path: "dashboard/c/:idCDS/duplica-regolamento/:idRegolamento",
     element: <CreateDuplicateRegolamentoPage />
   }
 ]

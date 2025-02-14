@@ -44,8 +44,8 @@ function FormLoginAdmin() {
                     navigate('/presidenti');
                 }
                 if(!response.ok){
-                    const { error } = await response.json();
-                    setFormErros({...formErrors, result: error});
+                    const { error, message } = await response.json();
+                    setFormErros({...formErrors, result: message});
                 }
                 
             } catch (error) { console.log(error); }

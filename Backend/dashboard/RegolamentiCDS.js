@@ -3,22 +3,22 @@ import { v4 as uuidv4 } from 'uuid';
 import { getInsegnamentiFull } from "../Richieste.js";
 import { addInsegnamento } from "./Insegnamenti.js";
 
-export async function getRegolamenti(CDS) {
+export async function getRegolamenti(cds) {
     const [result] = await db.query(`
-        SELECT Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", Regolamenti.CDS AS "CDS"
+        SELECT Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", Regolamenti.CDS AS "cds"
         FROM Regolamenti, CorsiDiStudio, Presidenti
-        WHERE CDS = idCDS AND Presidente = idPresidente AND idCDS = ?`, [CDS]);
+        WHERE CDS = idCDS AND Presidente = idPresidente AND idCDS = ?`, [cds]);
     return result;
 }
 export async function getRegolamento(id) {
     const [result] = await db.query(`
-        SELECT CorsiDiStudio.idCDS AS "CDS", Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur", CorsiDiStudio.Presidente AS "presidente"
+        SELECT CorsiDiStudio.idCDS AS "cds", Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur", CorsiDiStudio.Presidente AS "presidente"
         FROM Regolamenti, CorsiDiStudio
         WHERE idCDS = CDS AND idRegolamento = ?`, [id]);
     return result[0];
 }
-export async function addRegolamento(id, annoaccademico, CDS){
-    const [result] = await db.query(`INSERT INTO Regolamenti (idRegolamento, AnnoAccademico, CDS, Anvur) VALUES (?, ?, ?, 1)`, [id, annoaccademico, CDS]);
+export async function addRegolamento(id, annoaccademico, cds){
+    const [result] = await db.query(`INSERT INTO Regolamenti (idRegolamento, AnnoAccademico, CDS, Anvur) VALUES (?, ?, ?, 1)`, [id, annoaccademico, cds]);
     return result;
 }
 export async function deleteRegolamento(id) {
@@ -31,7 +31,7 @@ export async function duplicateRegolamento(id, annoaccademico, regolamento){
         const resultRegolamento = await getRegolamento(regolamento);
         await db.query(`
             INSERT INTO Regolamenti (idRegolamento, AnnoAccademico, CDS, Anvur)
-            VALUES (?, ?, ?, 1) `, [id, annoaccademico, resultRegolamento.CDS]);
+            VALUES (?, ?, ?, 1) `, [id, annoaccademico, resultRegolamento.cds]);
         const resultInsegnamenti = await getInsegnamentiFull(regolamento);
         for(let i = 0; i < resultInsegnamenti.length; i++){
             const idI = uuidv4();
@@ -46,11 +46,11 @@ export async function duplicateRegolamento(id, annoaccademico, regolamento){
             }            
         }
         await db.commit();
-        return true;
+        return {ok: true, error: ""};
     } catch (error) {
         // transazione fallita
         await db.rollback();
-        return false;
+        return {ok: false, error: error};
     }
 }
 
@@ -58,44 +58,42 @@ export async function duplicateRegolamento(id, annoaccademico, regolamento){
 
 
 export async function handleAddRegolamento(req, res) {
-    const { annoaccademico, CDS } = req.body;
+    const { annoaccademico, cds } = req.body;
     const id = uuidv4();
-    const presidente = req.user.userId;
     try {
         // risposta con successo
-        const result = await addRegolamento(id, annoaccademico, CDS);
-        return res.status(204).json({ 
-            success: true
+        const result = await addRegolamento(id, annoaccademico, cds);
+        return res.status(201).json({ 
+            message: "Regolamento aggiunto con successo",
+            data: id
         });
     } catch (error) {
         // violato vincolo di unicità
         if(error.code == 'ER_DUP_ENTRY') {
             return res.status(400).json({
-                success: false,
-                message: 'Anno accademico già presente'
+                message: 'Anno accademico già presente',
+                error: error.message || error
             });
         }
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });
     }
 }
 export async function handleGetRegolamenti(req, res) {
-    const CDS  = req.params.idCDS;
+    const cds  = req.params.idCDS;
     try {
         // risposta con successo
-        const result = await getRegolamenti(CDS);
+        const result = await getRegolamenti(cds);
         return res.status(200).json({ 
-            success: true,
+            message: "Elenco dei regolamenti",
             data: result
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });
@@ -107,13 +105,12 @@ export async function handleGetRegolamento(req, res) {
         // risposta con successo
         const result = await getRegolamento(id);
         return res.status(200).json({ 
-            success: true,
+            message: "Regolamento",
             data: result
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });
@@ -123,21 +120,19 @@ export async function handleDeleteRegolamento(req, res) {
     const id  = req.params.idRegolamento;
     try {
         const result = await deleteRegolamento(id);
+        if(result.affectedRows == 0) return res.status(404).json({ message: "Regolamento non trovato" });
         // cancellazione avvenuta con successo
-        return res.status(204).json({
-            success: true
-        });
+        return res.status(204).json({ });
     } catch (error) {
         // errore richieste presenti
         if(error.code == 'ER_ROW_IS_REFERENCED_2') {
             return res.status(400).json({
-                success: false,
-                message: 'Impossibile eliminare, richieste presenti'
+                message: 'Impossibile eliminare, richieste presenti',
+                error: error.message || error
             });
         }
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });
@@ -148,16 +143,18 @@ export async function handleDuplicateRegolamento(req, res) {
     const id = uuidv4();
     try {
         const result = await duplicateRegolamento(id, annoaccademico, regolamento);
-        if(result) return res.status(204).json({ success: true });
+        if(result.ok) return res.status(201).json({ 
+            message: "Regolamento duplicato con successo",
+            data: id 
+        });
         else return res.status(500).json({
-            success: true,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta"
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: result.error
         });
 
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });

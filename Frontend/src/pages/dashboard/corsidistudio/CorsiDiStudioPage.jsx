@@ -35,7 +35,7 @@ function CorsiDiStudioPage(){
 
     // funzione crea un nuovo corso
     const createNewCDS = () => {
-        navigate('/crea-un-nuovo-corso');
+        navigate('/dashboard/crea-un-nuovo-corso');
     }
 
     if(loading) return <p>LOADING...</p>

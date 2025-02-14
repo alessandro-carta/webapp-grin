@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken';
-import { keyJwt } from '../Config.js';
 import { db } from "../database.js";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -36,13 +34,12 @@ export async function handleDashboard(req, res) {
         // risposta con successo
         const result = await getCorsiDiStudio(presidente);
         return res.status(200).json({ 
-            success: true,
+            message: "Elenco dei corsi di studio",
             data: result
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta.",
             error: error.message || error
         });
@@ -55,13 +52,13 @@ export async function handleAddCDS(req, res) {
     try {
         // risposta con successo
         const result = await addCDS(id, nome, durata, presidente);
-        return res.status(204).json({ 
-            success: true
+        return res.status(201).json({ 
+            message: "Corso di studio inserito con successo",
+            data: id
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante il recupero dei corsi di studio.",
             error: error.message || error
         });
@@ -69,24 +66,18 @@ export async function handleAddCDS(req, res) {
 }
 export async function handleDeleteCDS(req, res) {
     const id  = req.params.idCDS;
-    const presidente = req.user.userId;
     try {
         const result = await deleteCDS(id);
+        if(result.affectedRows == 0) return res.status(204).json({ message: "Corso di studio non trovato"});
         // cancellazione avvenuta con successo
-        return res.status(204).json({
-            success: true
-        });
+        return res.status(204).json({ });
     } catch (error) {
         // errore regolamenti presenti
         if(error.code == 'ER_ROW_IS_REFERENCED_2') {
-            return res.status(400).json({
-                success: false,
-                message: 'Impossibile eliminare, regolamenti presenti'
-            });
+            return res.status(400).json({ message: 'Impossibile eliminare, regolamenti presenti' });
         }
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });
@@ -94,18 +85,17 @@ export async function handleDeleteCDS(req, res) {
 }
 export async function hanldeCorsoDiStudio(req, res) {
     const id  = req.params.idCDS;
-    const presidente = req.user.userId;;
     try {
         const result = await getCorsoDiStudio(id);
+        if(result == null) return res.status(404).json({ message: "Corso di studio non trovato" })
         // risposta avvenuta con successo
-        return res.status(200).json({
-            success: true,
+        return res.status(201).json({
+            message: "Corso di studio",
             data: result
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });

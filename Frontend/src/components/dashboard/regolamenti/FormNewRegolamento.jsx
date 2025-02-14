@@ -7,7 +7,7 @@ function FormNewRegolamento(props) {
     // dati del form
     const [formData, setFormData] = useState({
         annoaccademico: "",
-        CDS: props.cds
+        cds: props.cds
     })
     // messaggi di errore, result contiene la risposta della chiamata HTTP
     const [formErrors, setFormErros] = useState({
@@ -42,7 +42,7 @@ function FormNewRegolamento(props) {
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
                 // inserimento riuscito
-                if (response.ok) { navigate(`/dashboard/regolamenti/${props.cds}`); }
+                if (response.ok) { navigate(`/dashboard/c/${props.cds}`); }
                 // inserimento fallito
                 // inserita una sottoarea con idSottoarea gia' esistente
                 if (!response.ok) {
@@ -102,7 +102,7 @@ function FormNewRegolamento(props) {
 
                         <Link
                             className="link"
-                            to={`/dashboard/regolamenti/${props.cds}`}
+                            to={`/dashboard/c/${props.cds}`}
                         >
                             Annulla
                         </Link>

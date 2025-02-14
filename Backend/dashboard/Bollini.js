@@ -15,13 +15,12 @@ export async function handleGetBolliniPerPresidente(req, res) {
         // risposta con successo
         const result = await getBollini(presidente);
         return res.status(200).json({ 
-            success: true,
+            message: "Elenco dei bollini",
             data: result
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta.",
             error: error.message || error
         });

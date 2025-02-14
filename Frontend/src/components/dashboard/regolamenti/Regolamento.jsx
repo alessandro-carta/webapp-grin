@@ -8,7 +8,7 @@ function Regolamento(props) {
     const [errDelete, setErrDelete] = useState(false); // tiene traccia se un'eliminazione non è andata a buon fine per un errore
     const [message, setMessage] = useState('');
 
-    const duplicateRegolamento = async () => { navigate(`/duplica-regolamento/${props.regolamento.CDS}/${props.regolamento.id}`) }
+    const duplicateRegolamento = async () => { navigate(`/dashboard/c/${props.regolamento.cds}/duplica-regolamento/${props.regolamento.id}`) }
     const deleteRegolamento = async () => {
         try {
             const response = await fetch(`/api/deleteRegolamento/${props.regolamento.id}`, {

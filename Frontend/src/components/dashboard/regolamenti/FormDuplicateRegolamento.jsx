@@ -43,7 +43,7 @@ function FormDuplicateRegolamento(props) {
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
                 // duplicazione riuscita
-                if (response.ok) { navigate(`/dashboard/regolamenti/${props.cds}`); }
+                if (response.ok) { navigate(`/dashboard/c/${props.cds}`); }
                 // duplicazione fallita
                 if (!response.ok) {
                     const errorData = await response.json();
@@ -102,7 +102,7 @@ function FormDuplicateRegolamento(props) {
 
                         <Link
                             className="link"
-                            to={`/dashboard/regolamenti/${props.cds}`}
+                            to={`/dashboard/c/${props.cds}`}
                         >
                             Annulla
                         </Link>

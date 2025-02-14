@@ -53,7 +53,7 @@ function Area(props) {
             <div className="text__content__table">{props.area.id}</div>
             <div className="text__content__table">{props.area.nome}</div>
             <div className="text__content__table underline">
-                <Link to={`/sottoaree/${props.area.id}/?Visual=${props.admin ? "admin" : "presidente"}`} className='link'> Elenco sottoaree </Link>
+                <Link to={`/a/${props.area.id}/sottoaree/?Visual=${props.admin ? "admin" : "presidente"}`} className='link'> Elenco sottoaree </Link>
             </div >
 
             {props.admin && 
