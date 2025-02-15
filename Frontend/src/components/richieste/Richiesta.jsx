@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 function Richiesta(props) {
     let linkRichiesta = '';
     if(props.admin) linkRichiesta = `/r/${props.richiesta.id}`;
-    else linkRichiesta = `/dashboard/richiesta/${props.richiesta.id}`
+    else linkRichiesta = `/dashboard/r/${props.richiesta.id}`
     return (
         <>
             { props.admin && <div className="text__content__table">{props.richiesta.università}</div> }

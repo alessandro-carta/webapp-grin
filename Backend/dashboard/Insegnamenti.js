@@ -58,11 +58,11 @@ export async function addInsegnamento(id, nome, annoerogazione, cfutot, settore,
             await db.query(queryInsegnamentoSottoarea, [valoriSottoaree]);
         }
         await db.commit();
-        return true;
+        return {ok: true, message: ""};
     } catch (error) {
         // transazione fallita
         await db.rollback();
-        return false;
+        return {ok: false, message: error};
     }
 }
 export async function updateInsegnamento(id, nome, annoerogazione, CFU, settore, sottoaree) {
@@ -83,11 +83,11 @@ export async function updateInsegnamento(id, nome, annoerogazione, CFU, settore,
                 VALUES ?`, [valoriSottoaree]);
         }
         await db.commit();
-        return true;
+        return {ok: true, message: ""};
     } catch (error) {
         // transazione fallita
         await db.rollback();
-        return false;
+        return {ok: false, message: error};
     }
 }
 export async function deleteInsegnamento(id) {
@@ -122,33 +122,28 @@ export async function handleAddInsegnamento(req, res) {
     const id =  uuidv4();
     try {
         const resultRichiesta = await getRichiesta(richiesta);
-        if(resultRichiesta.stato != "Bozza"){
-            // la richiesta non può essere modificata
-            return res.status(400).json({
-                success: false,
-                message: "Richiesta non può essere modificata"
-            });
-        }
+        if(resultRichiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
+        if(resultRichiesta.stato != "Bozza") return res.status(400).json({ message: "Richiesta non può essere modificata" });
+        
         const resultRegolamento = await getRegolamento(resultRichiesta.regolamento);
-        const resultCDS = await getCorsoDiStudio(resultRegolamento.CDS);
-        if(annoerogazione > resultCDS.durata){
-            // anno erogazione dell'insegnamento non 
-            // compatibile con la durata del CDS
-            return res.status(400).json({
-                success: false,
-                message: "Anno di erogazione errato"
-            });
-        }
+        if(resultRegolamento == null) return res.status(404).json({ message: "Regolamento non trovato" });
+        
+        const resultCDS = await getCorsoDiStudio(resultRegolamento.cds);
+        if(resultCDS == null) return res.status(404).json({ message: "Corso di studio non trovato" });
+        if(annoerogazione > resultCDS.durata) return res.status(400).json({ message: "Anno di erogazione errato" });
+
         const result = await addInsegnamento(id, nome, annoerogazione, cfutot, settore, resultRichiesta.regolamento, sottoaree);
-        if(result) return res.status(204).json({ success: true });
+        if(result.ok) return res.status(201).json({ 
+            message: "Insegnamento aggiunto con successo",
+            data: id 
+        });
         else return res.status(500).json({
-                success: true,
-                message: "Si è verificato un errore durante l'elaborazione della richiesta"
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: result.error
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });
@@ -159,19 +154,15 @@ export async function handleDeleteInsegnamento(req, res) {
     const richiesta = req.body.richiesta;
     try {
         const resultRichiesta = await getRichiesta(richiesta);
-        if(resultRichiesta.stato != "Bozza"){
-            // la richiesta non può essere modificata
-            return res.status(400).json({
-                success: false,
-                message: "Richiesta non può essere modificata"
-            });
-        }
-        await deleteInsegnamento(id);
-        return res.status(204).json({ success: true });
+        if(resultRichiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
+        if(resultRichiesta.stato != "Bozza") return res.status(400).json({ message: "Richiesta non può essere modificata" });
+        
+        const result = await deleteInsegnamento(id);
+        if(result.affectedRows == 0) return res.status(404).json({ message: "Insegnamento non trovato" });
+        return res.status(204).json({ });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });
@@ -182,50 +173,45 @@ export async function handleGetInsegnamentoPresidente(req, res) {
     try {
         // risposta con successo
         const result = await getInsegnamentoFull(id);
+        if(result == null) return res.status(404).json({ message: "Insegnamento non trovato" });
         return res.status(200).json({ 
-            success: true,
+            message: "insegnamento",
             data: result
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });
     }
 }
 export async function handleUpdateInsegnamento(req, res) {
-    const {id, nome, CFUTot, settore, richiesta, annoerogazione, sottoaree} = req.body;
+    const {id, nome, cfutot, settore, richiesta, annoerogazione, sottoaree} = req.body;
     try {
         const resultRichiesta = await getRichiesta(richiesta);
-        if(resultRichiesta.stato != "Bozza"){
-            // la richiesta non può essere modificata
-            return res.status(400).json({
-                success: false,
-                message: "Richiesta non può essere modificata"
-            });
-        }
+        if(resultRichiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
+        if(resultRichiesta.stato != "Bozza") return res.status(400).json({ message: "Richiesta non può essere modificata" });
+        
         const resultRegolamento = await getRegolamento(resultRichiesta.regolamento);
-        const resultCDS = await getCorsoDiStudio(resultRegolamento.CDS);
-        if(annoerogazione > resultCDS.durata){
-            // anno erogazione dell'insegnamento non 
-            // compatibile con la durata del CDS
-            return res.status(400).json({
-                success: false,
-                message: "Anno di erogazione errato"
-            });
-        }
-        const result = await updateInsegnamento(id, nome, annoerogazione, CFUTot, settore, sottoaree);
-        if(result) return res.status(204).json({ success: true });
+        if(resultRegolamento == null) return res.status(404).json({ message: "Regolamento non trovato" });
+
+        const resultCDS = await getCorsoDiStudio(resultRegolamento.cds);
+        if(resultCDS == null) return res.status(404).json({ message: "Corso di studio non trovato" });
+        if(annoerogazione > resultCDS.durata)return res.status(400).json({ message: "Anno di erogazione errato" });
+
+        const result = await updateInsegnamento(id, nome, annoerogazione, cfutot, settore, sottoaree);
+        if(result.ok) return res.status(201).json({ 
+            message: "Insegnamento modificato",
+            data: id 
+        });
         else return res.status(500).json({
-                success: true,
-                message: "Si è verificato un errore durante l'elaborazione della richiesta"
+                message: "Si è verificato un errore durante l'elaborazione della richiesta",
+                error: result.error
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });

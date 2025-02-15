@@ -40,7 +40,7 @@ export async function handleGetRichiestePerPresidente(req, res) {
         // risposta con successo
         const richieste = await getRichieste(presidente);
         return res.status(200).json({
-            success: true,
+            message: "Elenco delle richieste",
             data: richieste
         });
     } catch (error) {
@@ -58,20 +58,20 @@ export async function handleAddRichiesta(req, res) {
     try {
         // risposta con successo
         const result = await addRichiesta(id, regolamento, "Bozza", data);
-        return res.status(204).json({ 
-            success: true
+        return res.status(201).json({ 
+            message: "Richiesta inserita con successo",
+            data: id
         });
     } catch (error) {
         // violato vincolo di unicità
         if(error.code == 'ER_DUP_ENTRY') {
             return res.status(400).json({
-                success: false,
-                message: 'Richiesta già presente per questo anno accademico'
+                message: 'Richiesta già presente per questo anno accademico',
+                error: error.message || error
             });
         }
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });
@@ -82,14 +82,14 @@ export async function handleGetRichiestaPerPresidente(req, res) {
     try {
         // risposta con successo
         const richiesta = await getRichiesta(id);
+        if(richiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
         return res.status(200).json({
-            success: true,
+            message: "Richiesta",
             data: richiesta
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante il recupero delle richieste .",
             error: error.message || error
         });
@@ -98,22 +98,18 @@ export async function handleGetRichiestaPerPresidente(req, res) {
 export async function handleSaveRichiesta(req, res) {
     const id = req.body.richiesta;
     try {
-        // risposta con successo
         const richiesta = await getRichiesta(id);
-        if(richiesta.stato != "Invalidata" && richiesta.stato != "Bozza"){
-            return res.status(400).json({
-                success: false,
-                message: "Azione non permessa"
-            });
-        }
+        if(richiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
+        if(richiesta.stato != "Invalidata") return res.status(400).json({ message: "Azione non permessa" });
         await updateRichiesta(id, "Bozza");
+        // risposta con successo
         return res.status(204).json({
-            success: true
+            message: "Richiesta salvata",
+            data: id
         });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });
@@ -122,22 +118,15 @@ export async function handleSaveRichiesta(req, res) {
 export async function handleDeleteRichiesta(req, res) {
     const id = req.params.idRichiesta;
     try {
-        // risposta con successo
         const richiesta = await getRichiesta(id);
-        if(richiesta.stato != "Invalidata" && richiesta.stato != "Bozza"){
-            return res.status(400).json({
-                success: false,
-                message: "Azione non permessa"
-            });
-        }
+        if(richiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
+        if(richiesta.stato != "Invalidata" && richiesta.stato != "Bozza") return res.status(400).json({ message: "Non puoi eliminare questa richiesta" });
+        // risposta con successo
         await deleteRichiesta(id);
-        return res.status(204).json({
-            success: true
-        });
+        return res.status(204).json({ });
     } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });
@@ -145,29 +134,25 @@ export async function handleDeleteRichiesta(req, res) {
 }
 export async function handleSendRichiesta(req, res) {
     const id = req.body.richiesta;
-
     try {
         // risposta avvenuta con successo
         // controllo che la richiesta rispetti le regole per l'erogazione del bollino
+        const richiesta = await getRichiesta(id);
+        if(richiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
         const resultRegole = await checkRegole(id);
-        const objRichiesta = await getRichiesta(id);
         const checkFinal = resultRegole.regole.filter((regola) => regola.check == false);
-        if(checkFinal.length == 0 && resultRegole.anvur && objRichiesta.stato === 'Bozza'){
+        if(checkFinal.length == 0 && resultRegole.anvur && richiesta.stato === 'Bozza'){
             // invio la richiesta
             await updateRichiesta(id, "Elaborazione");
-            return res.status(204).json({
-                success: true,
+            return res.status(201).json({
+                message: "Richiesta inviata con successo",
+                data: id
             });
         }
-        return res.status(400).json({
-            success: false,
-            message: "Si è verificato un errore durante l'elaborazione della richiesta"
-        });
+        else return res.status(400).json({ message: "Si è verificato un errore durante l'elaborazione della richiesta" });
     } catch (error) {
         // errore generale interno al server
-        console.log(error);
         return res.status(500).json({
-            success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });

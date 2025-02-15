@@ -101,7 +101,10 @@ function FormNewRichiesta(props) {
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
                 // inserimento riuscito
-                if (response.ok) { navigate(`/dashboard/richieste`); }
+                if (response.ok) { 
+                    const data = await response.json();
+                    navigate(`/dashboard/r/${data.data}`); 
+                }
                 // inserimento fallito
                 // inserita una sottoarea con idSottoarea gia' esistente
                 if (!response.ok) {

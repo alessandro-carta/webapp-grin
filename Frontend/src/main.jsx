@@ -34,7 +34,6 @@ import UpdateInsegnamentoPage from './pages/dashboard/richieste/UpdateInsegnamen
 import ControlloRegolePresidentePage from './pages/dashboard/richieste/ControlloRegolePresidentePage.jsx'
 import CreateDuplicateRegolamentoPage from './pages/dashboard/regolamenti/CreateDuplicateRegolamentoPage.jsx'
 
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -145,7 +144,7 @@ const router = createBrowserRouter([
     element: <CreateNewRichiestaPage />
   },
   {
-    path: "dashboard/richiesta/:idRichiesta",
+    path: "dashboard/r/:idRichiesta",
     element: <RichiestaPresidentePage />
   },
   {
@@ -171,4 +170,5 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
       <RouterProvider router={router} />
   </StrictMode>,
+  
 )

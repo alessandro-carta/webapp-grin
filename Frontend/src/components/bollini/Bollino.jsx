@@ -30,7 +30,7 @@ function Bollino(props){
             <Link to={`/r/${props.bollino.richiesta}`} key={props.bollino.id} className="link"> Visualizza </Link>
         </>;
         else linkRichiesta = <>
-            <Link to={`/dashboard/richiesta/${props.bollino.richiesta}`} key={props.bollino.id} className="link"> Visualizza </Link>
+            <Link to={`/dashboard/r/${props.bollino.richiesta}`} key={props.bollino.id} className="link"> Visualizza </Link>
         </>;
         btnRevoca = <>
             <button className="button__action" onClick={invalidBollino}> Revoca </button>

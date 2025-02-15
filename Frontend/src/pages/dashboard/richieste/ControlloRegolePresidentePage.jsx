@@ -75,7 +75,10 @@ function ControlloRegolePresidentePage(){
         // accesso non consentito
         if(response.status == 403) navigate('/');
         // se ha successo torno alla pagina delle richieste
-        if (response.ok) navigate(`/dashboard/richieste/`);
+        if (response.ok) {
+            const data = await response.json();
+            navigate(`/dashboard/r/${data.data}`);
+        }
     }
     // btn per inviare la richiesta
     let btnSendRichiesta = null;
@@ -104,7 +107,7 @@ function ControlloRegolePresidentePage(){
                 <p className="text-xl">Azioni: </p>
                 {btnSendRichiesta}
             </div>
-            <Link className="link" to={`/dashboard/richiesta/${idRichiesta}`}>
+            <Link className="link" to={`/dashboard/r/${idRichiesta}`}>
                     Annulla
             </Link>
             

@@ -226,7 +226,7 @@ function FormNewInsegnamento(props){
                 });
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
-                if (response.ok) { navigate(`/dashboard/richiesta/${props.richiesta}`); }
+                if (response.ok) { navigate(`/dashboard/r/${props.richiesta}`); }
                 if (!response.ok) {
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
@@ -389,7 +389,7 @@ function FormNewInsegnamento(props){
                             <button type="submit" className="w-full button__principale">
                                 CREA 
                             </button>
-                            <Link className="link" to={`/dashboard/richiesta/${props.richiesta}`}>
+                            <Link className="link" to={`/dashboard/r/${props.richiesta}`}>
                                 Annulla
                             </Link>
                             {formErrors.result && <p className="error__message">{formErrors.result}</p>}

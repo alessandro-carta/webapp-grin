@@ -33,7 +33,7 @@ function FormUpdateInsegnamento(props){
     // dati del form
     const [formData, setFormData] = useState({
         nome: props.insegnamento.nome,
-        CFUTot: props.insegnamento.cfutot,
+        cfutot: props.insegnamento.cfutot,
         settore: props.insegnamento.settore,
         annoerogazione: props.insegnamento.annoerogazione,
         richiesta: props.richiesta,
@@ -45,7 +45,7 @@ function FormUpdateInsegnamento(props){
     // messaggi di errore, result contiene la risposta della chiamata HTTP
     const [formErrors, setFormErros] = useState({
         nome: "",
-        CFUTot: "",
+        cfutot: "",
         settore: "",
         sottoaree: "",
         annoerogazione: ""
@@ -123,10 +123,10 @@ function FormUpdateInsegnamento(props){
         return true;
     }
     const checkCFUTot = () => {
-        if(formData.CFUTot <= 0){
+        if(formData.cfutot <= 0){
             setFormErros({
                 ...formErrors,
-                CFUTot: "Inserire un numero positivo"
+                cfutot: "Inserire un numero positivo"
             })
             return false;
         }
@@ -219,7 +219,7 @@ function FormUpdateInsegnamento(props){
                     body: JSON.stringify({
                                         id: props.insegnamento.id,
                                         nome: formData.nome, 
-                                        CFUTot: formData.CFUTot,
+                                        cfutot: formData.cfutot,
                                         settore: formData.settore,
                                         annoerogazione: formData.annoerogazione,
                                         richiesta: formData.richiesta,
@@ -227,7 +227,7 @@ function FormUpdateInsegnamento(props){
                 });
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
-                if (response.ok) { navigate(`/dashboard/richiesta/${props.richiesta}`); }
+                if (response.ok) { navigate(`/dashboard/r/${props.richiesta}`); }
                 if (!response.ok) {
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
@@ -287,16 +287,16 @@ function FormUpdateInsegnamento(props){
                         </div>
                         {/* CFU Totali */}
                         <div className="mb-4">
-                            <label htmlFor="CFUTot" className="form__label">CFU Totali*</label>
+                            <label htmlFor="cfutot" className="form__label">CFU Totali*</label>
                             <input
                                 type="number"
-                                id="CFUTot"
-                                name="CFUTot"
-                                value={formData.CFUTot}
+                                id="cfutot"
+                                name="cfutot"
+                                value={formData.cfutot}
                                 onChange={handleChange}
                                 className="form__input"
                             />
-                            {formErrors.CFUTot && <p className="error__message">{formErrors.CFUTot}</p>}
+                            {formErrors.cfutot && <p className="error__message">{formErrors.cfutot}</p>}
                         </div>
                         {/* Settore */}
                         <div className="mb-4">
@@ -390,7 +390,7 @@ function FormUpdateInsegnamento(props){
                             <button type="submit" className="w-full button__principale">
                                 Modifica 
                             </button>
-                            <Link className="link" to={`/dashboard/richiesta/${props.richiesta}`}>
+                            <Link className="link" to={`/dashboard/r/${props.richiesta}`}>
                                 Annulla
                             </Link>
                             {formErrors.result && <p className="error__message">{formErrors.result}</p>}

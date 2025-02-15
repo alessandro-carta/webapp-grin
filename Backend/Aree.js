@@ -97,11 +97,7 @@ export async function handleDeleteArea(req, res) {
     const id = req.params.idArea;
     try {
         const result = await deleteArea(id);
-        if(result.affectedRows == 0){
-            return res.status(404).json({
-                message: "Area non trovata"
-            });
-        }
+        if(result.affectedRows == 0) return res.status(404).json({ message: "Area non trovata" });
         // eliminazione avvenuta con successo
         return res.status(204).json({});
     } catch (error) {

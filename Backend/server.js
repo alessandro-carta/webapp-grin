@@ -50,7 +50,7 @@ const authorizePresidenteCDS = async (req, res, next) => {
     try {
         const cds = await getCorsoDiStudio(id);
         if(cds == null) return res.status(404).json({ message: "Corso di studio non trovato" })
-        if (cds.presidente !== presidente) return res.status(403).json({ message: "Non sei il presidente di questo CDS" });
+        if (cds.presidente !== presidente) return res.status(403).json({ message: "Non sei autorizzato ad accedere a questa risorsa" });
         next();
     } catch (error) {
         // errore generale interno al server
@@ -69,7 +69,7 @@ const authorizePresidenteRegolamento = async (req, res, next) => {
     try {
         const regolamento = await getRegolamento(id);
         if(regolamento == null) return res.status(404).json({ message: "Regolamento non trovato" });
-        if (regolamento.presidente !== presidente) return res.status(403).json({ message: "Non sei il presidente di questo regolamento" });
+        if (regolamento.presidente !== presidente) return res.status(403).json({ message: "Non sei autorizzato ad accedere a questa risorsa" });
         next();
     } catch (error) {
         // errore generale interno al server
@@ -88,7 +88,7 @@ const authorizePresidenteRichiesta = async (req, res, next) => {
     try {
         const richiesta = await getRichiesta(id);
         if(richiesta == null) return res.status(404).json({ message: "Richiesta non trovato" });
-        if (richiesta.presidente !== presidente) return res.status(403).json({ message: "Non sei il presidente di questa richiesta" });
+        if (richiesta.presidente !== presidente) return res.status(403).json({ message: "Non sei autorizzato ad accedere a questa risorsa" });
         next();
     } catch (error) {
         // errore generale interno al server

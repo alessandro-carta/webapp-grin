@@ -121,7 +121,8 @@ export async function handleCheckRegole(req, res) {
     } catch (error) {
         if(error.code == 404){
             return res.status(404).json({
-                message: error.message,
+                message: "Richiesta non trovata",
+                error: error.message || error
             });
         }
         // errore generale interno al server
