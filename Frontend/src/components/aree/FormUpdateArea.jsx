@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 function FormUpdateArea(props) {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     // dati del form
     const [formData, setFormData] = useState({
         id: props.area.id,
@@ -36,6 +37,7 @@ function FormUpdateArea(props) {
         e.preventDefault();
         try {
             if(checkNome()){
+                setLoading(true);
                 const response = await fetch(`/api/updateArea`, {
                     method: 'PUT',
                     headers: {
@@ -50,6 +52,7 @@ function FormUpdateArea(props) {
                 if (response.ok) { navigate('/aree/?Visual=admin'); }
                 // modifica fallita
                 if (!response.ok) {
+                    setLoading(false);
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: "Modifica non riuscita, si prega di riprovare"});
                 }
@@ -75,6 +78,7 @@ function FormUpdateArea(props) {
         });
     }
 
+    if(loading) return <p>LOADING...</p>
     return(
         <>
             <div className="form__container">

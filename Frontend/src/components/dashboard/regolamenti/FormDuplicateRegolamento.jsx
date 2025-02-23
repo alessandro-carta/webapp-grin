@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function FormDuplicateRegolamento(props) {
-
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     // dati del form
     const [formData, setFormData] = useState({
@@ -25,6 +25,16 @@ function FormDuplicateRegolamento(props) {
             })
             return false;
         }
+        else{
+            let [ anno1, anno2 ] = formData.annoaccademico.split('/');
+            if(parseInt(anno2) != parseInt(anno1)+1){
+                setFormErros({
+                    ...formErrors,
+                    annoaccademico: "Inserire un anno accademico valido"
+                })
+                return false;
+            }
+        }
         return true;
     }
 
@@ -32,6 +42,7 @@ function FormDuplicateRegolamento(props) {
         e.preventDefault();
         try {
             if(checkAnnoAccademico()){
+                setLoading(true);
                 const response = await fetch(`/api/duplicateRegolamento`, {
                     method: 'POST',
                     headers: {
@@ -46,11 +57,13 @@ function FormDuplicateRegolamento(props) {
                 if (response.ok) { navigate(`/dashboard/c/${props.cds}`); }
                 // duplicazione fallita
                 if (!response.ok) {
+                    setLoading(false);
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
                 }
             }
         } catch (error) {
+            setLoading(false);
             setFormErros({
                 ...formErrors,
                 result: "Errore nella comunicazione con il server. Si prega di riprovare"
@@ -72,6 +85,7 @@ function FormDuplicateRegolamento(props) {
         });
     }
 
+    if(loading) return <p>LOADING...</p>
     return(
         <>
             <div className="form__container">
@@ -106,7 +120,7 @@ function FormDuplicateRegolamento(props) {
                         >
                             Annulla
                         </Link>
-                        {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
+                        {formErrors.result && <p className="error__message">{formErrors.result}</p>}
                     </div>
                 </form>
             </div>

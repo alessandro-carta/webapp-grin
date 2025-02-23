@@ -11,6 +11,7 @@
   --testo-bnt: #fff;
   --gray: #F5F5F5;
   --error: #ef4444;
+  --success: #22c55e
 }
 :root {
   font-family: 'DM Sans', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -25,12 +26,12 @@
 }
 
 #root {
-  margin: 5rem 0 0 0;
+  margin: 10% 0 10% 0;
   text-align: center;
   width: 100%;
 }
 @media (max-width: 640px) {
-  #root { margin: 7rem 0 0 0 }
+  #root { margin: 20% 0 20% 0 }
 }
 
 body {
@@ -100,6 +101,7 @@ body {
   line-height: 1.5rem;
 }
 .error__message { color: var(--error);}
+.success__message { color: var(--success);}
 
 .form__container{
   width: 100%;

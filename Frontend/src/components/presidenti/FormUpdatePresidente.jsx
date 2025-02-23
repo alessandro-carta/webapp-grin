@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 function FormUpdatePresidente(props) {
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     // dati del form ed messaggio di errore per ogni campo
     // Result contiene eventuali errori del server
@@ -96,6 +97,7 @@ function FormUpdatePresidente(props) {
         e.preventDefault();
         try {
             if(checkNome() && checkCognome() && checkEmail() && checkUniversità()){
+                setLoading(true);
                 const response = await fetch(`/api/updatePresidente`, {
                     method: 'PUT',
                     headers: {
@@ -111,11 +113,13 @@ function FormUpdatePresidente(props) {
                     navigate(`/p/${data.data}`); 
                 }
                 if (!response.ok) {
+                    setLoading(false);
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
                 }
             }
         } catch (error) {
+            setLoading(false);
             setFormErros({
                 ...formErrors,
                 result: "Errore nella comunicazione con il server. Si prega di riprovare"
@@ -136,6 +140,7 @@ function FormUpdatePresidente(props) {
         });
     }
 
+    if(loading) return <p>LOADING...</p>
     return(
         <>
             <div className="form__container">

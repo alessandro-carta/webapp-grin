@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function FormNewRichiesta(props) {
-
     const navigate = useNavigate();
     const [corsiDiStudio, setCorsiDiStudio] = useState([]); // elenco dei cds per il menu a tendina
     const [regolamenti, setRegolamenti] = useState([]); // elenco dei cds per il menu a tendina
@@ -90,6 +89,7 @@ function FormNewRichiesta(props) {
         const today = new Date().toISOString().split('T')[0];
         try {
             if(checkCDS() && checkRegolamento()){
+                setLoading(true);
                 const response = await fetch(`/api/addRichiesta`, {
                     method: 'POST',
                     headers: {
@@ -108,11 +108,13 @@ function FormNewRichiesta(props) {
                 // inserimento fallito
                 // inserita una sottoarea con idSottoarea gia' esistente
                 if (!response.ok) {
+                    setLoading(false);
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
                 }
             }
         } catch (error) {
+            setLoading(false);
             setFormErros({
                 ...formErrors,
                 result: "Errore nella comunicazione con il server. Si prega di riprovare"
@@ -188,7 +190,7 @@ function FormNewRichiesta(props) {
                         >
                             Annulla
                         </Link>
-                        {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
+                        {formErrors.result && <p className="error__message">{formErrors.result}</p>}
                     </div>
                 </form>
             </div>

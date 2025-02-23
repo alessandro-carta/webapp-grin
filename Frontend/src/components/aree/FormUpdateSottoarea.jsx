@@ -75,6 +75,7 @@ function FormUpdateSottoarea(props) {
 
         try {
             if(checkNome() && checkArea()){
+                setLoading(true);
                 const response = await fetch(`/api/updateSottoarea`, {
                     method: 'PUT',
                     headers: {
@@ -89,6 +90,7 @@ function FormUpdateSottoarea(props) {
                 if (response.ok) navigate(`/a/${props.sottoarea.area}/sottoaree/?Visual=admin`);
                 // modifica fallita
                 if (!response.ok) {
+                    setLoading(false);
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: "Modifica non riuscita, si prega di riprovare"});
                 }

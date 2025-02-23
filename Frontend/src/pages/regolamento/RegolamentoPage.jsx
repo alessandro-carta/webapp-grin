@@ -85,7 +85,7 @@ function RegolamentoPage(){
                 </select>
             </div>
             <div className={`grid grid-cols-1 ${admin ? 'md:grid-cols-3' : 'md:grid-cols-2'} p-5`}>
-                <div className="text__header__table md:col-span-2">Descrizione testuale</div>
+                <div className="text__header__table md:col-span-2">Descrizione</div>
                 {admin && <div className="text__header__table">Azioni</div> }
                 {regoleFil.map(r => ( <Regola key={r.id} regola={r} check={false} admin={admin}/> ))}       
             </div>

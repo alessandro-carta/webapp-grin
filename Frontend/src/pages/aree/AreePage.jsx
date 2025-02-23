@@ -17,7 +17,6 @@ function AreePage(){
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const [pageTitle, setPageTitle] = useState('Elenco delle aree');
-
     const loadAllAree = async () => {
         try {
             const response = await fetch('/api/aree', {
@@ -62,8 +61,7 @@ function AreePage(){
                 <button className="button__principale" onClick={createNewArea}> Nuova Area</button>
                 <button className="button__principale" onClick={createNewSottoArea}> Nuova Sottoarea </button>
             </div> }
-            <div className={`grid grid-cols-1 ${admin ? 'md:grid-cols-4' : 'md:grid-cols-3'} p-5`}>
-                <div className="text__header__table">Sigla</div>
+            <div className={`grid grid-cols-1 ${admin ? 'md:grid-cols-3' : 'md:grid-cols-2'} p-5`}>
                 <div className="text__header__table">Nome</div>
                 <div className="text__header__table">Sottoaree</div>
                 { admin && <div className="font-semibold text-lg text-blue-800 p-2 border-b-2 border-blue-800">Azioni</div> }

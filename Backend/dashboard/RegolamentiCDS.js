@@ -1,7 +1,16 @@
 import { db } from "../database.js";
 import { v4 as uuidv4 } from 'uuid';
 import { getInsegnamentiFull } from "../Richieste.js";
-import { addInsegnamento } from "./Insegnamenti.js";
+
+function checkAnnoAccademico(annoaccademico) {
+    const testAnnoAccademico = /^\d{4}\/\d{4}$/;
+    if(!annoaccademico || !testAnnoAccademico.test(annoaccademico)) return false;
+    else {
+        let [ anno1, anno2 ] = annoaccademico.split('/');
+        if(parseInt(anno2) != parseInt(anno1)+1) return false;
+    }
+    return true;
+}
 
 export async function getRegolamenti(cds) {
     const [result] = await db.query(`
@@ -60,6 +69,11 @@ export async function duplicateRegolamento(id, annoaccademico, regolamento){
 export async function handleAddRegolamento(req, res) {
     const { annoaccademico, cds } = req.body;
     const id = uuidv4();
+    if(!checkAnnoAccademico(annoaccademico)){
+        return res.status(500).json({
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+        });
+    }
     try {
         // risposta con successo
         const result = await addRegolamento(id, annoaccademico, cds);
@@ -141,6 +155,11 @@ export async function handleDeleteRegolamento(req, res) {
 export async function handleDuplicateRegolamento(req, res) {
     const { annoaccademico, regolamento } = req.body;
     const id = uuidv4();
+    if(!checkAnnoAccademico(annoaccademico)){
+        return res.status(500).json({
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+        });
+    }
     try {
         const result = await duplicateRegolamento(id, annoaccademico, regolamento);
         if(result.ok) return res.status(201).json({ 

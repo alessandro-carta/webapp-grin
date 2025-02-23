@@ -24,6 +24,10 @@ export async function deleteCDS(id) {
     const [result] = await db.query(`DELETE FROM CorsiDiStudio WHERE idCDS = ?`,[id]);
     return result;
 }
+export async function updateCDS(id, nome){
+    const [result] = await db.query(`UPDATE CorsiDiStudio SET Nome = ? WHERE idCDS = ?`, [nome, id]);
+    return result;
+}
 
 
 
@@ -92,6 +96,28 @@ export async function hanldeCorsoDiStudio(req, res) {
         return res.status(201).json({
             message: "Corso di studio",
             data: result
+        });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+}
+export async function handleUpdateCDS(req, res) {
+    const { cds, nome } = req.body;
+    try {
+        const result = await updateCDS(cds, nome);
+        if(result.affectedRows == 0){
+            return res.status(404).json({
+                message: "Corso non trovato"
+            });
+        }
+        // modifica avvenuta con successo
+        return res.status(201).json({
+            message: "Corso modificato",
+            data: cds
         });
     } catch (error) {
         // errore generale interno al server

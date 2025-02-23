@@ -34,6 +34,7 @@ function ControlloRegolePresidentePage(){
     const [regole, setRegole] = useState([]);
     const checkRichiesta = async () => {
         try {
+            setLoading(true);
             const response = await fetch(`/api/checkRegolePresidente/${idRichiesta}`, {
                 method: 'GET',
                 headers: {
@@ -51,7 +52,7 @@ function ControlloRegolePresidentePage(){
                 setLoading(false);
             }
             
-        } catch (error) { console.log(error); }
+        } catch (error) { setLoading(false); console.log(error); }
     }
     useEffect(() => checkRichiesta, [idRichiesta]); // Ogni volta che cambia idRichiesta
     // restituisce l'esito della richiesta
@@ -95,7 +96,7 @@ function ControlloRegolePresidentePage(){
             <NavbarPresidente />
             <div className="grid grid-cols-1 md:grid-cols-3 p-5">
                 <div className="text__header__table md:col-span-2">Descrizione testuale</div>
-                <div className="text__header__table"></div>
+                <div className="text__header__table">Esito</div>
                 {regole.map(r => (
                     <Regola key={r.idRegola} regola={r} check={true}/>
                 ))}

@@ -5,6 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 
 function BolliniPage(){
+    // dati per la gestione dei filtri
+    const [annoAccademico, setAnnoAccademico] = useState("All");
+    const [stato, setStato] = useState("All");
+    const [filtroAnni, setFiltroAnni] = useState([]);
+
     const navigate = useNavigate();
     const [pageTitle, setPageTitle] = useState('Elenco dei bollini');
     useEffect(() => { document.title = pageTitle }, [pageTitle]); // eseguito ogni volta che cambia pageTitle
@@ -26,8 +31,13 @@ function BolliniPage(){
             // risposta con successo
             if(response.ok) {
                 const data = await response.json();
+                const anni = [];
+                data.data.map((d) => { 
+                    if(!anni.includes(d.annoaccademico)) anni.push(d.annoaccademico); 
+                });
                 setBollini(data.data);
                 setBolliniAll(data.data);
+                setFiltroAnni(anni);
                 setLoading(false);
             }
             
@@ -35,28 +45,47 @@ function BolliniPage(){
     }
     useEffect(() => loadBollini, []);
 
-    // funzione per il filtro sullo stato del bollino
-    const handleChange = (e) => {
-        const {  value } = e.target;
-        if(value === "All") setBollini(bolliniAll);
-        if(value === "Erogato") setBollini(bolliniAll.filter((bollino) => bollino.erogato == 1));
-        if (value === "Revocato") setBollini(bolliniAll.filter((bollino) => bollino.erogato == 0));
+    // gestione dei filtri
+    const filtraDati = () => {
+        const boll = [];
+        bolliniAll.map(bollino => {
+            if(bollino.annoaccademico === annoAccademico || annoAccademico === 'All')
+            if(bollino.erogato+"" === stato || stato === 'All')
+                boll.push(bollino);
+        })
+        setBollini(boll);
     }
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        if(name === 'filtroAnno') setAnnoAccademico(value);
+        if(name === 'filtroStato') setStato(value);
+    }
+    useEffect(() => filtraDati(), [annoAccademico, stato]);
 
     if(loading) return <p>LOADING...</p>
     return (
         <>
             <NavbarGrin />
-            <div className="flex space-x-4 p-2 items-center justify-center">
-                <p className="text-xl">Stato: </p>
+            <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
+                <p className="text-xl">Anno Accademico: </p>
                 <select
-                    id="filtroBollino"
-                    name="filtroBollino"
+                    id="filtroAnno"
+                    name="filtroAnno"
                     onChange={handleChange}
                 >
                     <option value="All">Tutti</option>
-                    <option value="Erogato">Erogato</option>
-                    <option value="Revocato">Revocato</option>
+                    {filtroAnni.map(anno => (
+                    <option key={anno} value={anno}>{anno}</option> ))}
+                </select>
+                <p className="text-xl">Stato: </p>
+                <select
+                    id="filtroStato"
+                    name="filtroStato"
+                    onChange={handleChange}
+                >
+                    <option value="All">Tutti</option>
+                    <option value="1">Erogato</option>
+                    <option value="0">Revocato</option>
                 </select>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-6 p-5">

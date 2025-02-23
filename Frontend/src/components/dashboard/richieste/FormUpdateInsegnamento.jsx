@@ -210,6 +210,7 @@ function FormUpdateInsegnamento(props){
         e.preventDefault();
         try {
             if(checkNome() && checkCFUTot() && checkSettore() && checkAnnoErogazione){
+                setLoading(true);
                 const response = await fetch(`/api/updateInsegnamento/`, {
                     method: 'PUT',
                     headers: {
@@ -229,11 +230,13 @@ function FormUpdateInsegnamento(props){
                 if(response.status == 403) navigate('/');
                 if (response.ok) { navigate(`/dashboard/r/${props.richiesta}`); }
                 if (!response.ok) {
+                    setLoading(false);
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
                 }
             }
         } catch (error) {
+            setLoading(false);
             setFormErros({
                 ...formErrors,
                 result: "Errore nella comunicazione con il server. Si prega di riprovare"
@@ -242,8 +245,8 @@ function FormUpdateInsegnamento(props){
     }
     // funzione per aggiugere una sottoarea all'insegnamento
     const addNewInsSottoarea = () => {
-        const id = formData.sottoarea.split('-')[0];
-        const sottoarea = formData.sottoarea.split('-')[1];
+        const id = formData.sottoarea.split('/')[0];
+        const sottoarea = formData.sottoarea.split('/')[1];
         if(checkSottoarea(id)){
             setFormData({
                 ...formData,
@@ -265,7 +268,7 @@ function FormUpdateInsegnamento(props){
     }
 
     const anni = []; // contiene il numero di anni di durata di un CDS
-    if(loading) return null;
+    if(loading) return <p>LOADING...</p>;
     else {
         for(let i = 0; i < duratacorso; i++) anni.push(i+1);
         return(
@@ -353,7 +356,7 @@ function FormUpdateInsegnamento(props){
                                         className="form__select mb-2"
                                     >
                                         <option value="">Seleziona sottoarea*</option>
-                                        {sottoaree.map(s => ( <option key={s.id} value={s.id+"-"+s.nome}>{s.nome}</option> ))}
+                                        {sottoaree.map(s => ( <option key={s.id} value={s.id+"/"+s.nome}>{s.nome}</option> ))}
                                     </select>
                                     <input
                                         type="number"

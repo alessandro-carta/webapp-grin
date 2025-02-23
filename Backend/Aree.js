@@ -1,4 +1,5 @@
 import { db } from "./database.js";
+import { v4 as uuidv4 } from 'uuid';
 
 // AREE
 export async function getAree(){
@@ -69,7 +70,8 @@ export async function handleGetArea(req, res) {
     }
 }
 export async function handleAddArea(req, res) {
-    const { id, nome } = req.body;
+    const { nome } = req.body;
+    const id = uuidv4();
     try {
         const result = await addArea(id, nome);
         // inserimento avvenuto con successo
@@ -81,7 +83,7 @@ export async function handleAddArea(req, res) {
         // errore idArea già presente
         if(error.code == 'ER_DUP_ENTRY') {
             return res.status(400).json({
-                message: 'Sigla già esistente, riprovare con un\'altra',
+                message: 'Area già esistente',
                 error: error.message || error
             });
         }

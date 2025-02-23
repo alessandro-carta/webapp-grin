@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
-
 
 function FormNewRegola(props) {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const tipologie = ['area', 'sottoarea', 'settore'];
     // dati del form
     const [formData, setFormData] = useState({
@@ -178,6 +177,7 @@ function FormNewRegola(props) {
         e.preventDefault();
         try {
             if(checkInput() && checkDescrizione() && checkTipologia() && checkSelezioni()){
+                setLoading(true);
                 const response = await fetch(`/api/addRegola`, {
                     method: 'POST',
                     headers: {
@@ -190,11 +190,13 @@ function FormNewRegola(props) {
                 if(response.status == 403) navigate('/');
                 if (response.ok) { navigate(`/regolamento/?Visual=admin`); }
                 if (!response.ok) {
+                    setLoading(false);
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
                 }
             }
         } catch (error) {
+            setLoading(false);
             setFormErros({
                 ...formErrors,
                 result: "Errore nella comunicazione con il server. Si prega di riprovare"
@@ -252,6 +254,7 @@ function FormNewRegola(props) {
                 </div>
             </>
     }
+    if(loading) return <p>LOADING...</p>
     return (
         <>
             <div className="form__container">

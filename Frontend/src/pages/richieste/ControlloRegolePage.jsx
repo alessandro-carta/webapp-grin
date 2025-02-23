@@ -69,6 +69,7 @@ function ControlloRegolePage(){
     // funzione per erogare un bollino
     const erogaBollino = async () => {
         const data = {erogato: 1, richiesta: idRichiesta};
+        setLoading(true);
         const response = await fetch(`/api/addBollino`, {
             method: 'POST',
             headers: { 
@@ -85,6 +86,7 @@ function ControlloRegolePage(){
     // funzione per invalidare una richiesta
     const invalidRichiesta = async () => {
         const data = { id: idRichiesta };
+        setLoading(true);
         const response = await fetch(`/api/invalidRichiesta`, {
             method: 'PUT',
             headers: { 
@@ -117,7 +119,7 @@ function ControlloRegolePage(){
             <NavbarGrin />
             <div className="grid grid-cols-1 md:grid-cols-3 p-5">
                 <div className="text__header__table md:col-span-2">Descrizione testuale</div>
-                <div className="text__header__table"></div>
+                <div className="text__header__table">Esito</div>
                 {regole.map(r => ( <Regola key={r.idRegola} regola={r} check={true}/> ))}
             </div>
             <p className="text-xl subtitle">Il corso di studio {checkAnvur ? "è" : "non è"} accreditato all'ANVUR</p>

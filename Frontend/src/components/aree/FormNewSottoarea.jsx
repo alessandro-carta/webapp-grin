@@ -35,14 +35,12 @@ function FormNewSottoarea(props) {
 
     // dati del form
     const [formData, setFormData] = useState({
-        id: "",
         nome: "",
         area: props.area || "",
 
     })
     // messaggi di errore, result contiene la risposta della chiamata HTTP
     const [formErrors, setFormErros] = useState({
-        id: "",
         nome: "",
         result: ""
     })
@@ -65,17 +63,6 @@ function FormNewSottoarea(props) {
         return true;
     }
 
-    const checkSigla = () => {
-        if(!formData.id){
-            setFormErros({
-                ...formErrors,
-                id: "Campo obbligatorio"
-            })
-            return false;
-        }
-        return true;
-    }
-
     const checkArea = () => {
         if(!formData.area){
             setFormErros({
@@ -90,7 +77,8 @@ function FormNewSottoarea(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if(checkSigla() && checkArea() && checkNome()){
+            if(checkArea() && checkNome()){
+                setLoading(true);
                 const response = await fetch(`/api/addSottoarea`, {
                     method: 'POST',
                     headers: {
@@ -106,6 +94,7 @@ function FormNewSottoarea(props) {
                 // inserimento fallito
                 // inserita una sottoarea con idSottoarea gia' esistente
                 if (!response.ok) {
+                    setLoading(false);
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
                 }
@@ -137,19 +126,6 @@ function FormNewSottoarea(props) {
         <>
             <div className="form__container">
                 <form onSubmit={handleSubmit}>
-                    {/* idSottoArea */}
-                    <div className="mb-4">
-                        <label htmlFor="sigla" className="form__label">Sigla*</label>
-                        <input
-                            type="text"
-                            id="id"
-                            name="id"
-                            value={formData.id}
-                            onChange={handleChange}
-                            className="form__input"
-                        />
-                        {formErrors.id && <p className="error__message">{formErrors.id}</p>}
-                    </div>
                     {/* Nome */}
                     <div className="mb-4">
                         <label htmlFor="nome" className="form__label">Nome*</label>

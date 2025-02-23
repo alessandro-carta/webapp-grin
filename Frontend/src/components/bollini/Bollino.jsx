@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 function Bollino(props){
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     
     const invalidBollino = async () => {
         try {
+            setLoading(true);
             const response = await fetch(`/api/invalidBollino`, {
                 method: 'PUT',
                 headers: {
@@ -17,7 +20,12 @@ function Bollino(props){
             // accesso non consentito
             if(response.status == 403) navigate('/');
             // risposta con successo
-            if(response.ok) window.location.reload();
+            if(response.ok) {
+                props.bollino.erogato = 0;
+                setLoading(false);
+                //window.location.reload();
+            }
+            if(!response.ok) setLoading(false);
             
         } catch (error) { console.log(error); }
     }
@@ -43,7 +51,10 @@ function Bollino(props){
             <div className="text__content__table">{props.bollino.annoaccademico}</div>
             <div className="text__content__table">{props.bollino.erogato ? "Erogato" : "Revocato"}</div>
             <div className="text__content__table underline"> {linkRichiesta} </div>
-            { props.admin && <div className="text__content__table"> {btnRevoca} </div > }
+            { props.admin && !loading && <div className="text__content__table"> {btnRevoca} </div > }
+            { props.admin && loading && <div className="text__content__table">
+                <button className="button__action"> LOADING... </button>
+            </div > }
         </>
     )
 

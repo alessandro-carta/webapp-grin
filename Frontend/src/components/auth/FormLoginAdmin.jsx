@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function FormLoginAdmin() {
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     // dati del form e messaggio di errore per ogni cambo
     const [formData, setFormData] = useState({
@@ -27,6 +28,7 @@ function FormLoginAdmin() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if(checkPassword()){
+            setLoading(true);
             try {
                 const response = await fetch(`/api/adminLogin`, {
                     method: 'POST',
@@ -44,6 +46,7 @@ function FormLoginAdmin() {
                     navigate('/presidenti');
                 }
                 if(!response.ok){
+                    setLoading(false);
                     const { error, message } = await response.json();
                     setFormErros({...formErrors, result: message});
                 }
@@ -66,6 +69,7 @@ function FormLoginAdmin() {
         });
     }
 
+    if(loading) return <p>LOADING...</p>
     return(
         <>
             <div className="form__container">

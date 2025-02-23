@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-function FormNewCDS() {
+function FormUpdateCDS(props) {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     // dati del form e messaggio di errore per ogni cambo
     const [formData, setFormData] = useState({
-        nome: "",
-        durata: 0
+        cds: props.cds.id,
+        nome: props.cds.corsodistudio
     })
     // result contiene il messaggio di errore inviato dal server
     const [formErrors, setFormErros] = useState({
         nome: "",
-        durata: "",
         result: ""
     })
 
@@ -33,31 +32,14 @@ function FormNewCDS() {
         }
         return true;
     }
-    const checkDurata = () => {
-        if(!formData.durata){
-            setFormErros({
-                ...formErrors,
-                durata: "Campo obbligatorio"
-            })
-            return false;
-        }
-        if(formData.durata != 3 && formData.durata != 2 && formData.durata != 5){
-            setFormErros({
-                ...formErrors,
-                durata: "Inserire un dato corretto"
-            })
-            return false;
-        }
-        return true;
-    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if(checkNome() && checkDurata()){
+            if(checkNome()){
                 setLoading(true);
-                const response = await fetch(`/api/addCDS`, {
-                    method: 'POST',
+                const response = await fetch(`/api/updateCDS`, {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -116,28 +98,14 @@ function FormNewCDS() {
                         />
                         {formErrors.nome && <p className="error__message">{formErrors.nome}</p>}
                     </div>
-                    {/* Durata */}
-                    <div className="mb-4">
-                        <label htmlFor="durata" className="form__label">Durata*</label>
-                        <input
-                            type="number"
-                            id="durata"
-                            name="durata"
-                            value={formData.durata}
-                            onChange={handleChange}
-                            className="form__input"
-                        />
-                        {formErrors.durata && <p className="error__message">{formErrors.durata}</p>}
-                    </div>
                     <p className="text-base p-2">* Campi obbligatori</p>
-                    <p className="text-base mb-2">cliccando su CREA, si dichiara che il Corso Di Studio è accreditato all'ANVUR.</p>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
                         <button
                             type="submit"
                             className="button__principale w-full"
                         >
-                            CREA
+                            MODIFICA
                         </button>
 
                         <Link
@@ -153,4 +121,4 @@ function FormNewCDS() {
         </>
     )
 }
-export default FormNewCDS;
+export default FormUpdateCDS;

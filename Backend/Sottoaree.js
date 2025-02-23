@@ -1,5 +1,5 @@
 import { db } from "./database.js";
-
+import { v4 as uuidv4 } from 'uuid';
 
 export async function addSottoarea(id, nome, area){
     const [result] = await db.query(`INSERT INTO Sottoaree (idSottoarea, Nome, Area) VALUES (?, ?, ?)`, [id, nome, area]);
@@ -94,7 +94,8 @@ export async function handleGetSottoaree(req, res) {
     
 }
 export async function handleAddSottoarea(req, res) {
-    const {id, nome, area} = req.body;
+    const {nome, area} = req.body;
+    const id = uuidv4();
     try {
         // inserimento avvenuto con successo
         const result = await addSottoarea(id, nome, area);
@@ -106,11 +107,12 @@ export async function handleAddSottoarea(req, res) {
         // errore idSottoarea già presente
         if(error.code == 'ER_DUP_ENTRY') {
             return res.status(400).json({
-                message: 'Sigla già esistente, riprovare con un\'altra',
+                message: 'Sottoarea già esistente',
                 error: error.message || error
             });
         }
         // errore generale interno al server
+        console.log(error);
         return res.status(500).json({
             success: false,
             message: "Si è verificato un errore durante l'elaborazione della richiesta",

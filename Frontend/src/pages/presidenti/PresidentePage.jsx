@@ -7,6 +7,7 @@ function PresidentePage() {
     const { idPresidente } = useParams();
     const [presidente, setPresidente] = useState();
     const [loading, setLoading] = useState(true);
+    const [messageResult, setMessageResult] = useState(); // contiene un messaggio per visualizzare l'esito dell'azione
     useEffect( () => loadPresidente, [idPresidente]); // eseguito ogni volta che cambia idPresidente
 
     const [pageTitle, setPageTitle] = useState('Presidente');
@@ -37,6 +38,7 @@ function PresidentePage() {
     // funzione per disabilitare l'account di un presidente
     // Attivo: 0
     const offPresidente = async () => {
+        setLoading(true);
         const data = {...presidente, attivo: 0};
         try {
             const response = await fetch(`/api/updatePresidente`, {
@@ -50,14 +52,28 @@ function PresidentePage() {
             // accesso non consentito
             if(response.status == 403) navigate('/');
             // risposta con successo
-            if(response.ok) navigate('/presidenti');
-            
+            if(response.ok) {
+                setLoading(false);
+                setPresidente({...presidente, attivo: 0});
+                let component = <>
+                    <p className="success__message">Account disattivato con successo!</p>
+                </>;
+                setMessageResult(component);
+            }
+            if(!response.ok){
+                setLoading(false);
+                let component = <>
+                    <p className="error__message">Impossibile disattivare l'account</p>
+                </>;
+                setMessageResult(component);
+            }
         } catch (error) { console.log(error); }
     }
 
     // funzione per riattivare l'account di un presidente
     // Attivo: 1
     const onPresidente = async () => {
+        setLoading(true);
         const data = {...presidente, attivo: 1};
         try {
             const response = await fetch(`/api/updatePresidente`, {
@@ -71,7 +87,21 @@ function PresidentePage() {
             // accesso non consentito
             if(response.status == 403) navigate('/');
             // risposta con successo
-            if(response.ok) navigate('/presidenti');
+            if(response.ok) {
+                setLoading(false);
+                setPresidente({...presidente, attivo: 1});
+                let component = <>
+                    <p className="success__message">Account attivato con successo!</p>
+                </>;
+                setMessageResult(component);
+            }
+            if(!response.ok){
+                setLoading(false);
+                let component = <>
+                    <p className="error__message">Impossibile attivare l'account</p>
+                </>;
+                setMessageResult(component);
+            }
             
         } catch (error) { console.log(error); }
     }
@@ -91,6 +121,7 @@ function PresidentePage() {
                     <button className="button__principale" onClick={offPresidente}> Disabilita account </button> :
                     <button className="button__principale" onClick={onPresidente}> Riattiva account </button> }
             </div>
+            {messageResult}
         </>
     )
 }

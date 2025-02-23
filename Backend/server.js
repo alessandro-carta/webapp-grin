@@ -9,7 +9,7 @@ import { handleGetRichieste, handleGetRichiesta, handleGetInsegnamenti, handleCh
 import { handleAddBollino, handleBollini, handleInvalidBollino } from "./Bollini.js";
 import { handleAddSottoarea, handleGetSottoarea, handleGetSottoareePerArea, handleGetSottoaree, handleDeleteSottoarea, handleUpdateSottoarea } from "./Sottoaree.js";
 import { handleAdminLogin, handleChangePassword, handlePresidenteLogin } from "./Auth.js";
-import { getCorsoDiStudio, handleAddCDS, handleDashboard, handleDeleteCDS, hanldeCorsoDiStudio } from "./dashboard/CorsiDiStudio.js";
+import { getCorsoDiStudio, handleAddCDS, handleDashboard, handleDeleteCDS, handleUpdateCDS, hanldeCorsoDiStudio } from "./dashboard/CorsiDiStudio.js";
 import { handleGetBolliniPerPresidente } from "./dashboard/Bollini.js";
 import { getRegolamento, handleAddRegolamento, handleDeleteRegolamento, handleDuplicateRegolamento, handleGetRegolamenti, handleGetRegolamento } from "./dashboard/RegolamentiCDS.js";
 import { getRichiesta, handleAddRichiesta, handleDeleteRichiesta, handleGetRichiestaPerPresidente, handleGetRichiestePerPresidente, handleSaveRichiesta, handleSendRichiesta } from "./dashboard/Richieste.js";
@@ -120,6 +120,7 @@ app.put("/api/changePassword", authenticateToken, authorizeRole(['presidente']),
 // 2. Aggiungere un cds
 // 3. Eliminare un cds
 // 4. Informazioni di un singolo corso di studio
+// 5. Modificare un cds
 app.get("/api/dashboard", authenticateToken, authorizeRole(['presidente']),  async (req, res) => {
     return handleDashboard(req, res);
 })
@@ -131,6 +132,9 @@ app.delete("/api/deleteCDS/:idCDS", authenticateToken, authorizeRole(['president
 })
 app.get("/api/corsodistudio/:idCDS", authenticateToken, authorizeRole(['presidente']), authorizePresidenteCDS, async (req, res) => {
     return hanldeCorsoDiStudio(req, res);
+})
+app.put("/api/updateCDS", authenticateToken, authorizeRole(['presidente']), authorizePresidenteCDS, async (req, res) => {
+    return handleUpdateCDS(req, res);
 })
 // DASHBORAD/REGOLAMENTI
 // Operazioni
@@ -144,6 +148,7 @@ app.get("/api/corsodistudio/:idCDS", authenticateToken, authorizeRole(['presiden
 // 8. Informazioni di un determinato insegnamento
 // 9. Modificare un insegnamento
 // 10. Duplica un regolamento
+// 11. Modificare un regolamento
 app.post("/api/addRegolamento/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteCDS, async (req, res) => {
     return handleAddRegolamento(req, res);
 })

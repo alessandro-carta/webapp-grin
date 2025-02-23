@@ -9,9 +9,7 @@ function SottoareePage(){
     const queryParams = new URLSearchParams(location.search);
     const visual = queryParams.get('Visual');
     const [admin, setAdmin] = useState(false);
-    useEffect(() => {
-        if (visual === 'admin') setAdmin(true);
-    }, [visual]);
+    useEffect(() => { if (visual === 'admin') setAdmin(true); }, [visual]);
 
     const [pageTitle, setPageTitle] = useState('Elenco delle sottoaree');
     const { idArea } = useParams();
@@ -77,14 +75,13 @@ function SottoareePage(){
     return(
         <>
             {navbar}
-            <p className='text-4xl title'>{pageTitle}</p>
+            <p className='text-2xl title'>{pageTitle}</p>
             { admin && 
             <div className="flex space-x-4 p-4 items-center justify-center">
                 <p className="text-xl">Azioni: </p>
                 <button className="button__principale" onClick={createNewSottoArea}> Nuova Sottoarea </button>
             </div>}
-            <div className={`grid grid-cols-1 ${admin ? 'md:grid-cols-3' : 'md:grid-cols-2'} p-5`}>
-                <div className="text__header__table">Sigla</div>
+            <div className={`grid grid-cols-1 ${admin ? 'md:grid-cols-2' : 'md:grid-cols-1'} p-5`}>
                 <div className="text__header__table">Nome</div>
                 { admin && <div className="text__header__table">Azioni</div> }
                 {sottoaree.map(s => ( <Sottoarea key={s.id} sottoarea={s} admin={admin}/> ))}           

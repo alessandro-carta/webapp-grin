@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function FormNewRegolamento(props) {
-
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     // dati del form
     const [formData, setFormData] = useState({
@@ -24,6 +24,16 @@ function FormNewRegolamento(props) {
             })
             return false;
         }
+        else{
+            let [ anno1, anno2 ] = formData.annoaccademico.split('/');
+            if(parseInt(anno2) != parseInt(anno1)+1){
+                setFormErros({
+                    ...formErrors,
+                    annoaccademico: "Inserire un anno accademico valido"
+                })
+                return false;
+            }
+        }
         return true;
     }
 
@@ -31,6 +41,7 @@ function FormNewRegolamento(props) {
         e.preventDefault();
         try {
             if(checkAnnoAccademico()){
+                setLoading(true);
                 const response = await fetch(`/api/addRegolamento`, {
                     method: 'POST',
                     headers: {
@@ -46,11 +57,13 @@ function FormNewRegolamento(props) {
                 // inserimento fallito
                 // inserita una sottoarea con idSottoarea gia' esistente
                 if (!response.ok) {
+                    setLoading(false);
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
                 }
             }
         } catch (error) {
+            setLoading(false);
             setFormErros({
                 ...formErrors,
                 result: "Errore nella comunicazione con il server. Si prega di riprovare"
@@ -72,6 +85,7 @@ function FormNewRegolamento(props) {
         });
     }
 
+    if(loading) return <p>LOADING...</p>
     return(
         <>
             <div className="form__container">

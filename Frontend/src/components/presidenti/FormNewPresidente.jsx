@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 function FormNewPresidente() {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     // dati del form e messaggio di errore per ogni campo
     const [formData, setFormData] = useState({
         nome: "",
@@ -96,6 +97,7 @@ function FormNewPresidente() {
         e.preventDefault();
         try {
             if(checkNome() && checkCognome() && checkEmail() && checkUniversità()){
+                setLoading(true);
                 const response = await fetch(`/api/addPresidente`, {
                     method: 'POST',
                     headers: {
@@ -111,6 +113,7 @@ function FormNewPresidente() {
                     navigate(`/p/${data.data}`); 
                 }
                 if (!response.ok) {
+                    setLoading(false);
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
                 }
@@ -136,6 +139,7 @@ function FormNewPresidente() {
         });
     }
 
+    if(loading) return <p>LOADING...</p>
     return(
         <>
             <div className="form__container">

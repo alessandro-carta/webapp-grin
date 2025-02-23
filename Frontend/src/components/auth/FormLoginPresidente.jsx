@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function FormLoginPresidente() {
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     // dati del form e messaggio di errore per ogni cambo
     const [formData, setFormData] = useState({
@@ -41,6 +42,7 @@ function FormLoginPresidente() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if(checkEmail() && checkPassword()){
+            setLoading(true);
             try {
                 const response = await fetch(`/api/presidenteLogin`, {
                     method: 'POST',
@@ -57,6 +59,7 @@ function FormLoginPresidente() {
                     else navigate(`/dashboard/corsidistudio`);
                 }
                 if(!response.ok){
+                    setLoading(false);
                     const { error, message } = await response.json();
                     setFormErros({...formErrors, result: message});
                 }
@@ -79,6 +82,7 @@ function FormLoginPresidente() {
         });
     }
 
+    if(loading) return <p>LOADING...</p>
     return(
         <>
             <div className="form__container">

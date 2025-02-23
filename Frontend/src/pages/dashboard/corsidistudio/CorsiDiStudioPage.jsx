@@ -47,7 +47,7 @@ function CorsiDiStudioPage(){
           <button className="button__principale" onClick={createNewCDS}> Crea un nuovo corso </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-5 p-5">
-            <div className="text__header__table">Corso di studio</div>
+            <div className="text__header__table">Corso Di Studio</div>
             <div className="text__header__table">Università</div>
             <div className="text__header__table">Durata</div>
             <div className="text__header__table">Regolamenti</div>

@@ -4,36 +4,16 @@ import { Link, useNavigate } from "react-router-dom";
 function FormNewArea() {
 
     const navigate = useNavigate();
-
+    const [loading, setLoading] = useState(false);
     // dati del form
     const [formData, setFormData] = useState({
-        id: "",
         nome: ""
     })
     // messaggi di errore, result contiene la risposta della chiamata HTTP
     const [formErrors, setFormErros] = useState({
-        id: "",
         nome: "",
         result: ""
     })
-
-    const checkArea = () => {
-        if(!formData.id){
-            setFormErros({
-                ...formErrors,
-                id: "Campo obbligatorio"
-            })
-            return false;
-        }
-        if(formData.id.length != 1){
-            setFormErros({
-                ...formErrors,
-                id: "Deve essere un singolo carattere"
-            })
-            return false;
-        }
-        return true;
-    }
 
     const checkNome = () => {
         if(!formData.nome){
@@ -56,7 +36,8 @@ function FormNewArea() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if(checkArea() && checkNome()){
+            if(checkNome()){
+                setLoading(true);
                 const response = await fetch(`/api/addArea`, {
                     method: 'POST',
                     headers: {
@@ -72,6 +53,7 @@ function FormNewArea() {
                 // inserimento fallito
                 // inserita un'area con idArea gia' esistente
                 if (!response.ok) {
+                    setLoading(false);
                     const errorData = await response.json();
                     setFormErros({...formErrors, result: errorData.message})
                 }
@@ -98,23 +80,11 @@ function FormNewArea() {
         });
     }
 
+    if(loading) return <p>LOADING...</p>
     return(
         <>
             <div className="form__container">
                 <form onSubmit={handleSubmit}>
-                    {/* idArea */}
-                    <div className="mb-4">
-                        <label htmlFor="id" className="form__label">Sigla*</label>
-                        <input
-                            type="text"
-                            id="id"
-                            name="id"
-                            value={formData.id}
-                            onChange={handleChange}
-                            className="form__input"
-                        />
-                        {formErrors.id && <p className="error__message">{formErrors.id}</p>}
-                    </div>
                     {/* Nome */}
                     <div className="mb-4">
                         <label htmlFor="nome" className="form__label">Nome*</label>

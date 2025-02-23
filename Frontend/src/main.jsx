@@ -33,6 +33,8 @@ import CreateNewInsegnamentoPage from './pages/dashboard/richieste/CreateNewInse
 import UpdateInsegnamentoPage from './pages/dashboard/richieste/UpdateInsegnamentoPage.jsx'
 import ControlloRegolePresidentePage from './pages/dashboard/richieste/ControlloRegolePresidentePage.jsx'
 import CreateDuplicateRegolamentoPage from './pages/dashboard/regolamenti/CreateDuplicateRegolamentoPage.jsx'
+import UpdateCDSPage from './pages/dashboard/corsidistudio/UpdateCDSPage.jsx'
+
 
 const router = createBrowserRouter([
   {
@@ -132,6 +134,10 @@ const router = createBrowserRouter([
     element: <CreateNewCDSPage />
   },
   {
+    path: "dashboard/modifica-corso/:idCDS",
+    element: <UpdateCDSPage />
+  },
+  {
     path: "dashboard/c/:idCDS/crea-un-nuovo-regolamento",
     element: <CreateNewRegolamentoPage />
   },
@@ -148,11 +154,11 @@ const router = createBrowserRouter([
     element: <RichiestaPresidentePage />
   },
   {
-    path: "crea-un-nuovo-insegnamento/:idRichiesta",
+    path: "dashboard/r/:idRichiesta/crea-un-nuovo-insegnamento",
     element: <CreateNewInsegnamentoPage />
   },
   {
-    path: "modifica-insegnamento/:idRichiesta/:idInsegnamento",
+    path: "dashboard/r/:idRichiesta/modifica-insegnamento/:idInsegnamento",
     element: <UpdateInsegnamentoPage />
   },
   {

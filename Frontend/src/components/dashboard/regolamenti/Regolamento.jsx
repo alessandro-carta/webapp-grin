@@ -3,13 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 function Regolamento(props) {
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [isDeleted, setIsDeleted] = useState(false); // tiene traccia se un regolamento è stato eliminato
     const [errDelete, setErrDelete] = useState(false); // tiene traccia se un'eliminazione non è andata a buon fine per un errore
     const [message, setMessage] = useState('');
 
+    // azioni possibili su un regolamento
     const duplicateRegolamento = async () => { navigate(`/dashboard/c/${props.regolamento.cds}/duplica-regolamento/${props.regolamento.id}`) }
     const deleteRegolamento = async () => {
+        setLoading(true);
         try {
             const response = await fetch(`/api/deleteRegolamento/${props.regolamento.id}`, {
                 method: 'DELETE',
@@ -22,9 +25,13 @@ function Regolamento(props) {
             // accesso non consentito
             if(response.status == 403) navigate('/');
             // eliminazione avvenuta con successo
-            if (response.ok) { setIsDeleted(true); }
+            if (response.ok) { 
+                setLoading(false);
+                setIsDeleted(true); 
+            }
             // errore nell'eliminazione
             if (!response.ok) {
+                setLoading(false);
                 const errorData = await response.json();
                 setMessage(errorData.message);
                 setErrDelete(true);
@@ -48,7 +55,9 @@ function Regolamento(props) {
             <div className="text__content__table">{props.regolamento.annoaccademico}</div>
             <div className="text__content__table">
                 <button className="button__action" onClick={duplicateRegolamento}> Duplica </button>
-                <button className="button__action" onClick={deleteRegolamento}> Elimina </button>
+                {!loading && <button className="button__action" onClick={deleteRegolamento}> Elimina </button>}
+                {loading && <button className="button__action"> ... </button>}
+
             </div >
             
         </>

@@ -5,7 +5,7 @@ import FormDuplicateRegolamento from "../../../components/dashboard/regolamenti/
 
 function CreateDuplicateRegolamentoPage () {
 
-    const [pageTitle, setPageTitle] = useState('Nuovo Regolamento');
+    const [pageTitle, setPageTitle] = useState('Duplica Regolamento');
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
     const { idRegolamento, idCDS } = useParams();
 

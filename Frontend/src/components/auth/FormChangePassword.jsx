@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function FormChangePassword() {
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     // dati del form e messaggio di errore per ogni cambo
     const [formData, setFormData] = useState({
@@ -28,20 +29,26 @@ function FormChangePassword() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if(checkPassword()){
+            setLoading(true);
             try {
                 const response = await fetch(`/api/changePassword`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                     },
+                    
                     body: JSON.stringify({...formData, token: localStorage.getItem('token')})
                 })
                 // accesso non consentito
-                if(response.status == 403) navigate('/');
+                //if(response.status == 403) navigate('/');
                 // risposta con successo
                 if(response.ok) {
                     localStorage.removeItem('token');
                     navigate('/');
                 }
                 if(!response.ok){
+                    setLoading(false);
                     const { error, message } = await response.json();
                     setFormErros({...formErrors, result: message});
                 }
@@ -63,6 +70,7 @@ function FormChangePassword() {
         });
     }
 
+    if(loading) return <p>LOADING...</p>
     return(
         <>
             <div className="form__container">
@@ -90,7 +98,7 @@ function FormChangePassword() {
                         >
                             Cambia
                         </button>
-                        {formErrors.result && <p className="text-red-500">{formErrors.result}</p>}
+                        {formErrors.result && <p className="error__message">{formErrors.result}</p>}
                     </div>
                 </form>
             </div>
