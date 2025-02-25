@@ -6,7 +6,6 @@ function Anno(props){
     const navigate = useNavigate();
     const [clickedAnno, setClickedAnno] = useState(false);
     
-
     useEffect(() => {
         let linkFetch;
         if(!props.admin) linkFetch = `/api/insegnamentiPresidente/${props.regolamento}`;
@@ -37,14 +36,13 @@ function Anno(props){
             
         } catch (error) { console.log(error); }
     }
-    // useEffect(() => loadInsegnamenti, []); // non ha dipendenze, eseguito ad ogni render
 
     const showDetailAnno = () => { setClickedAnno(!clickedAnno) }
     let component;
     if(!loading && !clickedAnno) component = null;
     if(!loading && clickedAnno){
         component = insegnamenti.map((i) => (
-            <Insegnamento key={i.id} insegnamento={i} edit={props.edit} richiesta={props.richiesta}/>
+            <Insegnamento key={i.id} insegnamento={i} edit={props.edit}/>
         ))}
     return (
         <>

@@ -1,6 +1,6 @@
+import { getRegolamento } from "./dashboard/RegolamentiCDS.js";
 import { db } from "./database.js";
 import { getRegoleFull } from "./Regole.js";
-import { getRichiesta } from "./Richieste.js";
 
 export async function CFUperArea(idRegolamento, minCFUperArea) {
     const query = `
@@ -35,12 +35,11 @@ export async function CFUperSettore(idRegolamento, minCFUperSettore) {
 
 
 
-export async function checkRegole(richiesta){
+export async function checkRegole(regolamento){
     const regole = await getRegoleFull(); // insieme delle regole
-    // controllo per ANVUR
-    const resRichiesta = await getRichiesta(richiesta);
-    if(resRichiesta == null) throw {message: "Richiesta non trovata", code: 404};
-    let result = {anvur: resRichiesta.anvur ? true : false, regole: []};
+    const objRegolamento = await getRegolamento(regolamento);    
+    if(objRegolamento == null) throw {message: "Regolamento non trovata", code: 404};
+    let result = {anvur: objRegolamento.anvur ? true : false, regole: []};
 
     for(let regola of regole){
         // regola per numero
@@ -48,13 +47,13 @@ export async function checkRegole(richiesta){
         if(regola.count != null) {
             // restituisce l'elenco delle aree coperte da un regolamento
             // e ogni area rispetta il numero minimo di CFU
-            if(regola.tipologia === 'area') resObj = await CFUperArea(resRichiesta.regolamento, regola.cfu);
+            if(regola.tipologia === 'area') resObj = await CFUperArea(regolamento, regola.cfu);
             // restituisce l'elenco delle sottoaree coperte da un regolamento
             // e ogni sottoarea rispetta il numero minimo di CFU
-            if(regola.tipologia === 'sottoarea') resObj = await CFUperSottoarea(resRichiesta.regolamento, regola.cfu);
+            if(regola.tipologia === 'sottoarea') resObj = await CFUperSottoarea(regolamento, regola.cfu);
             // restituisce l'elenco delle aree coperte da un regolamento
             // e ogni area rispetta il numero minimo di CFU
-            if(regola.tipologia === 'settore') resObj = await CFUperSettore(resRichiesta.regolamento, regola.cfu);
+            if(regola.tipologia === 'settore') resObj = await CFUperSettore(regolamento, regola.cfu);
 
             const resValues = resObj.map(r => r.id);
             const regValues = regola.riferimenti.map(r => r.id);
@@ -67,9 +66,9 @@ export async function checkRegole(richiesta){
         else{
             let sumCFU = 0; // accumulatore per il totale dei CFU
             let resObj;
-            if(regola.tipologia === 'area') resObj = await CFUperArea(resRichiesta.regolamento,0);
-            if(regola.tipologia === 'sottoarea') resObj = await CFUperSottoarea(resRichiesta.regolamento,0);
-            if(regola.tipologia === 'settore') resObj = await CFUperSettore(resRichiesta.regolamento,0);
+            if(regola.tipologia === 'area') resObj = await CFUperArea(regolamento, 0);
+            if(regola.tipologia === 'sottoarea') resObj = await CFUperSottoarea(regolamento, 0);
+            if(regola.tipologia === 'settore') resObj = await CFUperSettore(regolamento, 0);
 
             const regValues = regola.riferimenti.map(r => r.id);
             resObj.map((obj) => { if(regValues.includes(obj.id)) sumCFU += parseInt(obj.CFUTot); });
@@ -78,4 +77,28 @@ export async function checkRegole(richiesta){
         }
     }
     return result;
+}
+
+export async function handleCheckRegole(req, res) {
+    const regolamento = req.params.idRegolamento;
+    try {
+        // risposta con successo
+        const result = await checkRegole(regolamento);
+        return res.status(200).json({
+            message: "Risultato controllo regole",
+            data: result
+        });
+    } catch (error) {
+        if(error.code == 404){
+            return res.status(404).json({
+                message: "Regolamento non trovato",
+                error: error.message || error
+            });
+        }
+        // errore generale interno al server
+        return res.status(500).json({
+            message: "Si è verificato un errore durante il recupero della richiesta .",
+            error: error.message || error
+        });
+    }
 }

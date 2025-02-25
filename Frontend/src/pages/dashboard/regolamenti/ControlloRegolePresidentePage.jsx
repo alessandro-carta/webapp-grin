@@ -5,13 +5,13 @@ import Regola from "../../../components/regolamento/Regola";
 
 function ControlloRegolePresidentePage(){
     const navigate = useNavigate();
-    const { idRichiesta } = useParams();
+    const { idRegolamento } = useParams();
     const [loading, setLoading] = useState(true);
-    // carico lo stato della richiesta
-    const [statoRichiesta, setStatoRichiesta] = useState('');
-    const loadRichiesta = async () => {
+    // carico il regolamento
+    const [regolamento, setRegolamento] = useState('');
+    const loadRegolamento = async () => {
         try {
-            const response = await fetch(`/api/richiestaPresidente/${idRichiesta}`, {
+            const response = await fetch(`/api/regolamento/${idRegolamento}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -23,19 +23,19 @@ function ControlloRegolePresidentePage(){
             // risposta con successo
             if(response.ok) {
                 const data = await response.json();
-                setStatoRichiesta(data.data.stato)
+                setRegolamento(data.data);
             }
             
         } catch (error) { console.log(error); }
     }
-    useEffect( () => loadRichiesta, [idRichiesta]); // eseguito ogni volta che cambia idRichiesta
+    useEffect( () => loadRegolamento, [idRegolamento]); // eseguito ogni volta che cambia idRichiesta
     // controllo delle regole
     const [checkAnvur, setCheckAnvur] = useState(false);
     const [regole, setRegole] = useState([]);
     const checkRichiesta = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`/api/checkRegolePresidente/${idRichiesta}`, {
+            const response = await fetch(`/api/checkRegolePresidente/${idRegolamento}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -54,7 +54,7 @@ function ControlloRegolePresidentePage(){
             
         } catch (error) { setLoading(false); console.log(error); }
     }
-    useEffect(() => checkRichiesta, [idRichiesta]); // Ogni volta che cambia idRichiesta
+    useEffect(() => checkRichiesta, [idRegolamento]); // Ogni volta che cambia idRichiesta
     // restituisce l'esito della richiesta
     const resultErogazione = () => {
         if(checkAnvur == false) return false;
@@ -65,25 +65,28 @@ function ControlloRegolePresidentePage(){
     }
     // funzione per inviare una richiesta
     const sendRichiesta = async () => {
+        setLoading(true);
+        const today = new Date().toISOString().split('T')[0];
         const response = await fetch(`/api/sendRichiesta`, {
             method: 'PUT',
             headers: { 
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
-            body: JSON.stringify({richiesta: idRichiesta})
+            body: JSON.stringify({regolamento: idRegolamento, data: today})
         });
         // accesso non consentito
         if(response.status == 403) navigate('/');
         // se ha successo torno alla pagina delle richieste
         if (response.ok) {
             const data = await response.json();
-            navigate(`/dashboard/r/${data.data}`);
+            navigate(`/dashboard/richieste`);
         }
+        if(!response.ok) setLoading(false);
     }
     // btn per inviare la richiesta
     let btnSendRichiesta = null;
-    if(resultErogazione() && statoRichiesta === 'Bozza') btnSendRichiesta = <>
+    if(resultErogazione() && regolamento.richiesta == null) btnSendRichiesta = <>
         <button className="button__principale" onClick={sendRichiesta}> Invia Richiesta </button>
     </>;
 
@@ -97,8 +100,8 @@ function ControlloRegolePresidentePage(){
             <div className="grid grid-cols-1 md:grid-cols-3 p-5">
                 <div className="text__header__table md:col-span-2">Descrizione testuale</div>
                 <div className="text__header__table">Esito</div>
-                {regole.map(r => (
-                    <Regola key={r.idRegola} regola={r} check={true}/>
+                {regole.map((r, index) => (
+                    <Regola key={index} regola={r} check={true}/>
                 ))}
             </div>
             <p className="text-xl subtitle">Il corso di studio {checkAnvur ? "è" : "non è"} accreditato all'ANVUR</p>
@@ -108,7 +111,7 @@ function ControlloRegolePresidentePage(){
                 <p className="text-xl">Azioni: </p>
                 {btnSendRichiesta}
             </div>
-            <Link className="link" to={`/dashboard/r/${idRichiesta}`}>
+            <Link className="link" to={`/dashboard/r/${idRegolamento}`}>
                     Annulla
             </Link>
             

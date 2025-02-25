@@ -21,7 +21,7 @@ export async function addBollino(id, erogato, richiesta) {
 }
 export async function getBollini() {
     const queryBollini = `
-        SELECT Bollini.Richiesta AS "richiesta", Bollini.idBollino AS "id", Bollini.Erogato AS "erogato", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", Presidenti.Università AS "università"
+        SELECT Bollini.Richiesta AS "richiesta", Bollini.idBollino AS "id", Bollini.Erogato AS "erogato", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", Presidenti.Università AS "università", Regolamenti.idRegolamento AS "regolamento"
         FROM Bollini, Richieste, Regolamenti, CorsiDiStudio, Presidenti
         WHERE idRichiesta = Richiesta AND idRegolamento = Regolamento AND idCDS = CDS AND idPresidente = Presidente `;
     const [result] = await db.query(queryBollini);
@@ -43,8 +43,8 @@ export async function handleAddBollino(req, res) {
     try {
         // risposta avvenuta con successo
         // controllo che la richiesta rispetti le regole per l'erogazione del bollino
-        const resultRegole = await checkRegole(richiesta);
         const objRichiesta = await getRichiesta(richiesta);
+        const resultRegole = await checkRegole(objRichiesta.regolamento);
         const checkFinal = resultRegole.regole.filter((regola) => regola.check == false);
         if(checkFinal.length == 0 && resultRegole.anvur && objRichiesta.stato === 'Elaborazione'){
             // creo un nuovo bollino

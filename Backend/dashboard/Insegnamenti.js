@@ -6,7 +6,7 @@ import { getRichiesta } from '../Richieste.js';
 
 export async function getInsegnamenti(regolamento){
     const queryInsegnamenti = `
-        SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.CFU AS "cfutot", Insegnamenti.Settore AS "settore"
+        SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.CFU AS "cfutot", Insegnamenti.Settore AS "settore", Regolamenti.idRegolamento AS "regolamento"
         FROM Regolamenti, Insegnamenti
         WHERE idRegolamento = Regolamento AND idRegolamento = ? `;
     const [result] = await db.query(queryInsegnamenti, [regolamento]);
@@ -33,7 +33,7 @@ export async function getInsegnamentiFull(regolamento) {
 }
 export async function getInsegnamento(id){
     const queryInsegnamenti = `
-        SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.CFU AS "cfutot", Insegnamenti.Settore AS "settore"
+        SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.CFU AS "cfutot", Insegnamenti.Settore AS "settore", Insegnamenti.Regolamento AS "regolamento"
         FROM Insegnamenti
         WHERE idInsegnamento = ? `;
     const [result] = await db.query(queryInsegnamenti, [id]);
@@ -118,21 +118,16 @@ export async function handleGetInsegnamentiPresidente(req, res) {
     }
 }
 export async function handleAddInsegnamento(req, res) {
-    const { nome, cfutot, settore, richiesta, annoerogazione, sottoaree } = req.body;
+    const { nome, cfutot, settore, regolamento, annoerogazione, sottoaree } = req.body;
     const id =  uuidv4();
     try {
-        const resultRichiesta = await getRichiesta(richiesta);
-        if(resultRichiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
-        if(resultRichiesta.stato != "Bozza") return res.status(400).json({ message: "Richiesta non può essere modificata" });
-        
-        const resultRegolamento = await getRegolamento(resultRichiesta.regolamento);
-        if(resultRegolamento == null) return res.status(404).json({ message: "Regolamento non trovato" });
-        
-        const resultCDS = await getCorsoDiStudio(resultRegolamento.cds);
-        if(resultCDS == null) return res.status(404).json({ message: "Corso di studio non trovato" });
-        if(annoerogazione > resultCDS.durata) return res.status(400).json({ message: "Anno di erogazione errato" });
-
-        const result = await addInsegnamento(id, nome, annoerogazione, cfutot, settore, resultRichiesta.regolamento, sottoaree);
+        const objRegolamento = await getRegolamento(regolamento);
+        if(objRegolamento == null) return res.status(404).json({ message: "Regolamento non trovato" });
+        if(objRegolamento.richiesta != null) return res.status(400).json({ message: "Regolamento non può essere modificato" });
+        // controllo su anno erogazione
+        if(annoerogazione > objRegolamento.duratacorso) return res.status(400).json({ message: "Anno di erogazione errato" });
+        // tutto pronto per inserire un nuovo insegnamento
+        const result = await addInsegnamento(id, nome, annoerogazione, cfutot, settore, regolamento, sottoaree);
         if(result.ok) return res.status(201).json({ 
             message: "Insegnamento aggiunto con successo",
             data: id 
@@ -151,12 +146,13 @@ export async function handleAddInsegnamento(req, res) {
 }
 export async function handleDeleteInsegnamento(req, res) {
     const id = req.params.idInsegnamento;
-    const richiesta = req.body.richiesta;
+    const regolamento = req.body.regolamento;
     try {
-        const resultRichiesta = await getRichiesta(richiesta);
-        if(resultRichiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
-        if(resultRichiesta.stato != "Bozza") return res.status(400).json({ message: "Richiesta non può essere modificata" });
-        
+        // controlli sul regolamento e lo stato della richiesta
+        const objRegolamento = await getRegolamento(regolamento);
+        if(objRegolamento == null) return res.status(404).json({ message: "Regolamento non trovato" });
+        if(objRegolamento.richiesta != null) return res.status(400).json({ message: "Regolamento non può essere modificato" });
+        // tutto pronto per eliminare
         const result = await deleteInsegnamento(id);
         if(result.affectedRows == 0) return res.status(404).json({ message: "Insegnamento non trovato" });
         return res.status(204).json({ });
@@ -187,19 +183,14 @@ export async function handleGetInsegnamentoPresidente(req, res) {
     }
 }
 export async function handleUpdateInsegnamento(req, res) {
-    const {id, nome, cfutot, settore, richiesta, annoerogazione, sottoaree} = req.body;
+    const {id, nome, cfutot, settore, regolamento, annoerogazione, sottoaree} = req.body;
     try {
-        const resultRichiesta = await getRichiesta(richiesta);
-        if(resultRichiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
-        if(resultRichiesta.stato != "Bozza") return res.status(400).json({ message: "Richiesta non può essere modificata" });
-        
-        const resultRegolamento = await getRegolamento(resultRichiesta.regolamento);
-        if(resultRegolamento == null) return res.status(404).json({ message: "Regolamento non trovato" });
-
-        const resultCDS = await getCorsoDiStudio(resultRegolamento.cds);
-        if(resultCDS == null) return res.status(404).json({ message: "Corso di studio non trovato" });
-        if(annoerogazione > resultCDS.durata)return res.status(400).json({ message: "Anno di erogazione errato" });
-
+        const objRegolamento = await getRegolamento(regolamento);
+        if(objRegolamento == null) return res.status(404).json({ message: "Regolamento non trovato" });
+        if(objRegolamento.richiesta != null) return res.status(400).json({ message: "Regolamento non può essere modificato" });
+        // controllo su anno erogazione
+        if(annoerogazione > objRegolamento.duratacorso) return res.status(400).json({ message: "Anno di erogazione errato" });
+        // tutto pronto per inserire un nuovo insegnamento
         const result = await updateInsegnamento(id, nome, annoerogazione, cfutot, settore, sottoaree);
         if(result.ok) return res.status(201).json({ 
             message: "Insegnamento modificato",

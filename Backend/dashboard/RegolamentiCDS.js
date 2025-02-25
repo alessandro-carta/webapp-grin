@@ -14,16 +14,16 @@ function checkAnnoAccademico(annoaccademico) {
 
 export async function getRegolamenti(cds) {
     const [result] = await db.query(`
-        SELECT Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", Regolamenti.CDS AS "cds"
-        FROM Regolamenti, CorsiDiStudio, Presidenti
-        WHERE CDS = idCDS AND Presidente = idPresidente AND idCDS = ?`, [cds]);
+        SELECT Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", Regolamenti.CDS AS "cds", Richieste.idRichiesta AS "richiesta", Richieste.Stato AS "stato"
+        FROM Regolamenti JOIN CorsiDiStudio ON Regolamenti.CDS = CorsiDiStudio.idCDS JOIN Presidenti ON Presidenti.idPresidente = CorsiDiStudio.Presidente LEFT JOIN Richieste ON Richieste.Regolamento = Regolamenti.idRegolamento
+        WHERE idCDS = ?`, [cds]);
     return result;
 }
 export async function getRegolamento(id) {
     const [result] = await db.query(`
-        SELECT CorsiDiStudio.idCDS AS "cds", Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur", CorsiDiStudio.Presidente AS "presidente"
-        FROM Regolamenti, CorsiDiStudio
-        WHERE idCDS = CDS AND idRegolamento = ?`, [id]);
+        SELECT CorsiDiStudio.idCDS AS "cds", Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur", CorsiDiStudio.Presidente AS "presidente", Richieste.idRichiesta AS "richiesta", Richieste.Stato AS "stato"
+        FROM Regolamenti JOIN CorsiDiStudio ON Regolamenti.CDS = CorsiDiStudio.idCDS LEFT JOIN Richieste ON Richieste.Regolamento = Regolamenti.idRegolamento
+        WHERE Regolamenti.idRegolamento = ?`, [id]);
     return result[0];
 }
 export async function addRegolamento(id, annoaccademico, cds){
@@ -106,6 +106,7 @@ export async function handleGetRegolamenti(req, res) {
             data: result
         });
     } catch (error) {
+        console.log(error);
         // errore generale interno al server
         return res.status(500).json({
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
@@ -133,18 +134,19 @@ export async function handleGetRegolamento(req, res) {
 export async function handleDeleteRegolamento(req, res) {
     const id  = req.params.idRegolamento;
     try {
-        const result = await deleteRegolamento(id);
-        if(result.affectedRows == 0) return res.status(404).json({ message: "Regolamento non trovato" });
-        // cancellazione avvenuta con successo
-        return res.status(204).json({ });
-    } catch (error) {
-        // errore richieste presenti
-        if(error.code == 'ER_ROW_IS_REFERENCED_2') {
+        const regolamento = await getRegolamento(id);
+        if(regolamento.stato == "Bozza" || regolamento.stato == null){
+            const result = await deleteRegolamento(id);
+            if(result.affectedRows == 0) return res.status(404).json({ message: "Regolamento non trovato" });
+            // cancellazione avvenuta con successo
+            return res.status(204).json({ });
+        }
+        else{
             return res.status(400).json({
-                message: 'Impossibile eliminare, richieste presenti',
-                error: error.message || error
+                message: 'Impossibile eliminare, richieste presenti'
             });
         }
+    } catch (error) {
         // errore generale interno al server
         return res.status(500).json({
             message: "Si è verificato un errore durante l'elaborazione della richiesta",

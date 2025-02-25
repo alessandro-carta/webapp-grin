@@ -91,12 +91,13 @@ function RichiestePage() {
             <option value="Invalidata">Invalidate</option>
         </select>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-5 p-5">
+      <div className="grid grid-cols-1 md:grid-cols-7 p-5">
             <div className="text__header__table">Università</div>
             <div className="text__header__table">Corso Di Studio</div>
             <div className="text__header__table">Anno Accademico</div>
             <div className="text__header__table">Stato</div>
-            <div className="text__header__table">Richiesta</div>
+            <div className="text__header__table">Data</div>
+            <div className="text__header__table md:col-span-2">Azioni</div>
             {richieste.map(r => ( <Richiesta key={r.id} richiesta={r} admin={true}/> ))}           
         </div>
     </>

@@ -62,20 +62,13 @@ function RichiestePresidentePage() {
     if(name === 'filtroStato') setStato(value);
   }
   useEffect(() => filtraDati(), [annoAccademico, stato]);
-
-  // funzione per creare una nuova richiesta
-  const creaNuovaRichiesta = () => { navigate(`/crea-una-nuova-richiesta`)};
   
   if(loading) return <p>LOADING...</p>
   return (
     <>
       <NavbarPresidente />
-      <div className="flex space-x-4 p-4 items-center justify-center">
-        <p className="text-xl">Azioni: </p>
-        <button className="button__principale" onClick={creaNuovaRichiesta}> Invia una nuova richiesta </button>
-      </div>
       <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
-        <p className="text-xl"> Anno Accademico:</p>
+        <p className="text-xl">Anno Accademico:</p>
         <select
             id="filtroAnno"
             name="filtroAnno"
@@ -95,14 +88,14 @@ function RichiestePresidentePage() {
             <option value="Elaborazione">Da Elaborare</option>
             <option value="Approvata">Approvate</option>
             <option value="Invalidata">Invalidate</option>
-            <option value="Bozza">Bozza</option>
         </select>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-4 p-5">
+      <div className="grid grid-cols-1 md:grid-cols-6 p-5">
             <div className="text__header__table">Corso Di Studio</div>
             <div className="text__header__table">Anno Accademico</div>
             <div className="text__header__table">Stato</div>
-            <div className="text__header__table">Richiesta</div>
+            <div className="text__header__table">Data</div>
+            <div className="text__header__table md:col-span-2">Azioni</div>
             {richieste.map(r => ( <Richiesta key={r.id} richiesta={r} admin={false}/> ))}           
         </div>
     </>

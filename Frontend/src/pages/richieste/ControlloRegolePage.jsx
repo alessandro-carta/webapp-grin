@@ -5,13 +5,13 @@ import NavbarGrin from "../../components/NavbarGrin";
 
 function ControlloRegolePage(){
     const navigate = useNavigate();
-    const { idRichiesta } = useParams();
+    const { idRegolamento } = useParams();
     const [loading, setLoading] = useState(true);
     // carico lo stato della richiesta
-    const [statoRichiesta, setStatoRichiesta] = useState('');
-    const loadRichiesta = async () => {
+    const [regolamento, setRegolamento] = useState('');
+    const loadRegolamento = async () => {
         try {
-            const response = await fetch(`/api/richiesta/${idRichiesta}`, {
+            const response = await fetch(`/api/regolamentoAdmin/${idRegolamento}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -23,18 +23,18 @@ function ControlloRegolePage(){
             // risposta con successo
             if(response.ok) {
                 const data = await response.json();
-                setStatoRichiesta(data.data.stato)
+                setRegolamento(data.data);
             }
             
         } catch (error) { console.log(error); }
     }
-    useEffect( () => loadRichiesta, [idRichiesta]); // eseguito ogni volta che cambia idRichiesta
+    useEffect( () => loadRegolamento, [idRegolamento]); // eseguito ogni volta che cambia idRichiesta
     // controllo delle regole
     const [checkAnvur, setCheckAnvur] = useState(false);
     const [regole, setRegole] = useState([]);
     const checkRichiesta = async () => {
         try {
-            const response = await fetch(`/api/checkRegole/${idRichiesta}`, {
+            const response = await fetch(`/api/checkRegole/${idRegolamento}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -50,10 +50,9 @@ function ControlloRegolePage(){
                 setCheckAnvur(data.data.anvur);
                 setLoading(false);
             }
-            
         } catch (error) { console.log(error); }
     }
-    useEffect(() => checkRichiesta, [idRichiesta]); // Ogni volta che cambia idRichiesta
+    useEffect(() => checkRichiesta, [idRegolamento]); // Ogni volta che cambia idRichiesta
     // restituisce l'esito della richiesta
     const resultErogazione = () => {
         if(checkAnvur == false) return false;
@@ -68,7 +67,7 @@ function ControlloRegolePage(){
 
     // funzione per erogare un bollino
     const erogaBollino = async () => {
-        const data = {erogato: 1, richiesta: idRichiesta};
+        const data = {erogato: 1, richiesta: regolamento.richiesta};
         setLoading(true);
         const response = await fetch(`/api/addBollino`, {
             method: 'POST',
@@ -85,7 +84,7 @@ function ControlloRegolePage(){
     }
     // funzione per invalidare una richiesta
     const invalidRichiesta = async () => {
-        const data = { id: idRichiesta };
+        const data = { id: regolamento.richiesta };
         setLoading(true);
         const response = await fetch(`/api/invalidRichiesta`, {
             method: 'PUT',
@@ -104,12 +103,12 @@ function ControlloRegolePage(){
 
     // btn Eroga Bollino
     let btnEroga = null;
-    if(resultErogazione() && statoRichiesta === 'Elaborazione') btnEroga = <>
+    if(resultErogazione() && regolamento.richiesta != null && regolamento.stato == "Elaborazione") btnEroga = <>
         <button className="button__principale" onClick={erogaBollino}> Eroga Bollino </button>
     </>;
     // btn Invalida richiesta
     let btnInvalida = null;
-    if(statoRichiesta === 'Elaborazione') btnInvalida = <>
+    if(regolamento.richiesta != null && regolamento.stato == "Elaborazione") btnInvalida = <>
         <button className="button__principale" onClick={invalidRichiesta}> Invalida Richiesta </button>
     </>;
     
@@ -120,7 +119,7 @@ function ControlloRegolePage(){
             <div className="grid grid-cols-1 md:grid-cols-3 p-5">
                 <div className="text__header__table md:col-span-2">Descrizione testuale</div>
                 <div className="text__header__table">Esito</div>
-                {regole.map(r => ( <Regola key={r.idRegola} regola={r} check={true}/> ))}
+                {regole.map((r, index) => ( <Regola key={index} regola={r} check={true}/> ))}
             </div>
             <p className="text-xl subtitle">Il corso di studio {checkAnvur ? "è" : "non è"} accreditato all'ANVUR</p>
             <p className="text-xl subtitle">La richiesta {resultErogazione() ? "è" : "non è"} valida</p>
@@ -130,7 +129,7 @@ function ControlloRegolePage(){
                 {btnEroga}
                 {btnInvalida}
             </div>
-            <Link className="link" to={`/r/${idRichiesta}`}>
+            <Link className="link" to={`/r/${idRegolamento}`}>
                     Annulla
             </Link>
             

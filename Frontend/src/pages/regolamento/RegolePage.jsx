@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Regola from '../../components/regolamento/Regola.jsx'
 import NavbarPresidente from '../../components/NavbarPresidente.jsx';
 
-function RegolamentoPage(){
+function RegolePage(){
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const visual = queryParams.get('Visual');
@@ -93,4 +93,4 @@ function RegolamentoPage(){
     )
 
 }
-export default RegolamentoPage;
+export default RegolePage;

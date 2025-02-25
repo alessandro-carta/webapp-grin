@@ -1,16 +1,16 @@
 import NavbarGrin from '../../components/NavbarGrin.jsx';
 import { useParams, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
-import Anno from '../../components/richieste/Anno.jsx';
+import Anno from '../../components/regolamento/Anno.jsx';
 
-function RichiestaPage() {
-    const { idRichiesta } = useParams();
+function RegolamentoPage() {
+    const { idRegolamento } = useParams();
     const navigate = useNavigate();
 
     const [totCFU, setTotCFU] = useState(0);
-    const countTotCFU = async (regolamento) => {
+    const countTotCFU = async () => {
         try {
-            const response = await fetch(`/api/insegnamenti/${regolamento}`, {
+            const response = await fetch(`/api/insegnamenti/${idRegolamento}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -27,17 +27,17 @@ function RichiestaPage() {
                     count += insegnamento.cfutot;
                 });
                 setTotCFU(count);
-                setLoading(false);
             }
             
         } catch (error) { console.log(error); }
     }
+    useEffect( () => countTotCFU, [idRegolamento]);
 
     const [loading, setLoading] = useState(true);
-    const [richiesta, setRichiesta] = useState();
-    const loadRichiesta = async () => {
+    const [regolamento, setRegolamento] = useState();
+    const loadRegolamento = async () => {
         try {
-            const response = await fetch(`/api/richiesta/${idRichiesta}`, {
+            const response = await fetch(`/api/regolamentoAdmin/${idRegolamento}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -49,25 +49,23 @@ function RichiestaPage() {
             // risposta con successo
             if(response.ok) {
                 const data = await response.json();
-                const newData = {...data.data, data: new Date(data.data.data)};
-                setRichiesta(newData);
-                countTotCFU(newData.regolamento);
+                setRegolamento(data.data);
+                setLoading(false);
             }
             
         } catch (error) { console.log(error); }
     }
-    useEffect( () => loadRichiesta, [idRichiesta]); // eseguito ogni volta che cambia idRichiesta
+    useEffect( () => loadRegolamento, [idRegolamento]); // eseguito ogni volta che cambia idRichiesta
 
-    const [pageTitle, setPageTitle] = useState('Richiesta');
+    const [pageTitle, setPageTitle] = useState('Regolamento');
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
-    
     // funzione per controllare i requisiti di una richiesta
-    const checkRichiesta = () => { navigate(`/controllo-regole/${idRichiesta}`)}
+    const checkRichiesta = () => { navigate(`/controllo-regole/${idRegolamento}`)}
 
     const anni = []; // contiene il numero di anni di durata di un CDS
     if(loading) return <p>LOADING...</p>
     else{
-        for(let i = 0; i < richiesta.duratacorso; i++) anni.push(i+1);
+        for(let i = 0; i < regolamento.duratacorso; i++) anni.push(i+1);
         return (
             <>
                 <NavbarGrin />
@@ -75,14 +73,13 @@ function RichiestaPage() {
                     <p className="text-xl">Azioni: </p>
                     <button className="button__principale" onClick={checkRichiesta}> Controlla regole </button>
                 </div>
-                <p className="text-xl title">{richiesta.corsodistudio} - Regolamento AA: {richiesta.annoaccademico}</p>
-                <p className="text-xl">Data richiesta: {richiesta.data.getDate()}/{richiesta.data.getMonth()+1}/{richiesta.data.getFullYear()} - Stato: {richiesta.stato}</p>
-                <p className="text-xl">{richiesta.università} - {richiesta.email}</p>
-                <p className="text-xl">Durata corso: {richiesta.duratacorso} - Totale CFU: {totCFU}</p>
-                { anni.map(a => ( <Anno key={a} richiesta={richiesta.id} regolamento={richiesta.regolamento} anno={a} admin={true} edit={false}/> )) }
+                <p className="text-xl title">{regolamento.corsodistudio} - Regolamento AA: {regolamento.annoaccademico}</p>
+                <p className="text-xl">{regolamento.università} - {regolamento.email}</p>
+                <p className="text-xl">Durata corso: {regolamento.duratacorso} - Totale CFU: {totCFU}</p>
+                { anni.map(a => ( <Anno key={a} richiesta={regolamento.richiesta} regolamento={regolamento.id} anno={a} admin={true} edit={false}/> )) }
             </>
         )
     }
     
 }
-export default RichiestaPage;
+export default RegolamentoPage;

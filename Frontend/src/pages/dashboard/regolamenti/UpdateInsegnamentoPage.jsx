@@ -1,17 +1,17 @@
 import { useParams } from "react-router-dom";
 import NavbarPresidente from "../../../components/NavbarPresidente.jsx";
 import { useState, useEffect } from "react";
-import FormNewInsegnamento from "../../../components/dashboard/richieste/FormNewInsegnamento.jsx";
-import FormUpdateInsegnamento from "../../../components/dashboard/richieste/FormUpdateInsegnamento.jsx";
+import FormNewInsegnamento from "../../../components/dashboard/regolamenti/FormNewInsegnamento.jsx";
+import FormUpdateInsegnamento from "../../../components/dashboard/regolamenti/FormUpdateInsegnamento.jsx";
 
 function UpdateNewInsegnamentoPage() {
-    const { idRichiesta, idInsegnamento } = useParams();
-    const [insegnamento, setInsegnamento] = useState();
+    const { idRegolamento, idInsegnamento } = useParams();
     const [loading, setLoading] = useState(true);
-    // recupero le informazioni dell'insegnamento
+    // recupero le informazioni dell'insegnamento con anche il regolamento
+    const [insegnamento, setInsegnamento] = useState();
     const loadInsegnamento = async () => {
         try {
-            const response = await fetch(`/api/insegnamento/${idRichiesta}/${idInsegnamento}`, {
+            const response = await fetch(`/api/insegnamento/${idRegolamento}/${idInsegnamento}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -23,8 +23,13 @@ function UpdateNewInsegnamentoPage() {
             // risposta con successo
             if(response.ok) {
                 const data = await response.json();
+                console.log(data);
                 setInsegnamento(data.data);
                 setLoading(false);
+            }
+            if(!response.ok) {
+                const error = await response.json();
+                console.log(error);
             }
             
         } catch (error) { console.log(error); }
@@ -39,7 +44,7 @@ function UpdateNewInsegnamentoPage() {
         <>
             <NavbarPresidente />
             <div className="flex justify-center">
-                <FormUpdateInsegnamento richiesta={idRichiesta} insegnamento={insegnamento}/>
+                <FormUpdateInsegnamento insegnamento={insegnamento}/>
             </div>
             
         </>

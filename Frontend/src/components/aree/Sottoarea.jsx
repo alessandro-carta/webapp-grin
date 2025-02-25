@@ -56,6 +56,8 @@ function Sottoarea(props) {
             <div className="text__content__table">
                 <button className="button__action" onClick={updateSottoarea}> Modifica </button>
                 {!loading && <button className="button__action" onClick={deleteSottoarea}> Elimina </button>}
+                {loading && <button className="button__action"> ... </button>}
+
             </div > }
         </>
     )

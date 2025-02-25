@@ -3,15 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 
 function FormUpdateInsegnamento(props){
     const navigate = useNavigate();
-    const [settori, setSettori] = useState([]); // elenco dei settori
-    const [aree, setAree] = useState([]); // elenco delle aree
-    const [sottoaree, setSottoaree] = useState([]); // elenco delle sottoaree
     const [showSottoaree, setShowSottoaree] = useState(false); // visualizzazione dimanica delle sottoaree
     const [loading, setLoading] = useState(true);
+
     const [duratacorso, setDurataCorso] = useState();
-    const loadRichiesta = async () => {
+    const loadDurataCorso = async () => {
         try {
-            const response = await fetch(`/api/richiestaPresidente/${props.richiesta}`, {
+            const response = await fetch(`/api/regolamento/${props.insegnamento.regolamento}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -29,14 +27,14 @@ function FormUpdateInsegnamento(props){
             
         } catch (error) { console.log(error); }
     }
-    useEffect( () => loadRichiesta, []); // eseguito ogni volta che cambia idRichiesta
+    useEffect( () => loadDurataCorso, []); // eseguito ogni volta che cambia idRichiesta
     // dati del form
     const [formData, setFormData] = useState({
         nome: props.insegnamento.nome,
         cfutot: props.insegnamento.cfutot,
         settore: props.insegnamento.settore,
         annoerogazione: props.insegnamento.annoerogazione,
-        richiesta: props.richiesta,
+        regolamento: props.insegnamento.regolamento,
         sottoaree: props.insegnamento.sottoaree,
         area: "",
         sottoarea: "",
@@ -51,6 +49,7 @@ function FormUpdateInsegnamento(props){
         annoerogazione: ""
     })
     // recupero tutti i settori
+    const [settori, setSettori] = useState([]); // elenco dei settori
     const loadAllSettori = async () => {
         try {
             const response = await fetch(`/api/settori`, {
@@ -72,6 +71,7 @@ function FormUpdateInsegnamento(props){
     };
     useEffect(() => loadAllSettori, []); // Non ha dipendenze, eseguito ad ogni render
     // recupero tutte le aree
+    const [aree, setAree] = useState([]); // elenco delle aree
     const loadAllAree = async () => {
         try {
             const response = await fetch(`/api/aree`, {
@@ -93,6 +93,7 @@ function FormUpdateInsegnamento(props){
     }
     useEffect(() => loadAllAree, []); // Non ha dipendenze, eseguito ad ogni render
     // recupero le sottoaree
+    const [sottoaree, setSottoaree] = useState([]); // elenco delle sottoaree
     const loadAllSottoaree = async (idArea) => {
         try {
             const response = await fetch(`/api/sottoaree/${idArea}`, {
@@ -223,12 +224,12 @@ function FormUpdateInsegnamento(props){
                                         cfutot: formData.cfutot,
                                         settore: formData.settore,
                                         annoerogazione: formData.annoerogazione,
-                                        richiesta: formData.richiesta,
+                                        regolamento: formData.regolamento,
                                         sottoaree: formData.sottoaree })
                 });
                 // accesso non consentito
                 if(response.status == 403) navigate('/');
-                if (response.ok) { navigate(`/dashboard/r/${props.richiesta}`); }
+                if (response.ok) { navigate(`/dashboard/r/${props.insegnamento.regolamento}`); }
                 if (!response.ok) {
                     setLoading(false);
                     const errorData = await response.json();
@@ -393,7 +394,7 @@ function FormUpdateInsegnamento(props){
                             <button type="submit" className="w-full button__principale">
                                 Modifica 
                             </button>
-                            <Link className="link" to={`/dashboard/r/${props.richiesta}`}>
+                            <Link className="link" to={`/dashboard/r/${props.insegnamento.regolamento}`}>
                                 Annulla
                             </Link>
                             {formErrors.result && <p className="error__message">{formErrors.result}</p>}

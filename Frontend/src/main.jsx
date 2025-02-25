@@ -13,10 +13,8 @@ import CreateNewSottoareaPage from './pages/aree/CreateNewSottoareaPage.jsx'
 import SottoareePage from './pages/aree/SottoareePage.jsx'
 import UpdateSottoareaPage from './pages/aree/UpdateSottoareaPage.jsx'
 import UpdatePresidentePage from './pages/presidenti/UpdatePresidentePage.jsx'
-import RegolamentoPage from './pages/regolamento/RegolamentoPage.jsx'
 import CreateNewRegolaPage from './pages/regolamento/CreateNewRegolaPage.jsx'
 import RichiestePage from './pages/richieste/RichiestePage.jsx'
-import RichiestaPage from './pages/richieste/RichiestaPage.jsx'
 import ControlloRegolePage from './pages/richieste/ControlloRegolePage.jsx'
 import BolliniPage from './pages/bollini/BolliniPage.jsx'
 import LoginAdminPage from './pages/auth/LoginAdminPage.jsx'
@@ -27,13 +25,14 @@ import CorsoDiStudioPage from './pages/dashboard/corsidistudio/CorsoDiStudioPage
 import CreateNewRegolamentoPage from './pages/dashboard/regolamenti/CreateNewRegolamentoPage.jsx'
 import BolliniPresidentePage from './pages/dashboard/bollini/BolliniPresidentePage.jsx'
 import RichiestePresidentePage from './pages/dashboard/richieste/RichiestePresidentePage.jsx'
-import CreateNewRichiestaPage from './pages/dashboard/richieste/CreateNewRichiestaPage.jsx'
-import RichiestaPresidentePage from './pages/dashboard/richieste/RichiestaPresidentePage.jsx'
-import CreateNewInsegnamentoPage from './pages/dashboard/richieste/CreateNewInsegnamentoPage.jsx'
-import UpdateInsegnamentoPage from './pages/dashboard/richieste/UpdateInsegnamentoPage.jsx'
-import ControlloRegolePresidentePage from './pages/dashboard/richieste/ControlloRegolePresidentePage.jsx'
+import CreateNewInsegnamentoPage from './pages/dashboard/regolamenti/CreateNewInsegnamentoPage.jsx'
+import UpdateInsegnamentoPage from './pages/dashboard/regolamenti/UpdateInsegnamentoPage.jsx'
+import ControlloRegolePresidentePage from './pages/dashboard/regolamenti/ControlloRegolePresidentePage.jsx'
 import CreateDuplicateRegolamentoPage from './pages/dashboard/regolamenti/CreateDuplicateRegolamentoPage.jsx'
 import UpdateCDSPage from './pages/dashboard/corsidistudio/UpdateCDSPage.jsx'
+import RegolamentoCDSPage from './pages/dashboard/regolamenti/RegolamentoCDSPage.jsx'
+import RegolePage from './pages/regolamento/RegolePage.jsx'
+import RegolamentoPage from './pages/richieste/RegolamentoPage.jsx'
 
 
 const router = createBrowserRouter([
@@ -87,7 +86,7 @@ const router = createBrowserRouter([
   },
   {
     path: "regolamento",
-    element: <RegolamentoPage />
+    element: <RegolePage />
   },
   {
     path: "crea-una-nuova-regola",
@@ -98,11 +97,11 @@ const router = createBrowserRouter([
     element: <RichiestePage />
   },
   {
-    path: "r/:idRichiesta",
-    element: <RichiestaPage />
+    path: "r/:idRegolamento",
+    element: <RegolamentoPage />
   },
   {
-    path: "controllo-regole/:idRichiesta",
+    path: "controllo-regole/:idRegolamento",
     element: <ControlloRegolePage />
   },
   {
@@ -142,27 +141,23 @@ const router = createBrowserRouter([
     element: <CreateNewRegolamentoPage />
   },
   {
+    path: "dashboard/r/:idRegolamento",
+    element: <RegolamentoCDSPage />
+  },
+  {
     path: "dashboard/richieste",
     element: <RichiestePresidentePage />
   },
   {
-    path: "crea-una-nuova-richiesta",
-    element: <CreateNewRichiestaPage />
-  },
-  {
-    path: "dashboard/r/:idRichiesta",
-    element: <RichiestaPresidentePage />
-  },
-  {
-    path: "dashboard/r/:idRichiesta/crea-un-nuovo-insegnamento",
+    path: "dashboard/r/:idRegolamento/crea-un-nuovo-insegnamento",
     element: <CreateNewInsegnamentoPage />
   },
   {
-    path: "dashboard/r/:idRichiesta/modifica-insegnamento/:idInsegnamento",
+    path: "dashboard/r/:idRegolamento/modifica-insegnamento/:idInsegnamento",
     element: <UpdateInsegnamentoPage />
   },
   {
-    path: "dashboard/controllo-regole/:idRichiesta",
+    path: "dashboard/controllo-regole/:idRegolamento",
     element: <ControlloRegolePresidentePage />
   },
   {

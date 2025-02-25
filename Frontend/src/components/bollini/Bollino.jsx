@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 function Bollino(props){
+    console.log(props);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     
@@ -35,10 +36,10 @@ function Bollino(props){
     let btnRevoca = null;
     if(props.bollino.erogato){
         if(props.admin) linkRichiesta = <>
-            <Link to={`/r/${props.bollino.richiesta}`} key={props.bollino.id} className="link"> Visualizza </Link>
+            <Link to={`/r/${props.bollino.regolamento}`} key={props.bollino.id} className="link"> Visualizza </Link>
         </>;
         else linkRichiesta = <>
-            <Link to={`/dashboard/r/${props.bollino.richiesta}`} key={props.bollino.id} className="link"> Visualizza </Link>
+            <Link to={`/dashboard/r/${props.bollino.regolamento}`} key={props.bollino.id} className="link"> Visualizza </Link>
         </>;
         btnRevoca = <>
             <button className="button__action" onClick={invalidBollino}> Revoca </button>

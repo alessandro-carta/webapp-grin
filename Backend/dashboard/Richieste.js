@@ -4,9 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 export async function getRichieste(presidente){
     const queryRichieste = `
-        SELECT Richieste.idRichiesta AS "id", Richieste.Data AS "data", Richieste.Stato AS "stato", Presidenti.Università AS "università", Presidenti.Email AS "email", CorsiDiStudio.Nome AS "corsodistudio", Regolamenti.AnnoAccademico AS "annoaccademico"
+        SELECT Richieste.idRichiesta AS "id", Richieste.Data AS "data", Richieste.Stato AS "stato", Presidenti.Università AS "università", Presidenti.Email AS "email", CorsiDiStudio.Nome AS "corsodistudio", Regolamenti.AnnoAccademico AS "annoaccademico", Regolamenti.idRegolamento AS "regolamento"
         FROM Richieste, Regolamenti, CorsiDiStudio, Presidenti
-        WHERE Regolamento = idRegolamento AND CDS = idCDS AND Presidente = idPresidente AND idPresidente = ?`;
+        WHERE Regolamento = idRegolamento AND CDS = idCDS AND Presidente = idPresidente AND idPresidente = ? AND Richieste.Stato <> "Bozza" `;
     const [result] = await db.query(queryRichieste, [presidente]);
     return result;
 }
@@ -20,6 +20,10 @@ export async function getRichiesta(id){
 }
 export async function addRichiesta(id, regolamento, stato, data) {
     const [result] = await db.query(`INSERT INTO Richieste (idRichiesta, Regolamento, Stato, Data) VALUES (?, ?, ?, ?)`, [id, regolamento, stato, data]);
+    return result;
+}
+export async function sendRichiesta(id, stato, data){
+    const [result] = await db.query(`UPDATE Richieste SET Stato = ?, Data = ? WHERE idRichiesta = ?`, [stato, data, id]);
     return result;
 }
 export async function updateRichiesta(id, stato){
@@ -57,9 +61,9 @@ export async function handleAddRichiesta(req, res) {
     const id = uuidv4();
     try {
         // risposta con successo
-        const result = await addRichiesta(id, regolamento, "Bozza", data);
+        const result = await addRichiesta(id, regolamento, "Elaborazione", data);
         return res.status(201).json({ 
-            message: "Richiesta inserita con successo",
+            message: "Richiesta inviata con successo",
             data: id
         });
     } catch (error) {
@@ -71,6 +75,7 @@ export async function handleAddRichiesta(req, res) {
             });
         }
         // errore generale interno al server
+        console.log(error);
         return res.status(500).json({
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
@@ -132,8 +137,9 @@ export async function handleDeleteRichiesta(req, res) {
         });
     }
 }
-export async function handleSendRichiesta(req, res) {
+/*export async function handleSendRichiesta(req, res) {
     const id = req.body.richiesta;
+    const data = req.body.data;
     try {
         // risposta avvenuta con successo
         // controllo che la richiesta rispetti le regole per l'erogazione del bollino
@@ -143,7 +149,7 @@ export async function handleSendRichiesta(req, res) {
         const checkFinal = resultRegole.regole.filter((regola) => regola.check == false);
         if(checkFinal.length == 0 && resultRegole.anvur && richiesta.stato === 'Bozza'){
             // invio la richiesta
-            await updateRichiesta(id, "Elaborazione");
+            await sendRichiesta(id, "Elaborazione", data);
             return res.status(201).json({
                 message: "Richiesta inviata con successo",
                 data: id
@@ -151,10 +157,11 @@ export async function handleSendRichiesta(req, res) {
         }
         else return res.status(400).json({ message: "Si è verificato un errore durante l'elaborazione della richiesta" });
     } catch (error) {
+        console.log(error);
         // errore generale interno al server
         return res.status(500).json({
             message: "Si è verificato un errore durante l'elaborazione della richiesta",
             error: error.message || error
         });
     }
-}
+}*/

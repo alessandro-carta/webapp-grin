@@ -64,6 +64,7 @@ function Area(props) {
             <div className="text__content__table">
                 <button className="button__action" onClick={updateArea}> Modifica </button>
                 {!loading && <button className="button__action" onClick={deleteArea}> Elimina </button>}
+                {loading && <button className="button__action"> ... </button>}
             </div>} 
         </>
     )

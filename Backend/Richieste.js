@@ -1,11 +1,10 @@
-import { checkRegole } from "./CheckRichiesta.js";
 import { db } from "./database.js"; 
 
 
 
 export async function getRichieste(){
     const queryRichieste = `
-        SELECT Richieste.idRichiesta AS "id", Richieste.Data AS "data", Richieste.Stato AS "stato", Presidenti.Università AS "università", Presidenti.Email AS "email", CorsiDiStudio.Nome AS "corsodistudio", Regolamenti.AnnoAccademico AS "annoaccademico"
+        SELECT Richieste.idRichiesta AS "id", Richieste.Data AS "data", Richieste.Stato AS "stato", Presidenti.Università AS "università", Presidenti.Email AS "email", CorsiDiStudio.Nome AS "corsodistudio", Regolamenti.AnnoAccademico AS "annoaccademico", Regolamenti.idRegolamento AS "regolamento"
         FROM Richieste, Regolamenti, CorsiDiStudio, Presidenti
         WHERE Regolamento = idRegolamento AND CDS = idCDS AND Presidente = idPresidente AND Stato <> "Bozza"`;
     const [result] = await db.query(queryRichieste);
@@ -19,8 +18,10 @@ export async function getRichiesta(id){
     const [result] = await db.query(queryRichiesta, [id]);
     return result[0];
 }
-
-
+export async function updateRichiesta(id, stato) {
+    const [result] = await db.query(`UPDATE Richieste SET Stato = ? WHERE idRichiesta = ?`, [stato, id]);
+    return result;
+}
 
 export async function getInsegnamenti(regolamento){
     const queryInsegnamenti = `
@@ -49,9 +50,13 @@ export async function getInsegnamentiFull(regolamento) {
     }
     return insegnamentiFull;
 }
-export async function updateRichiesta(id, stato) {
-    const [result] = await db.query(`UPDATE Richieste SET Stato = ? WHERE idRichiesta = ?`, [stato, id]);
-    return result;
+
+export async function getRegolamento(id) {
+    const [result] = await db.query(`
+        SELECT CorsiDiStudio.idCDS AS "cds", Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur", CorsiDiStudio.Presidente AS "presidente", Richieste.idRichiesta AS "richiesta", Richieste.Stato AS "stato", Presidenti.Email AS "email", Presidenti.Università AS "università"
+        FROM Regolamenti JOIN CorsiDiStudio ON Regolamenti.CDS = CorsiDiStudio.idCDS JOIN Presidenti ON CorsiDiStudio.Presidente = Presidenti.idPresidente LEFT JOIN Richieste ON Richieste.Regolamento = Regolamenti.idRegolamento
+        WHERE Regolamenti.idRegolamento = ?`, [id]);
+    return result[0];
 }
 
 
@@ -74,18 +79,19 @@ export async function handleGetRichieste(req, res) {
         
     }
 }
-export async function handleGetRichiesta(req, res) {
-    const id = req.params.idRichiesta;
+export async function handleGeRegolamentoAdmin(req, res) {
+    const id = req.params.idRegolamento;
     try {
         // risposta con successo
-        const richiesta = await getRichiesta(id);
-        if(richiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
+        const regolamento = await getRegolamento(id);
+        if(regolamento == null) return res.status(404).json({ message: "Regolamento non trovato" });
         return res.status(200).json({
-            message: "Richiesta",
-            data: richiesta
+            message: "Regolamento",
+            data: regolamento
         });
     } catch (error) {
         // errore generale interno al server
+        console.log(error);
         return res.status(500).json({
             message: "Si è verificato un errore durante il recupero della richiesta .",
             error: error.message || error
@@ -107,30 +113,6 @@ export async function handleGetInsegnamenti(req, res) {
             message: "Si è verificato un errore durante il recupero degli insegnamenti.",
             error: error.message || error
         });
-    }
-}
-export async function handleCheckRegole(req, res) {
-    const richiesta = req.params.idRichiesta;
-    try {
-        // risposta con successo
-        const result = await checkRegole(richiesta);
-        return res.status(200).json({
-            message: "Risultato controllo regole",
-            data: result
-        });
-    } catch (error) {
-        if(error.code == 404){
-            return res.status(404).json({
-                message: "Richiesta non trovata",
-                error: error.message || error
-            });
-        }
-        // errore generale interno al server
-        return res.status(500).json({
-            message: "Si è verificato un errore durante il recupero della richiesta .",
-            error: error.message || error
-        });
-        
     }
 }
 export async function handleInvalidRichiesta(req, res) {
@@ -155,6 +137,5 @@ export async function handleInvalidRichiesta(req, res) {
             message: "Si è verificato un errore durante l'elaborazione della richiesta.",
             error: error.message || error
         });
-        
     }
 }

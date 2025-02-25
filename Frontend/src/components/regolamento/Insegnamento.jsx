@@ -8,7 +8,7 @@ function Insegnamento(props){
     const showDetailSottoaree = () => { setClickedSottoaree(!clickedSottoaree) }
     const [isDeleted, setIsDeleted] = useState(false);
     // funzione modifica insegnamento
-    const updateInsegnamento = () => { navigate(`/dashboard/r/${props.richiesta}/modifica-insegnamento/${props.insegnamento.id}`)}
+    const updateInsegnamento = () => { navigate(`/dashboard/r/${props.insegnamento.regolamento}/modifica-insegnamento/${props.insegnamento.id}`)}
     // funzione elimina insegnamento
     const deleteInsegnamento = async () => {
         try {
@@ -19,7 +19,7 @@ function Insegnamento(props){
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({richiesta: props.richiesta})
+                body: JSON.stringify({regolamento: props.insegnamento.regolamento})
             })
             // accesso non consentito
             if(response.status == 403) navigate('/');
@@ -28,7 +28,6 @@ function Insegnamento(props){
                 setLoading(false);
                 setIsDeleted(true);
             }
-            
         } catch (error) { setLoading(false); console.log(error); }
     }
 

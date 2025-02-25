@@ -55,9 +55,9 @@ function Regolamento(props) {
             <div className="text__content__table">{props.regolamento.annoaccademico}</div>
             <div className="text__content__table">
                 <button className="button__action" onClick={duplicateRegolamento}> Duplica </button>
+                <button className="button__action" onClick={()=>{navigate(`/dashboard/r/${props.regolamento.id}`)}}> Visualizza </button>
                 {!loading && <button className="button__action" onClick={deleteRegolamento}> Elimina </button>}
                 {loading && <button className="button__action"> ... </button>}
-
             </div >
             
         </>
