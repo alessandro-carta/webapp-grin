@@ -1,12 +1,10 @@
 import { db } from "../database.js";
 import { v4 as uuidv4 } from 'uuid';
-import { getCorsoDiStudio } from './CorsiDiStudio.js';
 import { getRegolamento } from './RegolamentiCDS.js';
-import { getRichiesta } from '../Richieste.js';
 
 export async function getInsegnamenti(regolamento){
     const queryInsegnamenti = `
-        SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.CFU AS "cfutot", Insegnamenti.Settore AS "settore", Regolamenti.idRegolamento AS "regolamento"
+        SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.CFU AS "cfutot", Insegnamenti.Ore AS "oretot", Insegnamenti.Settore AS "settore", Regolamenti.idRegolamento AS "regolamento"
         FROM Regolamenti, Insegnamenti
         WHERE idRegolamento = Regolamento AND idRegolamento = ? `;
     const [result] = await db.query(queryInsegnamenti, [regolamento]);
@@ -14,7 +12,7 @@ export async function getInsegnamenti(regolamento){
 }
 export async function getInsegnamentoSottoaree(id){
     const querySottoaree = `
-        SELECT Sottoaree.idSottoarea AS "id", Sottoaree.Area AS "area", Sottoaree.Nome AS "nome", InsegnamentiSottoaree.CFU AS "cfu"
+        SELECT Sottoaree.idSottoarea AS "id", Sottoaree.Area AS "area", Sottoaree.Nome AS "nome", InsegnamentiSottoaree.CFU AS "cfu", InsegnamentiSottoaree.Ore AS "ore"
         FROM Insegnamenti, InsegnamentiSottoaree, Sottoaree
         WHERE idInsegnamento = Insegnamento AND idSottoarea = Sottoarea AND idInsegnamento = ? `;
     const [result] = await db.query(querySottoaree, [id]);
@@ -33,7 +31,7 @@ export async function getInsegnamentiFull(regolamento) {
 }
 export async function getInsegnamento(id){
     const queryInsegnamenti = `
-        SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.CFU AS "cfutot", Insegnamenti.Settore AS "settore", Insegnamenti.Regolamento AS "regolamento"
+        SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.CFU AS "cfutot", Insegnamenti.Ore AS "oretot", Insegnamenti.Settore AS "settore", Insegnamenti.Regolamento AS "regolamento"
         FROM Insegnamenti
         WHERE idInsegnamento = ? `;
     const [result] = await db.query(queryInsegnamenti, [id]);
@@ -46,15 +44,15 @@ export async function getInsegnamentoFull(id) {
     return {...insegnamento, sottoaree: sottoaree}
 }
 
-export async function addInsegnamento(id, nome, annoerogazione, cfutot, settore, regolamento, sottoaree) {
+export async function addInsegnamento(id, nome, annoerogazione, cfutot, oretot, settore, regolamento, sottoaree) {
     // transazione
     try {
         await db.beginTransaction();
-        const queryInsegnamento = 'INSERT INTO Insegnamenti (idInsegnamento, Nome, AnnoErogazione, CFU, Settore, Regolamento) VALUES (?, ?, ?, ?, ?, ?)';
-        await db.query(queryInsegnamento, [id, nome, annoerogazione, cfutot, settore, regolamento]);
+        const queryInsegnamento = 'INSERT INTO Insegnamenti (idInsegnamento, Nome, AnnoErogazione, CFU, Ore, Settore, Regolamento) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        await db.query(queryInsegnamento, [id, nome, annoerogazione, cfutot, oretot, settore, regolamento]);
         if(sottoaree.length > 0){
-            const queryInsegnamentoSottoarea = 'INSERT INTO InsegnamentiSottoaree (Insegnamento, Sottoarea, CFU) VALUES ?';
-            const valoriSottoaree = sottoaree.map(sottoarea => [id, sottoarea.id, sottoarea.cfu]);
+            const queryInsegnamentoSottoarea = 'INSERT INTO InsegnamentiSottoaree (Insegnamento, Sottoarea, CFU, Ore) VALUES ?';
+            const valoriSottoaree = sottoaree.map(sottoarea => [id, sottoarea.id, sottoarea.cfu, sottoarea.ore]);
             await db.query(queryInsegnamentoSottoarea, [valoriSottoaree]);
         }
         await db.commit();
@@ -65,21 +63,21 @@ export async function addInsegnamento(id, nome, annoerogazione, cfutot, settore,
         return {ok: false, message: error};
     }
 }
-export async function updateInsegnamento(id, nome, annoerogazione, CFU, settore, sottoaree) {
+export async function updateInsegnamento(id, nome, annoerogazione, CFU, ore, settore, sottoaree) {
     // transazione
     try {
         await db.beginTransaction();
         await db.query(`
             UPDATE Insegnamenti 
-            SET Nome = ?, AnnoErogazione = ?, CFU = ?, Settore = ?
-            WHERE idInsegnamento = ?`, [nome, annoerogazione, CFU, settore, id]);
+            SET Nome = ?, AnnoErogazione = ?, CFU = ?, Ore = ?, Settore = ?
+            WHERE idInsegnamento = ?`, [nome, annoerogazione, CFU, ore, settore, id]);
         await db.query(`
             DELETE FROM InsegnamentiSottoaree
             WHERE Insegnamento = ?`, [id]);
         if(sottoaree.length > 0){
-            const valoriSottoaree = sottoaree.map(sottoarea => [id, sottoarea.id, sottoarea.cfu]);
+            const valoriSottoaree = sottoaree.map(sottoarea => [id, sottoarea.id, sottoarea.cfu, sottoarea.ore]);
             await db.query(`
-                INSERT INTO InsegnamentiSottoaree (Insegnamento, Sottoarea, CFU) 
+                INSERT INTO InsegnamentiSottoaree (Insegnamento, Sottoarea, CFU, Ore) 
                 VALUES ?`, [valoriSottoaree]);
         }
         await db.commit();
@@ -118,7 +116,7 @@ export async function handleGetInsegnamentiPresidente(req, res) {
     }
 }
 export async function handleAddInsegnamento(req, res) {
-    const { nome, cfutot, settore, regolamento, annoerogazione, sottoaree } = req.body;
+    const { nome, cfutot, oretot, settore, regolamento, annoerogazione, sottoaree } = req.body;
     const id =  uuidv4();
     try {
         const objRegolamento = await getRegolamento(regolamento);
@@ -127,7 +125,7 @@ export async function handleAddInsegnamento(req, res) {
         // controllo su anno erogazione
         if(annoerogazione > objRegolamento.duratacorso) return res.status(400).json({ message: "Anno di erogazione errato" });
         // tutto pronto per inserire un nuovo insegnamento
-        const result = await addInsegnamento(id, nome, annoerogazione, cfutot, settore, regolamento, sottoaree);
+        const result = await addInsegnamento(id, nome, annoerogazione, cfutot, oretot, settore, regolamento, sottoaree);
         if(result.ok) return res.status(201).json({ 
             message: "Insegnamento aggiunto con successo",
             data: id 
@@ -183,7 +181,7 @@ export async function handleGetInsegnamentoPresidente(req, res) {
     }
 }
 export async function handleUpdateInsegnamento(req, res) {
-    const {id, nome, cfutot, settore, regolamento, annoerogazione, sottoaree} = req.body;
+    const {id, nome, cfutot, oretot, settore, regolamento, annoerogazione, sottoaree} = req.body;
     try {
         const objRegolamento = await getRegolamento(regolamento);
         if(objRegolamento == null) return res.status(404).json({ message: "Regolamento non trovato" });
@@ -191,7 +189,7 @@ export async function handleUpdateInsegnamento(req, res) {
         // controllo su anno erogazione
         if(annoerogazione > objRegolamento.duratacorso) return res.status(400).json({ message: "Anno di erogazione errato" });
         // tutto pronto per inserire un nuovo insegnamento
-        const result = await updateInsegnamento(id, nome, annoerogazione, cfutot, settore, sottoaree);
+        const result = await updateInsegnamento(id, nome, annoerogazione, cfutot, oretot, settore, sottoaree);
         if(result.ok) return res.status(201).json({ 
             message: "Insegnamento modificato",
             data: id 

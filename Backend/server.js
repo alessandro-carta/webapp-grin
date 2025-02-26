@@ -2,7 +2,7 @@ import express from "express"
 import cors from "cors"
 import jwt from 'jsonwebtoken';
 import { keyJwt, port } from "./Config.js";
-import { handleGetPresidenti, handleGetPresidente, handleAddPresidente, handleUpdatePresidente} from "./Presidenti.js";
+import { handleGetPresidenti, handleGetPresidente, handleAddPresidente, handleUpdatePresidente, handleResetPassword} from "./Presidenti.js";
 import { handleGetAree, handleGetArea, handleAddArea, handleDeleteArea, handleUpdateArea, handleGetSettori } from "./Aree.js";
 import { handleAddRegola, handleDeleteRegola, handleGetRegole } from "./Regole.js";
 import { handleGetRichieste, handleGeRegolamentoAdmin, handleGetInsegnamenti, handleInvalidRichiesta } from "./Richieste.js";
@@ -231,6 +231,9 @@ app.post("/api/addPresidente", authenticateToken, authorizeRole(['admin']), asyn
 })
 app.put("/api/updatePresidente", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleUpdatePresidente(req, res);
+})
+app.put("/api/resetPassword", authenticateToken, authorizeRole(['admin']), async (req, res) => {
+    return handleResetPassword(req, res);
 })
 
 // AREE

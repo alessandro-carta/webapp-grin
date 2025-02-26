@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import Loading from "../Loading";
 
 function FormUpdatePresidente(props) {
     const [loading, setLoading] = useState(false);
@@ -140,7 +141,7 @@ function FormUpdatePresidente(props) {
         });
     }
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <div className="form__container">

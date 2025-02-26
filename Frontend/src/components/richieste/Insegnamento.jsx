@@ -36,7 +36,7 @@ function Insegnamento(props){
     if(clickedSottoaree){
         component = props.insegnamento.sottoaree.map((sottoarea) => (
             <div key={sottoarea.id} className="p-1">
-                <p className="text-base">{sottoarea.nome} ({sottoarea.cfu} CFU)</p>
+                <p className="text-base">{sottoarea.nome}  {sottoarea.ore == null ? `(${sottoarea.cfu} CFU)` : `(${sottoarea.ore} H)`}</p>
             </div>
         ))
     }
@@ -44,7 +44,7 @@ function Insegnamento(props){
     return(
         <div className="card__insegnamento w-full sm:w-auto">
             <p className="text-xl font-medium">{props.insegnamento.nome}</p> 
-            <p className="text-xl">{props.insegnamento.cfutot} CFU ({props.insegnamento.settore})</p>
+            <p className="text-xl">{props.insegnamento.oretot == null ? `${props.insegnamento.cfutot} CFU` : `${props.insegnamento.oretot} H`} ({props.insegnamento.settore})</p>
             {props.insegnamento.sottoaree.length != 0 && <p className="text-base link" onClick={showDetailSottoaree}>Sottoaree {clickedSottoaree ? '-' : '+'}</p>}
             {component}
             {props.edit && <div>

@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import NavbarPresidente from "../../../components/NavbarPresidente"
 import { useState, useEffect } from "react";
-import Anno from "../../../components/regolamento/Anno";
+import Anno from "../../../components/richieste/Anno";
 
 
 

@@ -1,3 +1,4 @@
+import Loading from '../../components/Loading.jsx';
 import NavbarGrin from '../../components/NavbarGrin.jsx'
 import Richiesta from '../../components/richieste/Richiesta.jsx';
 import React, { useState, useEffect } from 'react';
@@ -64,7 +65,7 @@ function RichiestePage() {
   useEffect(() => filtraDati(), [annoAccademico, stato]);
   
   
-  if(loading) return <p>LOADING...</p>
+  if(loading) return <Loading />
   return (
     <>
       <NavbarGrin />

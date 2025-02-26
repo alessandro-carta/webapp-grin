@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { unitCFU } from '../../../ConfigClient';
+import Loading from '../Loading';
 
 function FormNewRegola(props) {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [showSelezioni, setShowSelezioni] = useState(false); // visualizzazione dimanica delle selezioni
     const tipologie = ['area', 'sottoarea', 'settore'];
     // dati del form
     const [formData, setFormData] = useState({
-        cfu: 0,
-        count: 0,
+        cfu: null,
+        ore: null,
+        count: null,
+        centrale: props.fondamental,
         descrizione: "",
         tipologia: "",
-        selezioni: []
+        selezioni: [],
+        area: ""
     });
     // dati del form errori
     const [formErrors, setFormErros] = useState({
@@ -44,8 +50,9 @@ function FormNewRegola(props) {
         } catch (error) { console.log(error); }
     };
     const [sottoaree, setSottoaree] = useState([]);
+    const [showMenuAree, setShowMenuAree] = useState(false); // menu a tendina scelta dell'area
     // funzione per caricare le sottoaree
-    const loadAllSottoaree = async () => {
+    const loadAllSottoaree = async (idArea) => {
         try {
             const response = await fetch(`/api/sottoaree`, {
                 method: 'GET',
@@ -64,6 +71,7 @@ function FormNewRegola(props) {
             
         } catch (error) { console.log(error); }
     };
+    
     const [settori, setSettori] = useState([]);
     // funzione per caricare i settori
     const loadAllSettori = async () => {
@@ -95,12 +103,32 @@ function FormNewRegola(props) {
     const handleChange = (e) => {
         const { name, value, type } = e.target;
         // scelta tipologia regola
-        if(type === 'radio') {
-            setFormData({...formData, selezioni: [], tipologia: value});
+        if(name === "areaMenu"){
+            if(value) setShowSelezioni(true);
+            if(!value) setShowSelezioni(false);
+            setFormData({
+                ...formData,
+                "area": value
+            });
+            //loadAllSottoaree(value);
+        }
+        else if(type === 'radio') {
+            setFormData({...formData, selezioni: [], tipologia: value, area: ""});
             setSel([]);
-            if(value === 'area') setSel(aree);
-            if(value === 'sottoarea') setSel(sottoaree);
-            if(value === 'settore') setSel(settori);
+            if(value === 'area') {
+                setShowMenuAree(false);
+                setShowSelezioni(true);
+                setSel(aree);
+            }
+            if(value === 'sottoarea') {
+                setShowMenuAree(true);
+                setSel(sottoaree);
+            };
+            if(value === 'settore') {
+                setShowMenuAree(false);
+                setShowSelezioni(true);
+                setSel(settori);
+            }
         }
         else if(type === 'checkbox'){
             setFormData((prevFormData) => {
@@ -126,7 +154,10 @@ function FormNewRegola(props) {
     }
     
     const checkInput = () => {
-        if((formData.count <= 0) && (formData.cfu <= 0)){
+        let data;
+        if(unitCFU) data = formData.cfu;
+        else data = formData.ore;
+        if((formData.count <= 0) && (data <= 0)){
             setFormErros({
                 ...formErrors,
                 input: "Inserire un numero positivo"
@@ -204,61 +235,62 @@ function FormNewRegola(props) {
         }
     }
 
+    let unit;
+    if(unitCFU) unit = <>
+        {/* Numero dei CFU */}
+        <div className="mb-4">
+            <label htmlFor="cfu" className="form__label">Numero minimo di CFU *</label>
+            <input
+                type="number"
+                id="cfu"
+                name="cfu"
+                value={formData.cfu}
+                onChange={handleChange}
+                className="form__input"
+            />
+            {formErrors.input && <p className="error__message">{formErrors.input}</p>}
+        </div>
+    </>;
+    else unit = <>
+        {/* Numero delle Ore */}
+        <div className="mb-4">
+            <label htmlFor="ore" className="form__label">Numero minimo di ore *</label>
+            <input
+                type="number"
+                id="ore"
+                name="ore"
+                value={formData.ore}
+                onChange={handleChange}
+                className="form__input"
+            />
+            {formErrors.input && <p className="error__message">{formErrors.input}</p>}
+        </div>
+    </>;
+
     let component;
-    if(props.regolaCFU){
-        component = 
-            <>
-                {/* Numero dei CFU */}
-                <div className="mb-4">
-                    <label htmlFor="cfu" className="form__label">Numero minimo di CFU *</label>
-                    <input
-                        type="number"
-                        id="cfu"
-                        name="cfu"
-                        value={formData.cfu}
-                        onChange={handleChange}
-                        className="form__input"
-                    />
-                    {formErrors.input && <p className="error__message">{formErrors.input}</p>}
-                </div>
-            </>
-    }
-    else{
-        component =
-            <>
-                {/* Numero dei CFU */}
-                <div className="mb-4">
-                    <label htmlFor="cfu" className="form__label">Numero minimo di CFU *</label>
-                    <input
-                        type="number"
-                        id="cfu"
-                        name="cfu"
-                        value={formData.cfu}
-                        onChange={handleChange}
-                        className="form__input"
-                    />
-                    {formErrors.input && <p className="text-red-500">{formErrors.input}</p>}
-                </div>
-                {/* Numero del count */}
-                <div className="mb-4">
-                    <label htmlFor="count" className="form__label">Numero minimo *</label>
-                    <input
-                        type="number"
-                        id="count"
-                        name="count"
-                        value={formData.count}
-                        onChange={handleChange}
-                        className="form__input"
-                    />
-                    {formErrors.input && <p className="error__message">{formErrors.input}</p>}
-                </div>
-            </>
-    }
-    if(loading) return <p>LOADING...</p>
+    if(props.regolaCFU) component = null
+    else component = <>
+        {/* Numero del count */}
+        <div className="mb-4">
+            <label htmlFor="count" className="form__label">Numero minimo *</label>
+            <input
+                type="number"
+                id="count"
+                name="count"
+                value={formData.count}
+                onChange={handleChange}
+                className="form__input"
+            />
+            {formErrors.input && <p className="error__message">{formErrors.input}</p>}
+        </div>
+    </>;
+
+    if(loading) return <Loading />
     return (
         <>
             <div className="form__container">
                 <form onSubmit={handleSubmit}>
+                    {unit}
                     {component}
                     {/* Descrizione */}
                     <div className="mb-4">
@@ -281,7 +313,7 @@ function FormNewRegola(props) {
                                 <input 
                                     type="radio"
                                     id={tipo}
-                                    name="tipologis"
+                                    name="tipologia"
                                     value={tipo}
                                     checked={formData.tipologia === tipo}
                                     onChange={handleChange}
@@ -296,7 +328,22 @@ function FormNewRegola(props) {
                     <div className="mb-4">
                         <label className="form__label">Scegli: *</label>
                         <div className="flex flex-wrap space-x-4">
-                            {sel.map((item) => (
+                            {showMenuAree &&
+                                <>
+                                    <label htmlFor="insegnamentosottoarea" className="form__label">Aree: </label>
+                                    <select
+                                        id="areaMenu"
+                                        name="areaMenu"
+                                        value={formData.area}
+                                        onChange={handleChange}
+                                        className="form__select mb-2" 
+                                    >
+                                        <option value="">Seleziona area</option>
+                                        {aree.map(a => ( <option key={a.id} value={a.id}>{a.nome}</option> ))}
+                                    </select>
+                                </>
+                            }
+                            {showSelezioni && sel.map((item) => (
                                 <div key={item.id} className="flex items-center">
                                 <input
                                     type="checkbox"

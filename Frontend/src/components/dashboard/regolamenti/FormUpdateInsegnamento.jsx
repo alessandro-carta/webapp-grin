@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { unitCFU } from "../../../../ConfigClient.js";
 
 function FormUpdateInsegnamento(props){
     const navigate = useNavigate();
@@ -32,6 +33,7 @@ function FormUpdateInsegnamento(props){
     const [formData, setFormData] = useState({
         nome: props.insegnamento.nome,
         cfutot: props.insegnamento.cfutot,
+        oretot: props.insegnamento.oretot,
         settore: props.insegnamento.settore,
         annoerogazione: props.insegnamento.annoerogazione,
         regolamento: props.insegnamento.regolamento,
@@ -43,7 +45,7 @@ function FormUpdateInsegnamento(props){
     // messaggi di errore, result contiene la risposta della chiamata HTTP
     const [formErrors, setFormErros] = useState({
         nome: "",
-        cfutot: "",
+        unit: "",
         settore: "",
         sottoaree: "",
         annoerogazione: ""
@@ -123,11 +125,14 @@ function FormUpdateInsegnamento(props){
         }
         return true;
     }
-    const checkCFUTot = () => {
-        if(formData.cfutot <= 0){
+    const checkUnit = () => {
+        let data;
+        if(unitCFU) data = formData.cfutot;
+        else data = formData.oretot
+        if(data <= 0){
             setFormErros({
                 ...formErrors,
-                cfutot: "Inserire un numero positivo"
+                unit: "Inserire un numero positivo"
             })
             return false;
         }
@@ -154,7 +159,10 @@ function FormUpdateInsegnamento(props){
         return true;
     }
     const checkSottoarea = (id) => {
-        if(id === "" || formData.cfu <= 0){
+        let data;
+        if(unitCFU) data = formData.cfutot;
+        else data = formData.oretot
+        if(id === "" || data <= 0){
             setFormErros({
                 ...formErrors,
                 sottoaree: "Inserire i campi obbligatori"
@@ -174,10 +182,10 @@ function FormUpdateInsegnamento(props){
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        if(name === "area" || name === "sottoarea" || name === "CFU"){
+        if(name === "area" || name === "sottoarea" || name === "cfu" || name === "ore"){
             setFormErros({
                 ...formErrors,
-                [name]: "aa",
+                [name]: "",
                 result: "",
                 sottoaree: ""
             });
@@ -196,7 +204,8 @@ function FormUpdateInsegnamento(props){
                 ...formData,
                 [name]: value,
                 sottoarea: "",
-                cfu: 0
+                cfu: null,
+                ore: null
             });
             loadAllSottoaree(value);
         }
@@ -210,7 +219,7 @@ function FormUpdateInsegnamento(props){
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if(checkNome() && checkCFUTot() && checkSettore() && checkAnnoErogazione){
+            if(checkNome() && checkUnit() && checkSettore() && checkAnnoErogazione){
                 setLoading(true);
                 const response = await fetch(`/api/updateInsegnamento/`, {
                     method: 'PUT',
@@ -222,6 +231,7 @@ function FormUpdateInsegnamento(props){
                                         id: props.insegnamento.id,
                                         nome: formData.nome, 
                                         cfutot: formData.cfutot,
+                                        oretot: formData.oretot,
                                         settore: formData.settore,
                                         annoerogazione: formData.annoerogazione,
                                         regolamento: formData.regolamento,
@@ -248,10 +258,13 @@ function FormUpdateInsegnamento(props){
     const addNewInsSottoarea = () => {
         const id = formData.sottoarea.split('/')[0];
         const sottoarea = formData.sottoarea.split('/')[1];
+        let data;
+        if(unitCFU) data = {id: id, nome: sottoarea, cfu: formData.cfu, ore: null};
+        else data = {id: id, nome: sottoarea, ore: formData.ore, cfu: null};
         if(checkSottoarea(id)){
             setFormData({
                 ...formData,
-                sottoaree: [...formData.sottoaree, {id: id, nome: sottoarea, cfu: formData.cfu}]
+                sottoaree: [...formData.sottoaree, data]
             });
             setFormErros({
                 ...formErrors,
@@ -267,6 +280,60 @@ function FormUpdateInsegnamento(props){
             sottoaree: sottoaree
         });
     }
+
+    let unitTot;
+    if(unitCFU) unitTot = <>
+        <div className="mb-4">
+            <label htmlFor="cfutot" className="form__label">CFU Totali*</label>
+            <input
+                type="number"
+                id="cfutot"
+                name="cfutot"
+                value={formData.cfutot}
+                onChange={handleChange}
+                className="form__input"
+            />
+            {formErrors.unit && <p className="error__message">{formErrors.unit}</p>}
+        </div>
+    </>;
+    else unitTot = <>
+        <div className="mb-4">
+            <label htmlFor="oretot" className="form__label">Ore Totali*</label>
+            <input
+                type="number"
+                id="oretot"
+                name="oretot"
+                value={formData.oretot}
+                onChange={handleChange}
+                className="form__input"
+            />
+            {formErrors.unit && <p className="error__message">{formErrors.unit}</p>}
+        </div>
+    </>; 
+
+    let unit;
+    if(unitCFU) unit = <>
+        <input
+            type="number"
+            id="cfu"
+            name="cfu"
+            value={formData.cfu}
+            onChange={handleChange}
+            className="form__input mb-4"
+            placeholder="CFU*"
+        />
+    </>;
+    else unit = <>
+        <input
+            type="number"
+            id="ore"
+            name="ore"
+            value={formData.ore}
+            onChange={handleChange}
+            className="form__input mb-4"
+            placeholder="Ore*"
+        />
+    </>;
 
     const anni = []; // contiene il numero di anni di durata di un CDS
     if(loading) return <p>LOADING...</p>;
@@ -289,19 +356,8 @@ function FormUpdateInsegnamento(props){
                             />
                             {formErrors.nome && <p className="error__message">{formErrors.nome}</p>}
                         </div>
-                        {/* CFU Totali */}
-                        <div className="mb-4">
-                            <label htmlFor="cfutot" className="form__label">CFU Totali*</label>
-                            <input
-                                type="number"
-                                id="cfutot"
-                                name="cfutot"
-                                value={formData.cfutot}
-                                onChange={handleChange}
-                                className="form__input"
-                            />
-                            {formErrors.cfutot && <p className="error__message">{formErrors.cfutot}</p>}
-                        </div>
+                        {/* Unità Totali */}
+                        {unitTot}
                         {/* Settore */}
                         <div className="mb-4">
                             <label htmlFor="settore" className="form__label">Settore*</label>
@@ -359,15 +415,7 @@ function FormUpdateInsegnamento(props){
                                         <option value="">Seleziona sottoarea*</option>
                                         {sottoaree.map(s => ( <option key={s.id} value={s.id+"/"+s.nome}>{s.nome}</option> ))}
                                     </select>
-                                    <input
-                                        type="number"
-                                        id="cfu"
-                                        name="cfu"
-                                        value={formData.cfu}
-                                        onChange={handleChange}
-                                        className="form__select mb-4"
-                                        placeholder="CFU*"
-                                    />
+                                    {unit}
                                     <button type="button" className="button__principale" onClick={addNewInsSottoarea}>
                                         Aggiungi
                                     </button>
@@ -381,7 +429,7 @@ function FormUpdateInsegnamento(props){
                             {formData.sottoaree.length != 0 && <label htmlFor="settore" className="form__label">Sottoaree: </label>}
                             {formData.sottoaree.map((elemento, index) => ( 
                                 <div className="flex flex-col md:flex-row justify-center items-center p-2">
-                                    <p className="text-base p-2" key={index}>{elemento.nome} (CFU: {elemento.cfu})</p> 
+                                    <p className="text-base p-2" key={index}>{elemento.nome} {unitCFU ? `(CFU: ${elemento.cfu})` : `(Ore: ${elemento.ore})`}</p> 
                                     <button type="button" className="button__action" onClick={() => deleteInsSottoarea(elemento.id)}>
                                         Elimina
                                     </button>

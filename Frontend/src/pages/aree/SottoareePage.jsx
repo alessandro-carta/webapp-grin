@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Sottoarea from "../../components/aree/Sottoarea.jsx";
 import NavbarPresidente from "../../components/NavbarPresidente.jsx";
+import Loading from "../../components/Loading.jsx";
 
 function SottoareePage(){
     const location = useLocation();
@@ -71,7 +72,7 @@ function SottoareePage(){
     if(admin) navbar = <NavbarGrin />
     else navbar = <NavbarPresidente />
 
-    if(loadingA || loadingS) return <p>LOADING...</p>
+    if(loadingA || loadingS) return <Loading />
     return(
         <>
             {navbar}

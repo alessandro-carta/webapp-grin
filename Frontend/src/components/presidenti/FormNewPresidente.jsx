@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { Link, useNavigate } from "react-router-dom";
+import Loading from "../Loading";
 
 function FormNewPresidente() {
     const navigate = useNavigate();
@@ -139,7 +140,7 @@ function FormNewPresidente() {
         });
     }
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <div className="form__container">

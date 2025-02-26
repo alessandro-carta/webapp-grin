@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import NavbarGrin from "../../components/NavbarGrin.jsx";
 import { useState, useEffect } from "react";
 import FormUpdateArea from "../../components/aree/FormUpdateArea.jsx";
+import Loading from "../../components/Loading.jsx";
 
 function UpdateAreaPage(){
 
@@ -38,7 +39,7 @@ function UpdateAreaPage(){
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
     useEffect( () => loadArea, [idArea]);
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <NavbarGrin />

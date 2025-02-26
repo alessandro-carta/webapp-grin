@@ -25,7 +25,7 @@ export async function updateRichiesta(id, stato) {
 
 export async function getInsegnamenti(regolamento){
     const queryInsegnamenti = `
-        SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.CFU AS "cfutot", Insegnamenti.Settore AS "settore"
+        SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.CFU AS "cfutot", Insegnamenti.Settore AS "settore", Insegnamenti.Ore AS "oretot"
         FROM Regolamenti, Insegnamenti
         WHERE idRegolamento = Regolamento AND idRegolamento = ? `;
     const [result] = await db.query(queryInsegnamenti, [regolamento]);
@@ -33,7 +33,7 @@ export async function getInsegnamenti(regolamento){
 }
 export async function getInsegnamentoSottoaree(id){
     const querySottoaree = `
-        SELECT Sottoaree.idSottoarea AS "id", Sottoaree.Area AS "area", Sottoaree.Nome AS "nome", InsegnamentiSottoaree.CFU AS "cfu"
+        SELECT Sottoaree.idSottoarea AS "id", Sottoaree.Area AS "area", Sottoaree.Nome AS "nome", InsegnamentiSottoaree.CFU AS "cfu", InsegnamentiSottoaree.Ore AS "ore"
         FROM Insegnamenti, InsegnamentiSottoaree, Sottoaree
         WHERE idInsegnamento = Insegnamento AND idSottoarea = Sottoarea AND idInsegnamento = ? `;
     const [result] = await db.query(querySottoaree, [id]);

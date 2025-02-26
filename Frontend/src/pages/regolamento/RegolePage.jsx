@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Regola from '../../components/regolamento/Regola.jsx'
 import NavbarPresidente from '../../components/NavbarPresidente.jsx';
+import Loading from '../../components/Loading.jsx';
 
 function RegolePage(){
     const location = useLocation();
@@ -45,6 +46,9 @@ function RegolePage(){
     // funzione btn crea una nuova regola
     const createNewRegolaCFU = () => {navigate(`/crea-una-nuova-regola/?RegolaCFU=${true}`)}
     const createNewRegolaCount = () => {navigate(`/crea-una-nuova-regola/?RegolaCFU=${false}`)}
+    const createNewRegolaCentrale = () => {navigate(`/crea-una-nuova-regola/?Fondamental=${true}`)}
+    const createNewRegolaSupplementare = () => {navigate(`/crea-una-nuova-regola/?Fondamental=${false}`)}
+
 
     const handleChange = (e) => {
         const {  value } = e.target;
@@ -60,13 +64,15 @@ function RegolePage(){
     if(admin) azioni = <>
         <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
             <p className="text-xl">Azioni: </p>
-            <button className="button__principale" onClick={createNewRegolaCFU}> Aggiungi una regola per CFU </button>
-            <button className="button__principale" onClick={createNewRegolaCount}> Aggiungi una regola per numero </button>
+            {/*<button className="button__principale" onClick={createNewRegolaCFU}> Aggiungi una regola per CFU </button>
+            <button className="button__principale" onClick={createNewRegolaCount}> Aggiungi una regola per numero </button>*/}
+            <button className="button__principale" onClick={createNewRegolaCentrale}> Aggiungi regola centrale </button>
+            <button className="button__principale" onClick={createNewRegolaSupplementare}> Aggiungi regola supplementare </button>
         </div>
     </>;
     else azioni = null;
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return (
         <>
             {navbar}

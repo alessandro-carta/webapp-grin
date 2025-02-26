@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import NavbarGrin from "../../components/NavbarGrin.jsx";
 import { useState, useEffect } from "react";
 import FormUpdateSottoarea from "../../components/aree/FormUpdateSottoarea";
+import Loading from "../../components/Loading.jsx";
 
 function UpdateSottoareaPage(){
 
@@ -34,7 +35,7 @@ function UpdateSottoareaPage(){
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
     useEffect( () => loadSottoarea, [idSottoarea]);
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <NavbarGrin />

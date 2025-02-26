@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import Loading from '../Loading';
+import LoadingButton from '../LoadingButton';
 
 function Area(props) {
 
@@ -61,10 +63,10 @@ function Area(props) {
             </div >
 
             {props.admin && 
-            <div className="text__content__table">
+            <div className="text__content__table flex justify-center">
                 <button className="button__action" onClick={updateArea}> Modifica </button>
                 {!loading && <button className="button__action" onClick={deleteArea}> Elimina </button>}
-                {loading && <button className="button__action"> ... </button>}
+                {loading && <button className="button__action"> <LoadingButton /> </button>}
             </div>} 
         </>
     )

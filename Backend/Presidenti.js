@@ -22,6 +22,10 @@ export async function updatePresidente(id, nome, cognome, email, università, at
     const [result] = await db.query(`UPDATE Presidenti SET Nome = ?, Cognome = ?, Email = ?, Università = ?, Attivo = ? WHERE idPresidente = ?`, [nome, cognome, email, università, attivo, id]);
     return result;
 }
+export async function resetPassword(id){
+    const [result] = await db.query(`UPDATE Presidenti SET Password = ? WHERE idPresidente = ?`, [null, id]);
+    return result;
+}
 
 
 
@@ -113,6 +117,30 @@ export async function handleUpdatePresidente(req, res) {
                 error: error.message || error
             });
         }
+        // errore generale interno al server
+        return res.status(500).json({
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+    
+}
+export async function handleResetPassword(req, res) {
+    const { presidente } = req.body;
+    try {
+        // risposta avvenuta con successo
+        const result = await resetPassword(presidente);
+        if(result.affectedRows == 0){
+            return res.status(404).json({
+                message: 'Presidente non trovato',
+            });
+        }
+        return res.status(200).json({
+            message: "Password resettata con successo",
+            data: presidente
+        });
+    } catch (error) {
+        console.log(error);
         // errore generale interno al server
         return res.status(500).json({
             message: "Si è verificato un errore durante l'elaborazione della richiesta",

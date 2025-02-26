@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import NavbarGrin from "../../components/NavbarGrin.jsx";
 import { useState, useEffect } from "react";
 import FormUpdatePresidente from "../../components/presidenti/FormUpdatePresidente.jsx";
+import Loading from "../../components/Loading.jsx";
 
 function UpdatePresidentePage(){
     const { idPresidente } = useParams();
@@ -33,7 +34,7 @@ function UpdatePresidentePage(){
         } catch (error) { console.log(error); }
     }
     
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <NavbarGrin />

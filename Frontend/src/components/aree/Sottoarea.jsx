@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import LoadingButton from '../LoadingButton';
 
 
 function Sottoarea(props) {
@@ -53,10 +54,10 @@ function Sottoarea(props) {
         <>
             <div className="text__content__table">{props.sottoarea.nome}</div>
             { props.admin && 
-            <div className="text__content__table">
+            <div className="text__content__table flex justify-center">
                 <button className="button__action" onClick={updateSottoarea}> Modifica </button>
                 {!loading && <button className="button__action" onClick={deleteSottoarea}> Elimina </button>}
-                {loading && <button className="button__action"> ... </button>}
+                {loading && <button className="button__action"> <LoadingButton /> </button>}
 
             </div > }
         </>

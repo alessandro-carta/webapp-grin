@@ -5,7 +5,7 @@
 :root {
   --blu-1: #00C0FD;
   --blu-2: #1E6CD8;
-  --blu-3: #3536C1;
+  --blu-3: #3536c1;
   --blu-4: #4219B5;
   --testo: #333333;
   --testo-bnt: #fff;
@@ -72,6 +72,8 @@ body {
   font-family: inherit;
   cursor: pointer;
   transition: border-color 0.25s;
+  height: 38.8px;
+  min-width: 88px;
 }
 .button__action:hover { color: var(--blu-3); border-color: var(--blu-3); }
 

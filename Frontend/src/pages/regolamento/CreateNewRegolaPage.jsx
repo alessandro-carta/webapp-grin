@@ -7,15 +7,16 @@ function CreateNewRegolaPage(){
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const regolaCFU = queryParams.get('RegolaCFU');
+    const fondamental = queryParams.get('Fondamental');
 
-    const [pageTitle, setPageTitle] = useState("Nuova Regola per "+(regolaCFU === "true" ? "CFU": "numero"));
+    const [pageTitle, setPageTitle] = useState("Nuova Regola");
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
 
     return(
         <>
             <NavbarGrin />
             <div className="flex justify-center">
-                <FormNewRegola regolaCFU={regolaCFU === "true" ? true : false}/>
+                <FormNewRegola fondamental={fondamental === "true" ? true : false} regolaCFU={true}/>
             </div>
         </>
     )

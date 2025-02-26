@@ -23,7 +23,6 @@ function UpdateNewInsegnamentoPage() {
             // risposta con successo
             if(response.ok) {
                 const data = await response.json();
-                console.log(data);
                 setInsegnamento(data.data);
                 setLoading(false);
             }

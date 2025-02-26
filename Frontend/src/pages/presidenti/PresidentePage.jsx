@@ -1,18 +1,17 @@
 import NavbarGrin from '../../components/NavbarGrin.jsx';
 import { useParams, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
+import Loading from '../../components/Loading.jsx';
 
 function PresidentePage() {
     const navigate = useNavigate();
     const { idPresidente } = useParams();
-    const [presidente, setPresidente] = useState();
     const [loading, setLoading] = useState(true);
     const [messageResult, setMessageResult] = useState(); // contiene un messaggio per visualizzare l'esito dell'azione
-    useEffect( () => loadPresidente, [idPresidente]); // eseguito ogni volta che cambia idPresidente
-
     const [pageTitle, setPageTitle] = useState('Presidente');
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
-
+    // carico il presidente
+    const [presidente, setPresidente] = useState();
     const loadPresidente = async () => {
         try {
             const response = await fetch(`/api/presidente/${idPresidente}`, {
@@ -34,12 +33,13 @@ function PresidentePage() {
             
         } catch (error) { console.log(error); }
     }
-
-    // funzione per disabilitare l'account di un presidente
-    // Attivo: 0
-    const offPresidente = async () => {
+    useEffect( () => loadPresidente, []); // eseguito ogni volta che cambia idPresidente
+    // funzione per attivare/disattivare l'account di un presidente
+    const abilita = () => {updatePresidente(1)}
+    const disabilita = () => {updatePresidente(0)}
+    const updatePresidente = async (val) => {
         setLoading(true);
-        const data = {...presidente, attivo: 0};
+        const data = {...presidente, attivo: val};
         try {
             const response = await fetch(`/api/updatePresidente`, {
                 method: 'PUT',
@@ -54,51 +54,48 @@ function PresidentePage() {
             // risposta con successo
             if(response.ok) {
                 setLoading(false);
-                setPresidente({...presidente, attivo: 0});
+                setPresidente({...presidente, attivo: val});
                 let component = <>
-                    <p className="success__message">Account disattivato con successo!</p>
+                    <p className="success__message">Account {val == 0 ? "disattivato" : "attivato"} con successo!</p>
                 </>;
                 setMessageResult(component);
             }
             if(!response.ok){
                 setLoading(false);
                 let component = <>
-                    <p className="error__message">Impossibile disattivare l'account</p>
+                    <p className="error__message">Impossibile {val == 0 ? "disattivare" : "attivare"} l'account</p>
                 </>;
                 setMessageResult(component);
             }
+            
         } catch (error) { console.log(error); }
     }
-
-    // funzione per riattivare l'account di un presidente
-    // Attivo: 1
-    const onPresidente = async () => {
-        setLoading(true);
-        const data = {...presidente, attivo: 1};
+    // funzione per il reset della password
+    const resetPassword = async () => {
         try {
-            const response = await fetch(`/api/updatePresidente`, {
+            setLoading(true);
+            const response = await fetch(`/api/resetPassword`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify({presidente: idPresidente})
             })
             // accesso non consentito
             if(response.status == 403) navigate('/');
             // risposta con successo
             if(response.ok) {
                 setLoading(false);
-                setPresidente({...presidente, attivo: 1});
                 let component = <>
-                    <p className="success__message">Account attivato con successo!</p>
+                    <p className="success__message">Passoword resettata con successo!</p>
                 </>;
                 setMessageResult(component);
             }
             if(!response.ok){
                 setLoading(false);
                 let component = <>
-                    <p className="error__message">Impossibile attivare l'account</p>
+                    <p className="error__message">Impossibile resettare la password!</p>
                 </>;
                 setMessageResult(component);
             }
@@ -106,8 +103,8 @@ function PresidentePage() {
         } catch (error) { console.log(error); }
     }
 
-    if(loading) return <p>LOADING...</p>
-    return (
+    if(loading) return <Loading />
+    else return (
         <>
             <NavbarGrin />
             <p className='text-2xl title'>{presidente.università}</p>
@@ -118,8 +115,10 @@ function PresidentePage() {
             <div className="flex space-x-4 p-4 items-center justify-center">
                 <p className="text-xl">Azioni: </p>
                 { presidente.attivo == 1 ? 
-                    <button className="button__principale" onClick={offPresidente}> Disabilita account </button> :
-                    <button className="button__principale" onClick={onPresidente}> Riattiva account </button> }
+                    <button className="button__principale" onClick={disabilita}> Disabilita account </button> :
+                    <button className="button__principale" onClick={abilita}> Riattiva account </button> }
+                <button className="button__principale" onClick={resetPassword}> Reset password </button>
+                
             </div>
             {messageResult}
         </>

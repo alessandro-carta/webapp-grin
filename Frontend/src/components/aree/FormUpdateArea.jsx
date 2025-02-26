@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Loading from "../Loading";
 
 function FormUpdateArea(props) {
     const navigate = useNavigate();
@@ -78,7 +79,7 @@ function FormUpdateArea(props) {
         });
     }
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <div className="form__container">

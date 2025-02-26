@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Regola from "../../components/regolamento/Regola";
 import NavbarGrin from "../../components/NavbarGrin";
+import Loading from "../../components/Loading";
 
 function ControlloRegolePage(){
     const navigate = useNavigate();
@@ -112,7 +113,7 @@ function ControlloRegolePage(){
         <button className="button__principale" onClick={invalidRichiesta}> Invalida Richiesta </button>
     </>;
     
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <NavbarGrin />

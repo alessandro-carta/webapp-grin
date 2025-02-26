@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Loading from "../Loading";
 
 function FormNewArea() {
 
@@ -80,7 +81,7 @@ function FormNewArea() {
         });
     }
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <div className="form__container">

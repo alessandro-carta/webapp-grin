@@ -77,7 +77,6 @@ function Richiesta(props) {
             </div >
         </>)
     }
-
     return (
         <>
             { props.admin && <div className="text__content__table">{props.richiesta.università}</div> }
