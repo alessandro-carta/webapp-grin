@@ -7,8 +7,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        'blu-3': '#3536c1',
-        'blu-2': '#1E6CD8'
+        'cblu-3': '#3536c1',
+        'cblu-2': '#1E6CD8',
+        'cgray-2': '#aeaeae'
       },
     },
   },

@@ -6,7 +6,7 @@ import { handleGetPresidenti, handleGetPresidente, handleAddPresidente, handleUp
 import { handleGetAree, handleGetArea, handleAddArea, handleDeleteArea, handleUpdateArea, handleGetSettori } from "./Aree.js";
 import { handleAddRegola, handleDeleteRegola, handleGetRegole } from "./Regole.js";
 import { handleGetRichieste, handleGeRegolamentoAdmin, handleGetInsegnamenti, handleInvalidRichiesta } from "./Richieste.js";
-import { handleAddBollino, handleBollini, handleInvalidBollino } from "./Bollini.js";
+import { handleActiveBollino, handleAddBollino, handleBollini, handleBollinoRichiesta, handleInvalidBollino } from "./Bollini.js";
 import { handleAddSottoarea, handleGetSottoarea, handleGetSottoareePerArea, handleGetSottoaree, handleDeleteSottoarea, handleUpdateSottoarea } from "./Sottoaree.js";
 import { handleAdminLogin, handleChangePassword, handlePresidenteLogin } from "./Auth.js";
 import { getCorsoDiStudio, handleAddCDS, handleDashboard, handleDeleteCDS, handleUpdateCDS, hanldeCorsoDiStudio } from "./dashboard/CorsiDiStudio.js";
@@ -336,6 +336,8 @@ app.put("/api/invalidRichiesta", authenticateToken, authorizeRole(['admin']), as
 // 1. Erogare un bollino
 // 2. Elenco dei bollini
 // 3. Revocare un bollino
+// 4. Riattivare un bollino
+// 5. Informazioni di un bollino a partire da una richiesta
 app.post("/api/addBollino", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleAddBollino(req, res);
 })
@@ -344,4 +346,10 @@ app.get("/api/bollini", authenticateToken, authorizeRole(['admin']), async (req,
 })
 app.put("/api/invalidBollino/", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleInvalidBollino(req, res);
+})
+app.put("/api/activeBollino/", authenticateToken, authorizeRole(['admin']), async (req, res) => {
+    return handleActiveBollino(req, res);
+})
+app.get("/api/bollinoRichiesta/:idRichiesta", authenticateToken, authorizeRole(['admin']), async (req, res) => {
+    return handleBollinoRichiesta(req, res);
 })

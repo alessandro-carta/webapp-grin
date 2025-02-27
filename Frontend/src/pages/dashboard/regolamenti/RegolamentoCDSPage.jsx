@@ -50,9 +50,9 @@ function RegolamentoCDSPage() {
                     <button className="button__principale" onClick={() => {navigate(`/dashboard/controllo-regole/${idRegolamento}`)}}> Invia richiesta </button>
                     <button className="button__principale" onClick={() => {navigate(`/dashboard/r/${idRegolamento}/crea-un-nuovo-insegnamento`)}}> Aggiungi insegnamento </button>
                 </div> }
-                {regolamento.stato == "Approvata" && <p className="text-2xl success__message">Richiesta approvata</p>}
-                {regolamento.stato == "Invalidata" && <p className="text-2xl error__message">Richiesta invalidata</p>}
-                {regolamento.stato == "Elaborazione" && <p className="text-2xl title">Richiesta in fase di elaborazione</p>}
+                {regolamento.stato == "Approvata" && <p className="text-2xl success__message p-4">Richiesta approvata</p>}
+                {regolamento.stato == "Invalidata" && <p className="text-2xl error__message p-4">Richiesta invalidata</p>}
+                {regolamento.stato == "Elaborazione" && <p className="text-2xl title p-4">Richiesta in fase di elaborazione</p>}
                 <p className="text-xl title">{regolamento.corsodistudio} - Regolamento AA: {regolamento.annoaccademico}</p>
                 <p className="text-xl">Durata corso: {regolamento.duratacorso}</p>
                 { anni.map(a => ( <Anno key={a} richiesta={regolamento.richiesta} regolamento={regolamento.id} anno={a} edit={(regolamento.richiesta == null)} admin={false}/> )) }

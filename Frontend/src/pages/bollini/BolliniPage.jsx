@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import NavbarGrin from "../../components/NavbarGrin";
 import Bollino from "../../components/bollini/Bollino";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../components/Loading";
 
 
 function BolliniPage(){
@@ -62,7 +63,7 @@ function BolliniPage(){
     }
     useEffect(() => filtraDati(), [annoAccademico, stato]);
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return (
         <>
             <NavbarGrin />
@@ -93,7 +94,7 @@ function BolliniPage(){
                 <div className="text__header__table">Corso Di Studio</div>
                 <div className="text__header__table">Anno Accademico</div>
                 <div className="text__header__table">Stato</div>
-                <div className="text__header__table">Richiesta</div>
+                <div className="text__header__table">Regolamento</div>
                 <div className="text__header__table">Azioni</div>
                 {bollini.map(bollino => ( <Bollino key={bollino.id} bollino={bollino} admin={true}/>))}
             </div>

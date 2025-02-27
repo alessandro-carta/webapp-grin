@@ -7,7 +7,9 @@ function FormNewRegola(props) {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [showSelezioni, setShowSelezioni] = useState(false); // visualizzazione dimanica delle selezioni
+    const [showAreaMenu, setShowAreaMenu] = useState(false); // visualizzazione dimanica del menu a tendina per la scelta dell'area
     const tipologie = ['area', 'sottoarea', 'settore'];
+    const [elementRadio, setElementRadio] = useState([]); // elenco elementi radiobox
     // dati del form
     const [formData, setFormData] = useState({
         cfu: null,
@@ -27,9 +29,8 @@ function FormNewRegola(props) {
         selezioni: "",
         result: ""
     });
-    const [sel, setSel] = useState([]);
-    const [aree, setAree] = useState([]);
     // funzione per caricare le aree
+    const [aree, setAree] = useState([]);
     const loadAllAree = async () => {
         try {
             const response = await fetch(`/api/aree`, {
@@ -49,12 +50,11 @@ function FormNewRegola(props) {
             
         } catch (error) { console.log(error); }
     };
-    const [sottoaree, setSottoaree] = useState([]);
-    const [showMenuAree, setShowMenuAree] = useState(false); // menu a tendina scelta dell'area
     // funzione per caricare le sottoaree
+    const [sottoaree, setSottoaree] = useState([]);
     const loadAllSottoaree = async (idArea) => {
         try {
-            const response = await fetch(`/api/sottoaree`, {
+            const response = await fetch(`/api/sottoaree/${idArea}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -66,14 +66,14 @@ function FormNewRegola(props) {
             // risposta con successo
             if(response.ok) {
                 const data = await response.json();
-                setSottoaree(data.data);
+                return data.data;
             }
+            return [];
             
         } catch (error) { console.log(error); }
     };
-    
-    const [settori, setSettori] = useState([]);
     // funzione per caricare i settori
+    const [settori, setSettori] = useState([]);
     const loadAllSettori = async () => {
         try {
             const response = await fetch(`/api/settori`, {
@@ -96,38 +96,42 @@ function FormNewRegola(props) {
     // recupera i dati dinamici all'avvio
     useEffect(() => {
         loadAllAree();
-        loadAllSottoaree();
         loadAllSettori();
     }, []);  // nessuna dipendenza, eseguito ad ogni render
 
-    const handleChange = (e) => {
+    const handleChange = async (e) => {
         const { name, value, type } = e.target;
-        // scelta tipologia regola
-        if(name === "areaMenu"){
-            if(value) setShowSelezioni(true);
-            if(!value) setShowSelezioni(false);
-            setFormData({
-                ...formData,
-                "area": value
-            });
-            //loadAllSottoaree(value);
+        if(type === 'select-one') {
+            if(value === "null") {
+                setShowSelezioni(false);
+                setElementRadio([]);
+                setFormData({...formData, area: ""});
+            }
+            else{
+                setFormData({...formData, area: value});
+                const sottoaree = await loadAllSottoaree(value);
+                setElementRadio(sottoaree);
+                setShowSelezioni(true);
+                
+            }
         }
         else if(type === 'radio') {
             setFormData({...formData, selezioni: [], tipologia: value, area: ""});
-            setSel([]);
+            setElementRadio([]);
             if(value === 'area') {
-                setShowMenuAree(false);
                 setShowSelezioni(true);
-                setSel(aree);
+                setShowAreaMenu(false);
+                setElementRadio(aree);
             }
             if(value === 'sottoarea') {
-                setShowMenuAree(true);
-                setSel(sottoaree);
+                setShowSelezioni(false);
+                setShowAreaMenu(true);
+                //setElementRadio(sottoaree);
             };
             if(value === 'settore') {
-                setShowMenuAree(false);
                 setShowSelezioni(true);
-                setSel(settori);
+                setShowAreaMenu(false);
+                setElementRadio(settori);
             }
         }
         else if(type === 'checkbox'){
@@ -149,7 +153,7 @@ function FormNewRegola(props) {
         setFormErros({
             ...formErrors,
             [name]: "",
-            Selezioni: ""
+            selezioni: ""
         })
     }
     
@@ -286,12 +290,12 @@ function FormNewRegola(props) {
     </>;
 
     if(loading) return <Loading />
-    return (
+    else return (
         <>
             <div className="form__container">
                 <form onSubmit={handleSubmit}>
-                    {unit}
-                    {component}
+                    {unit /* Scelta tra input per ore o cfu */} 
+                    {component /* Soglia count per regole count */}
                     {/* Descrizione */}
                     <div className="mb-4">
                         <label htmlFor="descrizione" className="form__label">Descrizione *</label>
@@ -325,41 +329,40 @@ function FormNewRegola(props) {
                         {formErrors.tipologia && <p className="error__message">{formErrors.tipologia}</p>}
                     </div>
                     {/* Selezione l'elenco delle aree/sottoaree/settori */}
+                    {showAreaMenu &&
+                    <div className="flex flex-col items-center">
+                        <select
+                            id="area"
+                            name="area"
+                            value={formData.area}
+                            onChange={handleChange}
+                            className="form__select mb-2" 
+                        >
+                            <option value="null">Seleziona area</option>
+                            {aree.map(a => ( <option key={a.id} value={a.id}>{a.nome}</option> ))}
+                        </select>
+                    </div> }
+                    {showSelezioni &&
                     <div className="mb-4">
                         <label className="form__label">Scegli: *</label>
-                        <div className="flex flex-wrap space-x-4">
-                            {showMenuAree &&
-                                <>
-                                    <label htmlFor="insegnamentosottoarea" className="form__label">Aree: </label>
-                                    <select
-                                        id="areaMenu"
-                                        name="areaMenu"
-                                        value={formData.area}
+                        <div className="flex flex-wrap justify-start">
+                            {elementRadio.map((item) => (
+                                <div key={item.id} className="flex p-2">
+                                    <input
+                                        type="checkbox"
+                                        name="selezioni"
+                                        id={item.id} 
+                                        value={item.id}
+                                        checked={formData.selezioni.includes(item.id)}
                                         onChange={handleChange}
-                                        className="form__select mb-2" 
-                                    >
-                                        <option value="">Seleziona area</option>
-                                        {aree.map(a => ( <option key={a.id} value={a.id}>{a.nome}</option> ))}
-                                    </select>
-                                </>
-                            }
-                            {showSelezioni && sel.map((item) => (
-                                <div key={item.id} className="flex items-center">
-                                <input
-                                    type="checkbox"
-                                    name="selezioni"
-                                    id={item.id} 
-                                    value={item.id}
-                                    checked={formData.selezioni.includes(item.id)}
-                                    onChange={handleChange}
-                                    className="mr-2"
-                                />
-                                <label htmlFor={item.id} className="block text-sm font-medium">{item.nome}</label>
+                                        className="mr-2"
+                                    />
+                                    <label htmlFor={item.id} className="block text-sm font-medium">{item.nome}</label>
                                 </div>
                             ))}
                         </div>
                         {formErrors.selezioni && <p className="error__message">{formErrors.selezioni}</p>}
-                    </div>
+                    </div>}
                     <button 
                         type="submit"
                         className="w-full button__principale" >

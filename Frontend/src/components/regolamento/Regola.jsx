@@ -39,7 +39,7 @@ function Regola(props) {
             {!props.check && props.admin &&
             <div className="text__content__table flex justify-center">
                 {!loading && <button className="button__action" onClick={deleteRegola}> Elimina </button>}
-                {loading && <button className="button__action"> <LoadingButton /> </button>}
+                {loading && <button className="button__action button__loading"> <LoadingButton /> </button>}
             </div> }
             {/* Visualizzazione nel caso di controllo requisiti*/}
             {props.check &&

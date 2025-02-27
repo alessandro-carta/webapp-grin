@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 function CreateNewRegolaPage(){
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-    const regolaCFU = queryParams.get('RegolaCFU');
+    //const regolaCFU = queryParams.get('RegolaCFU');
     const fondamental = queryParams.get('Fondamental');
 
     const [pageTitle, setPageTitle] = useState("Nuova Regola");

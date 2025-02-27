@@ -57,8 +57,7 @@ function Sottoarea(props) {
             <div className="text__content__table flex justify-center">
                 <button className="button__action" onClick={updateSottoarea}> Modifica </button>
                 {!loading && <button className="button__action" onClick={deleteSottoarea}> Elimina </button>}
-                {loading && <button className="button__action"> <LoadingButton /> </button>}
-
+                {loading && <button className="button__action button__loading"> <LoadingButton /> </button>}
             </div > }
         </>
     )

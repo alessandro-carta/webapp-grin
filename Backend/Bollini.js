@@ -27,9 +27,43 @@ export async function getBollini() {
     const [result] = await db.query(queryBollini);
     return result;
 }
+export async function getBollino(id) {
+    const queryBollini = `
+        SELECT Bollini.Richiesta AS "richiesta", Bollini.idBollino AS "id", Bollini.Erogato AS "erogato"
+        FROM Bollini, Richieste
+        WHERE idRichiesta = Richiesta AND idBollino = ?`;
+    const [result] = await db.query(queryBollini, [id]);
+    return result[0];
+}
+export async function getBollinoRichiesta(id) {
+    const queryBollini = `
+        SELECT Bollini.idBollino AS "id", Bollini.Erogato AS "erogato"
+        FROM Bollini, Richieste
+        WHERE idRichiesta = Richiesta AND idRichiesta = ?`;
+    const [result] = await db.query(queryBollini, [id]);
+    return result[0];
+}
 export async function updateBollino(id, erogato) {
-    const [result] = await db.query(`UPDATE Bollini SET Erogato = ? WHERE idBollino = ?`, [erogato, id]);
-    return result;
+    try {
+        // garantisco atomicità tramite l'uso di una transazione
+        await db.beginTransaction();
+        const bollino = await getBollino(id);
+        if(bollino == null) {
+            await db.rollback();
+            return {ok: false, error: "Bollino non trovato"}
+        }
+        let queryRichiesta;
+        if(erogato == 0) queryRichiesta = `UPDATE Richieste SET Stato = "Invalidata" WHERE idRichiesta = ?`;
+        if(erogato == 1) queryRichiesta = `UPDATE Richieste SET Stato = "Approvata" WHERE idRichiesta = ?`;
+        await db.query(`UPDATE Bollini SET Erogato = ? WHERE idBollino = ?`, [erogato, id]);
+        await db.query(queryRichiesta, [bollino.richiesta]);
+        await db.commit();
+        return {ok: true, error: null}
+    } catch (err) {
+        // transazione fallita
+        await db.rollback();
+        return {result: false, error: err}
+    }
 }
 
 
@@ -89,11 +123,45 @@ export async function handleBollini(req, res) {
         
     }
 }
+export async function handleBollinoRichiesta(req, res) {
+    const richiesta = req.params.idRichiesta;
+    try {
+        // risposta con successo
+        const result = await getBollinoRichiesta(richiesta);
+        return res.status(200).json({
+            message: "Bollino",
+            data: result
+        });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            message: "Si è verificato un errore durante il recupero dei bollini.",
+            error: error.message || error
+        });
+        
+    }
+}
 export async function handleInvalidBollino(req, res) {
     const { id } = req.body;
     try {
         const result = await updateBollino(id, 0);
-        if(result.affectedRows == 0) return res.status(404).json({ message: "Bollino non trovato" });
+        if(!result.ok) return res.status(404).json({ message: "Impossibile revocare bollino" });
+        // modifica avvenuta con successo
+        return res.status(204).json({ });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            error: error.message || error
+        });
+    }
+    
+}
+export async function handleActiveBollino(req, res) {
+    const { id } = req.body;
+    try {
+        const result = await updateBollino(id, 1);
+        if(!result.ok) return res.status(404).json({ message: "Impossibile riattivare il bollino" });
         // modifica avvenuta con successo
         return res.status(204).json({ });
     } catch (error) {
