@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Loading from '../../Loading'
 
 function FormDuplicateRegolamento(props) {
     const [loading, setLoading] = useState(false);
@@ -85,7 +86,7 @@ function FormDuplicateRegolamento(props) {
         });
     }
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <div className="form__container">

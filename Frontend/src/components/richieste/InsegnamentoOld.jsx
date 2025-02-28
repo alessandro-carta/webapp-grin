@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LoadingButton from "../LoadingButton";
 
 function Insegnamento(props){
     const [loading, setLoading] = useState(false);
@@ -43,22 +42,17 @@ function Insegnamento(props){
     }
     if(isDeleted) return null;
     return(
-        <>
-            <div className="text__content__table">{props.insegnamento.nome}</div>
-            <div className="text__content__table">{props.insegnamento.oretot == null ? `${props.insegnamento.cfutot} CFU` : `${props.insegnamento.oretot} H`} ({props.insegnamento.settore})</div>
-            <div className="text__content__table">
-                {props.insegnamento.sottoaree.length != 0 &&
-                <p className="text-base link" onClick={showDetailSottoaree}> {clickedSottoaree ? 'Nascondi' : 'Mostra'}</p>}
-                {component}
-            </div>
-            {props.edit &&
-            <div className="text__content__table flex justify-center">
-                <button className="button__action" onClick={updateInsegnamento}> Modifica </button>
-                {!loading && <button className="button__action" onClick={deleteInsegnamento}> Elimina </button>}
-                {loading && <button className="button__action button__loading"> <LoadingButton /> </button>}
+        <div className="card__insegnamento w-full">
+            <p className="text-xl font-medium">{props.insegnamento.nome}</p> 
+            <p className="text-xl">{props.insegnamento.oretot == null ? `${props.insegnamento.cfutot} CFU` : `${props.insegnamento.oretot} H`} ({props.insegnamento.settore})</p>
+            {props.insegnamento.sottoaree.length != 0 && <p className="text-base link" onClick={showDetailSottoaree}>Sottoaree {clickedSottoaree ? '-' : '+'}</p>}
+            {component}
+            {props.edit && <div>
+                <button className="link p-1" onClick={updateInsegnamento}> Modifica </button>
+                {!loading && <button className="link p-1" onClick={deleteInsegnamento}> Elimina </button>}
+                {loading && <button className="link p-1"> ... </button>}
             </div>}
-            {!props.edit && <div className="text__content__table flex justify-center"></div>}
-        </>
+        </div>
     )
 }
 export default Insegnamento;

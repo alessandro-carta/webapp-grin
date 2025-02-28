@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CorsoDiStudio from "../../../components/dashboard/corsidistudio/CorsoDiStudio";
 import NavbarPresidente from "../../../components/NavbarPresidente";
+import Loading from "../../../components/Loading";
+
 
 function CorsiDiStudioPage(){
     const navigate = useNavigate();
@@ -38,7 +40,7 @@ function CorsiDiStudioPage(){
         navigate('/dashboard/crea-un-nuovo-corso');
     }
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return (
       <>
         <NavbarPresidente />

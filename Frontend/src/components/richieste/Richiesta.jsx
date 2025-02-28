@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import LoadingButton from '../LoadingButton';
 
 function Richiesta(props) {
     const navigate = useNavigate();
@@ -84,10 +85,10 @@ function Richiesta(props) {
             <div className="text__content__table">{props.richiesta.annoaccademico}</div>
             <div className="text__content__table">{props.richiesta.stato}</div>
             <div className="text__content__table">{formattedDate}</div>
-            <div className="text__content__table md:col-span-2">
+            <div className="text__content__table flex justify-center md:col-span-2">
                 {!loading && !props.admin && props.richiesta.stato == "Invalidata" && <button className="button__action" onClick={updateRichiesta}> Modifica </button>}
                 {!loading && !props.admin && props.richiesta.stato == "Invalidata" && <button className="button__action" onClick={deleteRichiesta}> Elimina </button>}
-                {loading && <button className="button__action"> ... </button>}
+                {loading && <button className="button__action button__loading"> <LoadingButton /> </button>}
                 <button className="button__action" onClick={()=>{navigate(linkRichiesta)}}> Visualizza </button>
             </div >
         </>

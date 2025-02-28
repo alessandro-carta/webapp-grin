@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Loading from "../Loading";
 
 function FormChangePassword() {
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     // dati del form e messaggio di errore per ogni cambo
     const [formData, setFormData] = useState({
@@ -70,22 +72,29 @@ function FormChangePassword() {
         });
     }
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <div className="form__container">
                 <form onSubmit={handleSubmit}>
                     {/* Passowrd */}
-                    <div className="mb-4">
-                        <label htmlFor="password" className="form__label">Inserisci la nuova password*</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            className="form__input"
-                        />
+                    <div className="mb-4 flex flex-col">
+                        <div className="flex flex-col justify-center mb-1">
+                            <label htmlFor="password" className="form__label">Inserisci la nuova password*</label>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className="form__input"
+                            />
+                        </div>
+                        <div className="flex items-cente">
+                            <button type="button" onClick={ (e) => { e.preventDefault(); setShowPassword(!showPassword) } }>
+                                <p className="title text-sm">{showPassword ? "Nascondi" : "Mostra"}</p>
+                            </button>
+                        </div>
                         {formErrors.password && <p className="error__message">{formErrors.password}</p>}
                     </div>
                     <p className="text-base p-2">Deve contenerene almeno 8 caratteri, almeno una lettera maiuscola, almeno un numero e un carattere speciale.</p>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { unitCFU } from "../../../../ConfigClient.js";
+import Loading from "../../Loading.jsx";
 
 function FormUpdateInsegnamento(props){
     const navigate = useNavigate();
@@ -336,7 +337,7 @@ function FormUpdateInsegnamento(props){
     </>;
 
     const anni = []; // contiene il numero di anni di durata di un CDS
-    if(loading) return <p>LOADING...</p>;
+    if(loading) return <Loading />
     else {
         for(let i = 0; i < duratacorso; i++) anni.push(i+1);
         return(

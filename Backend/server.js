@@ -210,8 +210,12 @@ app.get("/api/checkRegolePresidente/:idRegolamento", authenticateToken, authoriz
 // DASHBOARD/BOLLINI
 // Operazioni:
 // 1. Elenco dei bollini di un presidente
+// 2. Informazioni di un bollino a partire da una richiesta
 app.get("/api/bolliniPresidente", authenticateToken, authorizeRole(['presidente']), async (req, res) => {
     return handleGetBolliniPerPresidente(req, res);
+})
+app.get("/api/bollinoRichiestaPresidente/:idRichiesta", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
+    return handleBollinoRichiesta(req, res);
 })
 
 // PRESIDENTI

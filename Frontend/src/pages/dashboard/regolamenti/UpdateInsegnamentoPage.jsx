@@ -3,6 +3,7 @@ import NavbarPresidente from "../../../components/NavbarPresidente.jsx";
 import { useState, useEffect } from "react";
 import FormNewInsegnamento from "../../../components/dashboard/regolamenti/FormNewInsegnamento.jsx";
 import FormUpdateInsegnamento from "../../../components/dashboard/regolamenti/FormUpdateInsegnamento.jsx";
+import Loading from "../../../components/Loading.jsx";
 
 function UpdateNewInsegnamentoPage() {
     const { idRegolamento, idInsegnamento } = useParams();
@@ -38,7 +39,7 @@ function UpdateNewInsegnamentoPage() {
     const [pageTitle, setPageTitle] = useState('Modifica Insegnamento');
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <NavbarPresidente />

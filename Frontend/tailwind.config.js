@@ -9,7 +9,8 @@ export default {
       colors: {
         'cblu-3': '#3536c1',
         'cblu-2': '#1E6CD8',
-        'cgray-2': '#aeaeae'
+        'cgray-2': '#aeaeae',
+        'cerror': '#ef4444'
       },
     },
   },

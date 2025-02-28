@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Loading from "../Loading";
 
 function FormLoginPresidente() {
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     // dati del form e messaggio di errore per ogni cambo
     const [formData, setFormData] = useState({
@@ -82,7 +84,7 @@ function FormLoginPresidente() {
         });
     }
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <div className="form__container">
@@ -101,16 +103,23 @@ function FormLoginPresidente() {
                         {formErrors.email && <p className="error__message">{formErrors.email}</p>}
                     </div>
                     {/* Passowrd */}
-                    <div className="mb-4">
-                        <label htmlFor="password" className="form__label">Password*</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            className="form__input"
-                        />
+                    <div className="mb-4 flex flex-col">
+                        <div className="flex flex-col justify-center mb-1">
+                            <label htmlFor="password" className="form__label">Password*</label>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className="form__input"
+                            />
+                        </div>
+                        <div className="flex items-cente">
+                            <button type="button" onClick={ (e) => { e.preventDefault(); setShowPassword(!showPassword) } }>
+                                <p className="title text-sm">{showPassword ? "Nascondi" : "Mostra"}</p>
+                            </button>
+                        </div>
                         {formErrors.password && <p className="error__message">{formErrors.password}</p>}
                     </div>
                     <p className="text-base p-2">* Campi obbligatori</p>

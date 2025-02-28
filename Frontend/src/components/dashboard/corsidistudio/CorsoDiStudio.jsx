@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react'; 
+import LoadingButton from "../../LoadingButton";
 
 function CorsoDiStudio(props) {   
     const navigate = useNavigate();
@@ -59,10 +60,10 @@ function CorsoDiStudio(props) {
             <div className="text__content__table underline">
                 <Link to={`/dashboard/c/${props.corso.id}`} key={props.corso.id} className='link'> Visualizza </Link>
             </div >
-            <div className="text__content__table">
+            <div className="text__content__table flex justify-center">
                 <button className="button__action" onClick={updateCDS}> Modifica </button>
                 {!loading && <button className="button__action" onClick={deleteCDS}> Elimina </button>}
-                {loading && <button className="button__action"> ... </button>}
+                {loading && <button className="button__action button__loading"> <LoadingButton /> </button>}
             </div >
         </>
     )

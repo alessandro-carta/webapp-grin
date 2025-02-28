@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import NavbarPresidente from "../../../components/NavbarPresidente.jsx";
 import FormUpdateCDS from "../../../components/dashboard/corsidistudio/FormUpdateCDS.jsx";
 import { useParams } from "react-router-dom";
+import Loading from "../../../components/Loading.jsx";
 
 function UpdateCDSPage() {
 
@@ -34,7 +35,7 @@ function UpdateCDSPage() {
     }
     useEffect(() => loadCorsoDiStudioPerPresidente, []); // Non ha dipendenze, eseguito ad ogni render
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <NavbarPresidente />

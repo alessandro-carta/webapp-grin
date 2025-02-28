@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import NavbarPresidente from "../../../components/NavbarPresidente";
 import Regola from "../../../components/regolamento/Regola";
+import Loading from "../../../components/Loading";
 
 function ControlloRegolePresidentePage(){
     const navigate = useNavigate();
@@ -93,7 +94,7 @@ function ControlloRegolePresidentePage(){
     const [pageTitle, setPageTitle] = useState('Controllo delle regole');
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <NavbarPresidente />

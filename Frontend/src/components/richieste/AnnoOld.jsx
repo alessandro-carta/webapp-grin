@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Insegnamento from "./Insegnamento";
+import Insegnamento from "./InsegnamentoOld";
 import { useNavigate } from "react-router-dom";
 
 function Anno(props){
@@ -41,21 +41,14 @@ function Anno(props){
     let component;
     if(!loading && !clickedAnno) component = null;
     if(!loading && clickedAnno){
-        component = <>
-            <div className="grid grid-cols-1 md:grid-cols-4 p-5">
-                <div className="text__header__table">Nome</div>
-                <div className="text__header__table">Ore</div>
-                <div className="text__header__table">Sottoaree</div>
-                <div className="text__header__table">Azioni</div>
-                {insegnamenti.map((i) => (<Insegnamento key={i.id} insegnamento={i} edit={props.edit}/>))}
-            </div> 
-        </>;
-    }
+        component = insegnamenti.map((i) => (
+            <Insegnamento key={i.id} insegnamento={i} edit={props.edit}/>
+        ))}
     return (
         <>
             <div className="anno__container">
                 <p className="text-2xl title" onClick={showDetailAnno}>Insegnamenti Anno: {props.anno} {clickedAnno ? '-' : '+'}</p>
-                {component}
+                <div className="flex flex-col items-center justify-center"> {component} </div>
             </div>
         </>
     )

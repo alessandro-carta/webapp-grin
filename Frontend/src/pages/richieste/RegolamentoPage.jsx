@@ -118,12 +118,12 @@ function RegolamentoPage() {
                 {regolamento.stato == "Invalidata" && <p className="text-2xl error__message p-4">Invalidato</p>}
                 {regolamento.stato == "Elaborazione" && <p className="text-2xl title p-4">In Elaborazione</p>}
                 {bollino != null && bollino.erogato == 1 && 
-                    <div className="button__img"> 
-                        <div className='button__img__content'>
-                            <p className='text-base'>Bollino | </p>
-                            <img src="../../../public/logo-grin.png" alt="Logo GRIN" />
-                        </div>
-                    </div>}
+                <div className="button__img"> 
+                    <div className='button__img__content'>
+                        <p className='text-base'>Bollino | </p>
+                        <img src="../../../public/logo-grin.png" alt="Logo GRIN" />
+                    </div>
+                </div>}
                 <p className="text-xl title">{regolamento.corsodistudio} - Regolamento AA: {regolamento.annoaccademico}</p>
                 <p className="text-xl">{regolamento.università} - {regolamento.email}</p>
                 <p className="text-xl">Durata corso: {regolamento.duratacorso} - Totale: {totUnit} {unitLocalCFU ? " CFU" : " Ore"}</p>

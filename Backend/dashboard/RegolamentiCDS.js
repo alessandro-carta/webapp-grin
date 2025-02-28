@@ -45,12 +45,12 @@ export async function duplicateRegolamento(id, annoaccademico, regolamento){
         for(let i = 0; i < resultInsegnamenti.length; i++){
             const idI = uuidv4();
             await db.query(`
-                INSERT INTO Insegnamenti (idInsegnamento, Nome, AnnoErogazione, CFU, Settore, Regolamento) 
-                VALUES (?, ?, ?, ?, ?, ?)`, [idI, resultInsegnamenti[i].nome, resultInsegnamenti[i].annoerogazione, resultInsegnamenti[i].cfutot, resultInsegnamenti[i].settore, id]);
+                INSERT INTO Insegnamenti (idInsegnamento, Nome, AnnoErogazione, CFU, Ore, Settore, Regolamento) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)`, [idI, resultInsegnamenti[i].nome, resultInsegnamenti[i].annoerogazione, resultInsegnamenti[i].cfutot, resultInsegnamenti[i].oretot, resultInsegnamenti[i].settore, id]);
             if(resultInsegnamenti[i].sottoaree.length > 0){
-                const valoriSottoaree = resultInsegnamenti[i].sottoaree.map(sottoarea => [idI, sottoarea.id, sottoarea.cfu]);
+                const valoriSottoaree = resultInsegnamenti[i].sottoaree.map(sottoarea => [idI, sottoarea.id, sottoarea.cfu, sottoarea.ore]);
                 await db.query(`
-                    INSERT INTO InsegnamentiSottoaree (Insegnamento, Sottoarea, CFU) 
+                    INSERT INTO InsegnamentiSottoaree (Insegnamento, Sottoarea, CFU, Ore) 
                     VALUES ? `, [valoriSottoaree]);
             }            
         }
@@ -59,7 +59,9 @@ export async function duplicateRegolamento(id, annoaccademico, regolamento){
     } catch (error) {
         // transazione fallita
         await db.rollback();
-        return {ok: false, error: error};
+        // violato vincolo di unicità
+        if(error.code == 'ER_DUP_ENTRY') return {ok: false, error: 'Anno accademico già presente'};
+        return {ok: false, error: "Si è verificato un errore durante l'elaborazione della richiesta"};
     }
 }
 
@@ -169,7 +171,7 @@ export async function handleDuplicateRegolamento(req, res) {
             data: id 
         });
         else return res.status(500).json({
-            message: "Si è verificato un errore durante l'elaborazione della richiesta",
+            message: result.error,
             error: result.error
         });
 

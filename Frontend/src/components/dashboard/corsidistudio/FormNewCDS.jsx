@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Loading from "../../Loading"
 
 function FormNewCDS() {
     const [loading, setLoading] = useState(false);
@@ -7,15 +8,27 @@ function FormNewCDS() {
     // dati del form e messaggio di errore per ogni cambo
     const [formData, setFormData] = useState({
         nome: "",
-        durata: 0
+        durata: 0,
+        anvur: false
     })
     // result contiene il messaggio di errore inviato dal server
     const [formErrors, setFormErros] = useState({
         nome: "",
         durata: "",
-        result: ""
+        result: "",
+        anvur: false
     })
 
+    const checkAnvur = () => {
+        if(!formData.anvur){
+            setFormErros({
+                ...formErrors,
+                anvur: true
+            })
+            return false;
+        }
+        return true
+    }
     const checkNome = () => {
         if(!formData.nome){
             setFormErros({
@@ -44,7 +57,7 @@ function FormNewCDS() {
         if(formData.durata != 3 && formData.durata != 2 && formData.durata != 5){
             setFormErros({
                 ...formErrors,
-                durata: "Inserire un dato corretto"
+                durata: "Valori possibile 3 per triennale, 2 per magistrale, 5 a ciclo unico"
             })
             return false;
         }
@@ -54,7 +67,7 @@ function FormNewCDS() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if(checkNome() && checkDurata()){
+            if(checkNome() && checkDurata() && checkAnvur()){
                 setLoading(true);
                 const response = await fetch(`/api/addCDS`, {
                     method: 'POST',
@@ -86,19 +99,27 @@ function FormNewCDS() {
     }
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-        setFormErros({
-            ...formErrors,
-            [name]: "",
-            result: ""
-        });
+        const { name, value, type } = e.target;
+        if(type == "checkbox") {
+            const checked = e.target.checked;
+            setFormData({...formData, anvur: checked});
+            setFormErros({...formErrors, anvur: false});
+        }
+        else {
+            setFormData({
+                ...formData,
+                [name]: value
+            });
+            setFormErros({
+                ...formErrors,
+                [name]: "",
+                result: ""
+            });
+        }
+        
     }
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return(
         <>
             <div className="form__container">
@@ -129,8 +150,21 @@ function FormNewCDS() {
                         />
                         {formErrors.durata && <p className="error__message">{formErrors.durata}</p>}
                     </div>
+                    {/* Dichiarazione ANVUR */}
+                    <div className="mb-4 flex items-center">
+                        <input
+                            type="checkbox"
+                            name="anvur"
+                            id="anvur"
+                            value={true}
+                            checked={formData.anvur}
+                            onChange={handleChange}
+                            className="mr-2"
+                        />
+                        {!formErrors.anvur && <label htmlFor="anvur" className="block text-sm">Dichiaro che il corso è accreditato all'ANVUR*</label>}
+                        {formErrors.anvur && <label htmlFor="anvur" className="block text-sm text-cerror">Dichiaro che il corso è accreditato all'ANVUR*</label>}
+                    </div>
                     <p className="text-base p-2">* Campi obbligatori</p>
-                    <p className="text-base mb-2">cliccando su CREA, si dichiara che il Corso Di Studio è accreditato all'ANVUR.</p>
                     {/* Bottone di invio e annulla */}
                     <div className="mb-4">
                         <button

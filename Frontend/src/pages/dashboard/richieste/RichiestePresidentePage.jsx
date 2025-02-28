@@ -2,6 +2,7 @@ import NavbarPresidente from '../../../components/NavbarPresidente.jsx';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Richiesta from '../../../components/richieste/Richiesta.jsx';
+import Loading from '../../../components/Loading.jsx'
 
 function RichiestePresidentePage() {
   const [annoAccademico, setAnnoAccademico] = useState("All");
@@ -63,7 +64,7 @@ function RichiestePresidentePage() {
   }
   useEffect(() => filtraDati(), [annoAccademico, stato]);
   
-  if(loading) return <p>LOADING...</p>
+  if(loading) return <Loading />
   return (
     <>
       <NavbarPresidente />

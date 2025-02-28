@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import NavbarPresidente from "../../../components/NavbarPresidente";
 import Regolamento from "../../../components/dashboard/regolamenti/Regolamento";
+import Loading from "../../../components/Loading";
 
 function CorsoDiStudioPage(){
     const { idCDS } = useParams();
@@ -63,7 +64,7 @@ function CorsoDiStudioPage(){
         navigate(`/dashboard/c/${idCDS}/crea-un-nuovo-regolamento`);
     }
 
-    if(loading) return <p>LOADING...</p>
+    if(loading) return <Loading />
     return (
       <>
         <NavbarPresidente />

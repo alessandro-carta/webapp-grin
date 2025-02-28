@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import LoadingButton from '../../LoadingButton'
 
 function Regolamento(props) {
     const [loading, setLoading] = useState(false);
@@ -53,11 +54,11 @@ function Regolamento(props) {
     return (
         <>
             <div className="text__content__table">{props.regolamento.annoaccademico}</div>
-            <div className="text__content__table">
+            <div className="text__content__table flex justify-center">
                 <button className="button__action" onClick={duplicateRegolamento}> Duplica </button>
                 <button className="button__action" onClick={()=>{navigate(`/dashboard/r/${props.regolamento.id}`)}}> {props.regolamento.richiesta == null ? "Modifica" : "Visualizza"} </button>
                 {!loading && props.regolamento.richiesta == null && <button className="button__action" onClick={deleteRegolamento}> Elimina </button>}
-                {loading && <button className="button__action"> ... </button>}
+                {loading && <button className="button__action button__loading"> <LoadingButton /> </button>}
             </div >
             
         </>
