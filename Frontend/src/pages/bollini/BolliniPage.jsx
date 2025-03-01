@@ -51,8 +51,8 @@ function BolliniPage(){
         const boll = [];
         bolliniAll.map(bollino => {
             if(bollino.annoaccademico === annoAccademico || annoAccademico === 'All')
-            if(bollino.erogato+"" === stato || stato === 'All')
-                boll.push(bollino);
+                if(bollino.erogato+"" === stato || stato === 'All')
+                    boll.push(bollino);
         })
         setBollini(boll);
     }
@@ -96,7 +96,7 @@ function BolliniPage(){
                 <div className="text__header__table">Stato</div>
                 <div className="text__header__table">Regolamento</div>
                 <div className="text__header__table">Azioni</div>
-                {bollini.map(bollino => ( <Bollino key={bollino.id} bollino={bollino} admin={true}/>))}
+                {bollini.map(bollino => ( <Bollino key={bollino.id} bollino={bollino} admin={true} public={false}/>))}
             </div>
         </>
     )

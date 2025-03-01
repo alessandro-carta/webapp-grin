@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { unitCFU } from '../../../ConfigClient';
+import { CFUtoH, unitCFU } from '../../../ConfigClient';
 import Loading from '../Loading';
 
 function FormNewRegola(props) {
@@ -12,9 +12,9 @@ function FormNewRegola(props) {
     const [elementRadio, setElementRadio] = useState([]); // elenco elementi radiobox
     // dati del form
     const [formData, setFormData] = useState({
-        cfu: null,
-        ore: null,
-        count: null,
+        cfu: 0,
+        ore: 0,
+        count: 0,
         centrale: props.fondamental,
         descrizione: "",
         tipologia: "",
@@ -212,6 +212,8 @@ function FormNewRegola(props) {
         e.preventDefault();
         try {
             if(checkInput() && checkDescrizione() && checkTipologia() && checkSelezioni()){
+                let oreConv = formData.ore;
+                if(unitCFU) oreConv = formData.cfu*CFUtoH;
                 setLoading(true);
                 const response = await fetch(`/api/addRegola`, {
                     method: 'POST',
@@ -219,7 +221,7 @@ function FormNewRegola(props) {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify({...formData, cfu: null, ore: oreConv})
                 });
                 // accesso non consentito
                 if(response.status == 403) navigate('/');

@@ -52,38 +52,49 @@ function Bollino(props){
             
         } catch (error) { console.log(error); }
     }
-    // link dimanico a seconda del tipo di utente
-    let linkRichiesta = null;
-    if(props.admin) linkRichiesta = <>
-        <Link to={`/r/${props.bollino.regolamento}`} key={props.bollino.id} className="link"> Visualizza </Link>
-    </>;
-    else linkRichiesta = <>
-        <Link to={`/dashboard/r/${props.bollino.regolamento}`} key={props.bollino.id} className="link"> Visualizza </Link>
-    </>;
-    // azioni: Revoca e Ripristina il bollino
-    let btnAction = null;
-    if(props.bollino.erogato){
-        btnAction = <>
-            <button className="button__action" onClick={invalidBollino}> Revoca </button>
-        </>;
-    } else{
-        btnAction = <>
-            <button className="button__action" onClick={resetBollino}> Ripristina </button>
-        </>;
-    }
-    return (
-        <>
-            { props.admin && <div className="text__content__table"> {props.bollino.università} </div> }
+    if(props.public){
+        return <>
+            <div className="text__content__table">{props.bollino.università}</div>
             <div className="text__content__table">{props.bollino.corsodistudio}</div>
             <div className="text__content__table">{props.bollino.annoaccademico}</div>
-            <div className="text__content__table">{props.bollino.erogato ? "Erogato" : "Revocato"}</div>
-            <div className="text__content__table underline"> {linkRichiesta} </div>
-            { props.admin && !loading && <div className="text__content__table"> {btnAction} </div > }
-            { props.admin && loading && <div className="text__content__table">
-                <button className="button__action button__loading"> <LoadingButton /> </button>
-            </div > }
         </>
-    )
+    }
+    else{
+        // link dimanico a seconda del tipo di utente
+        let linkRichiesta = null;
+        if(props.admin) linkRichiesta = <>
+            <Link to={`/r/${props.bollino.regolamento}`} key={props.bollino.id} className="link"> Visualizza </Link>
+        </>;
+        else linkRichiesta = <>
+            <Link to={`/dashboard/r/${props.bollino.regolamento}`} key={props.bollino.id} className="link"> Visualizza </Link>
+        </>;
+        // azioni: Revoca e Ripristina il bollino
+        let btnAction = null;
+        if(props.bollino.erogato){
+            btnAction = <>
+                <button className="button__action" onClick={invalidBollino}> Revoca </button>
+            </>;
+        } else{
+            btnAction = <>
+                <button className="button__action" onClick={resetBollino}> Ripristina </button>
+            </>;
+        }
+        return (
+            <>
+                { props.admin && <div className="text__content__table"> {props.bollino.università} </div> }
+                <div className="text__content__table">{props.bollino.corsodistudio}</div>
+                <div className="text__content__table">{props.bollino.annoaccademico}</div>
+                <div className="text__content__table">{props.bollino.erogato ? "Erogato" : "Revocato"}</div>
+                <div className="text__content__table underline"> {linkRichiesta} </div>
+                { props.admin && !loading && <div className="text__content__table"> {btnAction} </div > }
+                { props.admin && loading && <div className="text__content__table">
+                    <button className="button__action button__loading"> <LoadingButton /> </button>
+                </div > }
+            </>
+        )
+
+    }
+    
 
 }
 

@@ -33,6 +33,7 @@ import UpdateCDSPage from './pages/dashboard/corsidistudio/UpdateCDSPage.jsx'
 import RegolamentoCDSPage from './pages/dashboard/regolamenti/RegolamentoCDSPage.jsx'
 import RegolePage from './pages/regolamento/RegolePage.jsx'
 import RegolamentoPage from './pages/richieste/RegolamentoPage.jsx'
+import Login from './pages/auth/Login.jsx'
 
 
 const router = createBrowserRouter([
@@ -111,6 +112,10 @@ const router = createBrowserRouter([
   {
     path: "admin-login",
     element: <LoginAdminPage />
+  },
+  {
+    path: "login",
+    element: <Login />
   },
   {
     path: "cambio-password",

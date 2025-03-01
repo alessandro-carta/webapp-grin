@@ -93,7 +93,7 @@ function BolliniPresidentePage(){
                 <div className="text__header__table">Anno Accademico</div>
                 <div className="text__header__table">Stato</div>
                 <div className="text__header__table">Regolamento</div>
-                { bollini.map(bollino => ( <Bollino key={bollino.id} bollino={bollino} admin={false}/> )) }
+                { bollini.map(bollino => ( <Bollino key={bollino.id} bollino={bollino} admin={false} public={false}/> )) }
             </div>
         </>
     )

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loading from "../Loading";
 
 function FormLoginPresidente() {
@@ -131,6 +131,12 @@ function FormLoginPresidente() {
                         >
                             Accedi
                         </button>
+                        <Link className="link p-2" to={'/admin-login'}>
+                            Accedi come admin
+                        </Link>
+                        <Link className="link p-2" to={'/'}>
+                            Torna alla homepage
+                        </Link>
                         {formErrors.result && <p className="error__message">{formErrors.result}</p>}
                     </div>
                 </form>

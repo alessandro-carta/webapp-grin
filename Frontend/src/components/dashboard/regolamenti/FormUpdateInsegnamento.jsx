@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { unitCFU } from "../../../../ConfigClient.js";
+import { CFUtoH, unitCFU } from "../../../../ConfigClient.js";
 import Loading from "../../Loading.jsx";
 
 function FormUpdateInsegnamento(props){
     const navigate = useNavigate();
     const [showSottoaree, setShowSottoaree] = useState(false); // visualizzazione dimanica delle sottoaree
     const [loading, setLoading] = useState(true);
-
     const [duratacorso, setDurataCorso] = useState();
     const loadDurataCorso = async () => {
         try {
@@ -31,17 +30,25 @@ function FormUpdateInsegnamento(props){
     }
     useEffect( () => loadDurataCorso, []); // eseguito ogni volta che cambia idRichiesta
     // dati del form
+    let cfuConv = 0;
+    if(unitCFU) {
+        cfuConv = parseInt(props.insegnamento.oretot)/parseInt(CFUtoH);
+        for(let sottoarea of props.insegnamento.sottoaree){
+            sottoarea.cfu = parseInt(sottoarea.ore)/parseInt(CFUtoH);
+        }
+    }
     const [formData, setFormData] = useState({
         nome: props.insegnamento.nome,
-        cfutot: props.insegnamento.cfutot,
-        oretot: props.insegnamento.oretot,
+        cfutot: cfuConv,
+        oretot: props.insegnamento.oretot || 0,
         settore: props.insegnamento.settore,
         annoerogazione: props.insegnamento.annoerogazione,
         regolamento: props.insegnamento.regolamento,
         sottoaree: props.insegnamento.sottoaree,
         area: "",
         sottoarea: "",
-        cfu: 0
+        cfu: 0,
+        ore: 0
     })
     // messaggi di errore, result contiene la risposta della chiamata HTTP
     const [formErrors, setFormErros] = useState({
@@ -129,7 +136,7 @@ function FormUpdateInsegnamento(props){
     const checkUnit = () => {
         let data;
         if(unitCFU) data = formData.cfutot;
-        else data = formData.oretot
+        else data = formData.oretot;
         if(data <= 0){
             setFormErros({
                 ...formErrors,
@@ -161,8 +168,8 @@ function FormUpdateInsegnamento(props){
     }
     const checkSottoarea = (id) => {
         let data;
-        if(unitCFU) data = formData.cfutot;
-        else data = formData.oretot
+        if(unitCFU) data = formData.cfu;
+        else data = formData.ore;
         if(id === "" || data <= 0){
             setFormErros({
                 ...formErrors,
@@ -205,8 +212,8 @@ function FormUpdateInsegnamento(props){
                 ...formData,
                 [name]: value,
                 sottoarea: "",
-                cfu: null,
-                ore: null
+                cfu: 0,
+                ore: 0
             });
             loadAllSottoaree(value);
         }
@@ -220,7 +227,9 @@ function FormUpdateInsegnamento(props){
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if(checkNome() && checkUnit() && checkSettore() && checkAnnoErogazione){
+            if(checkNome() && checkUnit() && checkSettore() && checkAnnoErogazione()){
+                let oretot = formData.oretot;
+                if(unitCFU) oretot = formData.cfutot*CFUtoH;
                 setLoading(true);
                 const response = await fetch(`/api/updateInsegnamento/`, {
                     method: 'PUT',
@@ -231,8 +240,8 @@ function FormUpdateInsegnamento(props){
                     body: JSON.stringify({
                                         id: props.insegnamento.id,
                                         nome: formData.nome, 
-                                        cfutot: formData.cfutot,
-                                        oretot: formData.oretot,
+                                        cfutot: null,
+                                        oretot: oretot,
                                         settore: formData.settore,
                                         annoerogazione: formData.annoerogazione,
                                         regolamento: formData.regolamento,
@@ -260,7 +269,10 @@ function FormUpdateInsegnamento(props){
         const id = formData.sottoarea.split('/')[0];
         const sottoarea = formData.sottoarea.split('/')[1];
         let data;
-        if(unitCFU) data = {id: id, nome: sottoarea, cfu: formData.cfu, ore: null};
+        if(unitCFU) {
+            const conv = formData.cfu*CFUtoH
+            data = {id: id, nome: sottoarea, cfu: null, ore: conv};
+        }
         else data = {id: id, nome: sottoarea, ore: formData.ore, cfu: null};
         if(checkSottoarea(id)){
             setFormData({
@@ -403,10 +415,10 @@ function FormUpdateInsegnamento(props){
                                     className="form__select mb-2" 
                                 >
                                     <option value="">Seleziona area</option>
-                                    {aree.map(a => ( <option key={a.id} value={a.id}>{a.nome}</option> ))}
+                                    {aree.map((a, index) => ( <option key={index} value={a.id}>{a.nome}</option> ))}
                                 </select>
                                 {showSottoaree && <>
-                                    <select
+                                    {<select
                                         id="sottoarea"
                                         name="sottoarea"
                                         value={formData.sottoarea}
@@ -414,8 +426,8 @@ function FormUpdateInsegnamento(props){
                                         className="form__select mb-2"
                                     >
                                         <option value="">Seleziona sottoarea*</option>
-                                        {sottoaree.map(s => ( <option key={s.id} value={s.id+"/"+s.nome}>{s.nome}</option> ))}
-                                    </select>
+                                        {sottoaree.map((s, index) => ( <option key={index} value={s.id+"/"+s.nome}>{s.nome}</option> ))}
+                                    </select>}
                                     {unit}
                                     <button type="button" className="button__principale" onClick={addNewInsSottoarea}>
                                         Aggiungi
@@ -429,8 +441,8 @@ function FormUpdateInsegnamento(props){
                         <div className="mb-4">
                             {formData.sottoaree.length != 0 && <label htmlFor="settore" className="form__label">Sottoaree: </label>}
                             {formData.sottoaree.map((elemento, index) => ( 
-                                <div className="flex flex-col md:flex-row justify-center items-center p-2">
-                                    <p className="text-base p-2" key={index}>{elemento.nome} {unitCFU ? `(CFU: ${elemento.cfu})` : `(Ore: ${elemento.ore})`}</p> 
+                                <div key={index} className="flex flex-col md:flex-row justify-center items-center p-2">
+                                    <p className="text-base p-2" key={index}>{elemento.nome} {unitCFU ? `(CFU: ${elemento.ore/CFUtoH})` : `(Ore: ${elemento.ore})`}</p> 
                                     <button type="button" className="button__action" onClick={() => deleteInsSottoarea(elemento.id)}>
                                         Elimina
                                     </button>

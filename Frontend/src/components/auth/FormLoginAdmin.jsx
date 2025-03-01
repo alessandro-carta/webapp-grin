@@ -106,10 +106,16 @@ function FormLoginAdmin() {
                         </button>
 
                         <Link
-                            className="link"
+                            className="link p-2"
+                            to={'/login'}
+                        >
+                            Accedi come presidente
+                        </Link>
+                        <Link
+                            className="link p-2"
                             to={'/'}
                         >
-                            Annulla
+                            Torna alla home page
                         </Link>
                         {formErrors.result && <p className="error__message">{formErrors.result}</p>}
                     </div>

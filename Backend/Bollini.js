@@ -27,6 +27,14 @@ export async function getBollini() {
     const [result] = await db.query(queryBollini);
     return result;
 }
+export async function getBolliniPublic() {
+    const queryBollini = `
+        SELECT Bollini.idBollino AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", Presidenti.Università AS "università"
+        FROM Bollini, Richieste, Regolamenti, CorsiDiStudio, Presidenti
+        WHERE idRichiesta = Richiesta AND idRegolamento = Regolamento AND idCDS = CDS AND idPresidente = Presidente AND Erogato = 1`;
+    const [result] = await db.query(queryBollini);
+    return result;
+}
 export async function getBollino(id) {
     const queryBollini = `
         SELECT Bollini.Richiesta AS "richiesta", Bollini.idBollino AS "id", Bollini.Erogato AS "erogato"
@@ -172,4 +180,21 @@ export async function handleActiveBollino(req, res) {
         });
     }
     
+}
+export async function handleBolliniPublic(req, res) {
+    try {
+        // risposta con successo
+        const result = await getBolliniPublic();
+        return res.status(200).json({
+            message: "Elenco dei bollini",
+            data: result
+        });
+    } catch (error) {
+        // errore generale interno al server
+        return res.status(500).json({
+            message: "Si è verificato un errore durante il recupero dei bollini.",
+            error: error.message || error
+        });
+        
+    }
 }

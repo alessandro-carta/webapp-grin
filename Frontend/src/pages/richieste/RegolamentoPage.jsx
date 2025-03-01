@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 import Anno from '../../components/richieste/Anno.jsx';
 import Loading from '../../components/Loading.jsx';
+import { CFUtoH, unitCFU } from '../../../ConfigClient.js';
 
 function RegolamentoPage() {
     const { idRegolamento } = useParams();
@@ -12,7 +13,6 @@ function RegolamentoPage() {
     const [loadingCountUnit, setLoadingCountUnit] = useState(true);
     const [loadingBollino, setLoadingBollino] = useState(true);
     const [totUnit, setTotUnit] = useState(0);
-    const [unitLocalCFU, setUnitLocalCFU] = useState(true);
     const countTotUnit = async () => {
         try {
             const response = await fetch(`/api/insegnamenti/${idRegolamento}`, {
@@ -29,14 +29,7 @@ function RegolamentoPage() {
                 const data = await response.json();
                 let count = 0;
                 data.data.map((insegnamento) =>{
-                    if(insegnamento.oretot == null){
-                        setUnitLocalCFU(true);
-                        count += insegnamento.cfutot;
-                    }
-                    else {
-                        setUnitLocalCFU(false);
-                        count += insegnamento.oretot;
-                    }
+                    count += insegnamento.oretot;
                 });
                 setTotUnit(count);
                 setLoadingCountUnit(false);
@@ -126,7 +119,7 @@ function RegolamentoPage() {
                 </div>}
                 <p className="text-xl title">{regolamento.corsodistudio} - Regolamento AA: {regolamento.annoaccademico}</p>
                 <p className="text-xl">{regolamento.università} - {regolamento.email}</p>
-                <p className="text-xl">Durata corso: {regolamento.duratacorso} - Totale: {totUnit} {unitLocalCFU ? " CFU" : " Ore"}</p>
+                <p className="text-xl">Durata corso: {regolamento.duratacorso} - Totale: {unitCFU ? `${totUnit/CFUtoH} CFU` : `${totUnit} Ore`}</p>
                 { anni.map(a => ( <Anno key={a} richiesta={regolamento.richiesta} regolamento={regolamento.id} anno={a} admin={true} edit={false}/> )) }
             </>
         )

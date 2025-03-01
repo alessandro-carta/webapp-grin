@@ -44,7 +44,10 @@ function Regola(props) {
             {/* Visualizzazione nel caso di controllo requisiti*/}
             {props.check &&
             <div className="text__content__table">
-                <p className="text-base subtitle">{props.regola.check ? "Positivo" : "Negativo"}</p>
+                {props.regola.check && 
+                <p className="text-base success__message">Positivo</p>}
+                {!props.regola.check && 
+                <p className="text-base error__message">Negativo</p>}
             </div> }
         </>
     )

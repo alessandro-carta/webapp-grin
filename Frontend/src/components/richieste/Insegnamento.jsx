@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingButton from "../LoadingButton";
+import { CFUtoH, unitCFU } from "../../../ConfigClient";
 
 function Insegnamento(props){
     const [loading, setLoading] = useState(false);
@@ -37,7 +38,7 @@ function Insegnamento(props){
     if(clickedSottoaree){
         component = props.insegnamento.sottoaree.map((sottoarea) => (
             <div key={sottoarea.id} className="p-1">
-                <p className="text-base">{sottoarea.nome}  {sottoarea.ore == null ? `(${sottoarea.cfu} CFU)` : `(${sottoarea.ore} H)`}</p>
+                <p className="text-base">{sottoarea.nome}  {unitCFU ? `(${parseInt(sottoarea.ore)/parseInt(CFUtoH)} CFU)` : `(${sottoarea.ore} H)`}</p>
             </div>
         ))
     }
@@ -45,7 +46,7 @@ function Insegnamento(props){
     return(
         <>
             <div className="text__content__table">{props.insegnamento.nome}</div>
-            <div className="text__content__table">{props.insegnamento.oretot == null ? `${props.insegnamento.cfutot} CFU` : `${props.insegnamento.oretot} H`} ({props.insegnamento.settore})</div>
+            <div className="text__content__table">{unitCFU ? `${parseInt(props.insegnamento.oretot)/parseInt(CFUtoH)} CFU` : `${props.insegnamento.oretot} H`} ({props.insegnamento.settore})</div>
             <div className="text__content__table">
                 {props.insegnamento.sottoaree.length != 0 &&
                 <p className="text-base link" onClick={showDetailSottoaree}> {clickedSottoaree ? 'Nascondi' : 'Mostra'}</p>}

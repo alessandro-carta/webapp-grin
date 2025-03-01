@@ -123,7 +123,7 @@ function ControlloRegolePage(){
                 {regole.map((r, index) => ( <Regola key={index} regola={r} check={true}/> ))}
             </div>
             <p className="text-xl subtitle">Il corso di studio {checkAnvur ? "è" : "non è"} accreditato all'ANVUR</p>
-            <p className="text-xl subtitle">La richiesta {resultErogazione() ? "è" : "non è"} valida</p>
+            <p className="text-xl subtitle">La richiesta {resultErogazione() ? "ha" : "non ha"} suparato il controllo</p>
 
             <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
                 <p className="text-xl">Azioni: </p>

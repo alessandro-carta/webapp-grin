@@ -40,15 +40,15 @@ export async function checkCopertura(idRegolamento, selezioni, tipoRegola) {
     if(tipoRegola === "area") query = `
         SELECT DISTINCT idArea AS "id"
         FROM Regolamenti, Insegnamenti, InsegnamentiSottoaree, Sottoaree, Aree
-        WHERE idRegolamento = Regolamento AND idInsegnamento = Insegnamento AND idSottoarea = Sottoarea AND idArea = Area AND idRegolamento = ?`;
+        WHERE idRegolamento = Regolamento AND idInsegnamento = Insegnamento AND idSottoarea = Sottoarea AND idArea = Area AND idRegolamento = ? AND InsegnamentiSottoaree.Ore > 0`;
     if(tipoRegola === "sottoarea") query = `
         SELECT DISTINCT Sottoarea AS "id"
         FROM Regolamenti, Insegnamenti, InsegnamentiSottoaree
-        WHERE idRegolamento = Regolamento AND idInsegnamento = Insegnamento AND idRegolamento = ?`;
+        WHERE idRegolamento = Regolamento AND idInsegnamento = Insegnamento AND idRegolamento = ? AND InsegnamentiSottoaree.Ore > 0`;
     if(tipoRegola === "settore") query = `
         SELECT DISTINCT Settore AS "id"
         FROM Regolamenti, Insegnamenti
-        WHERE idRegolamento = Regolamento AND idRegolamento = ?`;
+        WHERE idRegolamento = Regolamento AND idRegolamento = ? AND Ore > 0`;
     try {
         // restituisce true se un regolamento ha tutte le selezioni centrali della regola
         // false altrimenti
