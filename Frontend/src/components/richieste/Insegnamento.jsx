@@ -2,8 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingButton from "../LoadingButton";
 import { CFUtoH, unitCFU } from "../../../ConfigClient";
+import Popup from "../Popup";
+import PopupAlert from "../PopupAlert";
 
 function Insegnamento(props){
+    const [showDeletePopup, setShowDeletePopup] = useState(false); // per gestire la visualizzazione del popup elimina un insegnamento
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [clickedSottoaree, setClickedSottoaree] = useState(false);
@@ -14,6 +17,7 @@ function Insegnamento(props){
     // funzione elimina insegnamento
     const deleteInsegnamento = async () => {
         try {
+            setShowDeletePopup(false);
             setLoading(true);
             const response = await fetch(`/api/deleteInsegnamento/${props.insegnamento.id}`, {
                 method: 'DELETE',
@@ -32,16 +36,12 @@ function Insegnamento(props){
             }
         } catch (error) { setLoading(false); console.log(error); }
     }
-
-    let component;
-    if(!clickedSottoaree) component = null;
-    if(clickedSottoaree){
-        component = props.insegnamento.sottoaree.map((sottoarea) => (
-            <div key={sottoarea.id} className="p-1">
-                <p className="text-base">{sottoarea.nome}  {unitCFU ? `(${parseInt(sottoarea.ore)/parseInt(CFUtoH)} CFU)` : `(${sottoarea.ore} H)`}</p>
-            </div>
-        ))
-    }
+    // componente per popup delete
+    let componentDelete = null;
+    if(showDeletePopup) componentDelete = <PopupAlert message="Sei sicuro? Conferma eliminazione" handleYes={deleteInsegnamento} handleNo={() => {setShowDeletePopup(false)}} />
+    // compomente per popup che contiene l'elenco delle sottoaree
+    let component = null;
+    if(clickedSottoaree) component = <Popup title={props.insegnamento.nome} data={props.insegnamento.sottoaree} onClose={() => {setClickedSottoaree(false)}} />
     if(isDeleted) return null;
     return(
         <>
@@ -49,16 +49,17 @@ function Insegnamento(props){
             <div className="text__content__table">{unitCFU ? `${parseInt(props.insegnamento.oretot)/parseInt(CFUtoH)} CFU` : `${props.insegnamento.oretot} H`} ({props.insegnamento.settore})</div>
             <div className="text__content__table">
                 {props.insegnamento.sottoaree.length != 0 &&
-                <p className="text-base link" onClick={showDetailSottoaree}> {clickedSottoaree ? 'Nascondi' : 'Mostra'}</p>}
+                <p className="text-base link" onClick={showDetailSottoaree}> Mostra </p>}
                 {component}
             </div>
             {props.edit &&
             <div className="text__content__table flex justify-center">
                 <button className="button__action" onClick={updateInsegnamento}> Modifica </button>
-                {!loading && <button className="button__action" onClick={deleteInsegnamento}> Elimina </button>}
+                {!loading && <button className="button__action" onClick={()=>{setShowDeletePopup(true)}}> Elimina </button>}
                 {loading && <button className="button__action button__loading"> <LoadingButton /> </button>}
             </div>}
             {!props.edit && <div className="text__content__table flex justify-center"></div>}
+            {componentDelete}
         </>
     )
 }

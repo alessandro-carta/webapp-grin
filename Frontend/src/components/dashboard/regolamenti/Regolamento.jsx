@@ -2,8 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import LoadingButton from '../../LoadingButton'
+import PopupAlert from '../../PopupAlert';
 
 function Regolamento(props) {
+    const [showDeletePopup, setShowDeletePopup] = useState(false); // per gestire la visualizzazione del popup elimina un regolamento
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [isDeleted, setIsDeleted] = useState(false); // tiene traccia se un regolamento è stato eliminato
@@ -13,6 +15,7 @@ function Regolamento(props) {
     // azioni possibili su un regolamento
     const duplicateRegolamento = async () => { navigate(`/dashboard/c/${props.regolamento.cds}/duplica-regolamento/${props.regolamento.id}`) }
     const deleteRegolamento = async () => {
+        setShowDeletePopup(false);
         setLoading(true);
         try {
             const response = await fetch(`/api/deleteRegolamento/${props.regolamento.id}`, {
@@ -39,7 +42,9 @@ function Regolamento(props) {
             }
         } catch (error) { console.log(error); }
     }
-
+    // componente per popup delete
+    let component = null;
+    if(showDeletePopup) component = <PopupAlert message="Sei sicuro? Conferma eliminazione" handleYes={deleteRegolamento} handleNo={() => {setShowDeletePopup(false)}} />
     if (isDeleted) return null
     if(errDelete){
         return (<>
@@ -57,9 +62,10 @@ function Regolamento(props) {
             <div className="text__content__table flex justify-center">
                 <button className="button__action" onClick={duplicateRegolamento}> Duplica </button>
                 <button className="button__action" onClick={()=>{navigate(`/dashboard/r/${props.regolamento.id}`)}}> {props.regolamento.richiesta == null ? "Modifica" : "Visualizza"} </button>
-                {!loading && props.regolamento.richiesta == null && <button className="button__action" onClick={deleteRegolamento}> Elimina </button>}
+                {!loading && props.regolamento.richiesta == null && <button className="button__action" onClick={() => {setShowDeletePopup(true)}}> Elimina </button>}
                 {loading && <button className="button__action button__loading"> <LoadingButton /> </button>}
             </div >
+            {component}
             
         </>
     )

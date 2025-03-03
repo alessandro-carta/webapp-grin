@@ -135,11 +135,18 @@ body {
 .success__message { color: var(--success);}
 
 .form__container{
-  width: 100%;
-  max-width: 28rem;
+  width: auto;
+  min-width: 34rem;
   background-color: var(--gray);
   padding: 2rem;
   border-radius: 0.5rem;
+}
+@media (max-width: 640px) {
+  .form__container{
+    min-width: 100%;
+    width: 100%;
+  }
+
 }
 .form__label{
   display: block;

@@ -2,13 +2,17 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import LoadingButton from '../LoadingButton';
+import PopupAlert from "../PopupAlert";
 
 function Bollino(props){
+    const [showRevocaPopup, setShowRevocaPopup] = useState(false); // per gestire la visualizzazione del popup quando viene revocato un bollino
+    const [showRiattivaPopup, setShowRiattivaPopup] = useState(false); // per gestire la visualizzazione del popup quando viene riattivato un bollino
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     // funzione invalida bollino
     const invalidBollino = async () => {
         try {
+            setShowRevocaPopup(false);
             setLoading(true);
             const response = await fetch(`/api/invalidBollino`, {
                 method: 'PUT',
@@ -32,6 +36,7 @@ function Bollino(props){
     // funzione per resettare il bollino
     const resetBollino = async () => {
         try {
+            setShowRiattivaPopup(false);
             setLoading(true);
             const response = await fetch(`/api/activeBollino`, {
                 method: 'PUT',
@@ -52,6 +57,10 @@ function Bollino(props){
             
         } catch (error) { console.log(error); }
     }
+    // componente per la gestione del popup e del suo tipo
+    let component = null;
+    if(showRevocaPopup) component = <PopupAlert message="Sei sicuro di voler revocare questo bollino?" handleYes={invalidBollino} handleNo={() => {setShowRevocaPopup(false)}} />
+    if(showRiattivaPopup) component = <PopupAlert message="Sei sicuro di voler riattivare questo bollino?" handleYes={resetBollino} handleNo={() => {setShowRiattivaPopup(false)}} />
     if(props.public){
         return <>
             <div className="text__content__table">{props.bollino.università}</div>
@@ -72,11 +81,11 @@ function Bollino(props){
         let btnAction = null;
         if(props.bollino.erogato){
             btnAction = <>
-                <button className="button__action" onClick={invalidBollino}> Revoca </button>
+                <button className="button__action" onClick={() => {setShowRevocaPopup(true)}}> Revoca </button>
             </>;
         } else{
             btnAction = <>
-                <button className="button__action" onClick={resetBollino}> Ripristina </button>
+                <button className="button__action" onClick={() => {setShowRiattivaPopup(true)}}> Ripristina </button>
             </>;
         }
         return (
@@ -90,6 +99,7 @@ function Bollino(props){
                 { props.admin && loading && <div className="text__content__table">
                     <button className="button__action button__loading"> <LoadingButton /> </button>
                 </div > }
+                {component}
             </>
         )
 

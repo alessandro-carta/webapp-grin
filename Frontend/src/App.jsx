@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Loading from './components/Loading';
 import NavbarPublic from './components/NavbarPublic';
 import Bollino from './components/bollini/Bollino';
-import FooterPublic from './components/FooterPublic';
 
 function App() {
   // dati per la gestione dei filtri
@@ -84,7 +83,6 @@ function App() {
           <div className="text__header__table">Anno Accademico</div>
           {bollini.map(bollino => ( <Bollino key={bollino.id} bollino={bollino} admin={true} public={true}/>))}
       </div>
-      <FooterPublic />
     </>
   )
 }

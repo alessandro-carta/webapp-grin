@@ -54,7 +54,7 @@ function FormNewSottoarea(props) {
             })
             return false;
         }
-        if(formData.nome.length > 45){
+        if(formData.nome.length > 1000){
             setFormErros({
                 ...formErrors,
                 nome: "Inserire un nome più corto"

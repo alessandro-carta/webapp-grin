@@ -3,8 +3,10 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import NavbarPresidente from "../../../components/NavbarPresidente";
 import Regola from "../../../components/regolamento/Regola";
 import Loading from "../../../components/Loading";
+import PopupAlert from "../../../components/PopupAlert";
 
 function ControlloRegolePresidentePage(){
+    const [showSendPopup, setShowSendPopup] = useState(false); // per gestire la visualizzazione del popup inviare una richiesta
     const navigate = useNavigate();
     const { idRegolamento } = useParams();
     const [loading, setLoading] = useState(true);
@@ -66,6 +68,7 @@ function ControlloRegolePresidentePage(){
     }
     // funzione per inviare una richiesta
     const sendRichiesta = async () => {
+        setShowSendPopup(false);
         setLoading(true);
         const today = new Date().toISOString().split('T')[0];
         const response = await fetch(`/api/sendRichiesta`, {
@@ -88,12 +91,14 @@ function ControlloRegolePresidentePage(){
     // btn per inviare la richiesta
     let btnSendRichiesta = null;
     if(resultErogazione() && regolamento.richiesta == null) btnSendRichiesta = <>
-        <button className="button__principale" onClick={sendRichiesta}> Invia Richiesta </button>
+        <button className="button__principale" onClick={()=>{setShowSendPopup(true)}}> Invia Richiesta </button>
     </>;
 
     const [pageTitle, setPageTitle] = useState('Controllo delle regole');
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
-
+    // componente per popup send
+    let component = null;
+    if(showSendPopup) component = <PopupAlert message="Confermi a voler inviare una richiesta?" handleYes={sendRichiesta} handleNo={() => {setShowSendPopup(false)}} />
     if(loading) return <Loading />
     return(
         <>
@@ -115,7 +120,7 @@ function ControlloRegolePresidentePage(){
             <Link className="link" to={`/dashboard/r/${idRegolamento}`}>
                     Annulla
             </Link>
-            
+            {component}
         </>
         
     )

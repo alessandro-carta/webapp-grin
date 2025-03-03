@@ -3,8 +3,12 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import Regola from "../../components/regolamento/Regola";
 import NavbarGrin from "../../components/NavbarGrin";
 import Loading from "../../components/Loading";
+import PopupAlert from "../../components/PopupAlert";
+
 
 function ControlloRegolePage(){
+    const [showInvalidaPopup, setShowInvalidaPopup] = useState(false); // per gestire la visualizzazione del popup quando invalido una richiesta
+    const [showErogaPopup, setShowErogaPopup] = useState(false); // per gestire la visualizzazione del popup quando erogo un bollino
     const navigate = useNavigate();
     const { idRegolamento } = useParams();
     const [loading, setLoading] = useState(true);
@@ -68,6 +72,7 @@ function ControlloRegolePage(){
 
     // funzione per erogare un bollino
     const erogaBollino = async () => {
+        setShowErogaPopup(false);
         const data = {erogato: 1, richiesta: regolamento.richiesta};
         setLoading(true);
         const response = await fetch(`/api/addBollino`, {
@@ -85,6 +90,7 @@ function ControlloRegolePage(){
     }
     // funzione per invalidare una richiesta
     const invalidRichiesta = async () => {
+        setShowInvalidaPopup(false);
         const data = { id: regolamento.richiesta };
         setLoading(true);
         const response = await fetch(`/api/invalidRichiesta`, {
@@ -105,14 +111,17 @@ function ControlloRegolePage(){
     // btn Eroga Bollino
     let btnEroga = null;
     if(resultErogazione() && regolamento.richiesta != null && regolamento.stato == "Elaborazione") btnEroga = <>
-        <button className="button__principale" onClick={erogaBollino}> Eroga Bollino </button>
+        <button className="button__principale" onClick={() => {setShowErogaPopup(true)}}> Eroga Bollino </button>
     </>;
     // btn Invalida richiesta
     let btnInvalida = null;
     if(regolamento.richiesta != null && regolamento.stato == "Elaborazione") btnInvalida = <>
-        <button className="button__principale" onClick={invalidRichiesta}> Invalida Richiesta </button>
+        <button className="button__principale" onClick={() => {setShowInvalidaPopup(true)}}> Invalida Richiesta </button>
     </>;
-    
+    // componente per la gestione del popup e del suo tipo
+    let component = null;
+    if(showInvalidaPopup) component = <PopupAlert message="Sei sicuro di voler invalidare questa richiesta?" handleYes={invalidRichiesta} handleNo={() => {setShowInvalidaPopup(false)}} />
+    if(showErogaPopup) component = <PopupAlert message="Sei sicuro di voler erogare il bollino per questa richiesta?" handleYes={erogaBollino} handleNo={() => {setShowErogaPopup(false)}} />
     if(loading) return <Loading />
     return(
         <>
@@ -133,7 +142,7 @@ function ControlloRegolePage(){
             <Link className="link" to={`/r/${idRegolamento}`}>
                     Annulla
             </Link>
-            
+            {component}
         </>
         
     )

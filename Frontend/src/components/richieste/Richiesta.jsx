@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoadingButton from '../LoadingButton';
+import PopupAlert from '../PopupAlert';
 
 function Richiesta(props) {
+    const [showDeletePopup, setShowDeletePopup] = useState(false); // per gestire la visualizzazione del popup elimina una richiesta
     const navigate = useNavigate();
     const data = new Date(props.richiesta.data);
     const formattedDate = data.toLocaleDateString('it-IT'); // data nel formato gg/mm/aaaa
@@ -37,6 +39,7 @@ function Richiesta(props) {
     // funzione che richiede l'eliminazione di una richiesta invalidata
     const deleteRichiesta = async () => {
         try {
+            setShowDeletePopup(false);
             setLoading(true);
             const response = await fetch(`/api/deleteRichiesta/${props.richiesta.id}`, {
                 method: 'DELETE',
@@ -64,6 +67,9 @@ function Richiesta(props) {
     let linkRichiesta = '';
     if(props.admin) linkRichiesta = `/r/${props.richiesta.regolamento}`;
     else linkRichiesta = `/dashboard/r/${props.richiesta.regolamento}`;
+    // componente per popup delete
+    let component = null;
+    if(showDeletePopup) component = <PopupAlert message="Sei sicuro? Conferma eliminazione" handleYes={deleteRichiesta} handleNo={() => {setShowDeletePopup(false)}} />
     // gestione eliminazione
     if (isDeleted) return null
     if(errDelete){
@@ -87,10 +93,11 @@ function Richiesta(props) {
             <div className="text__content__table">{formattedDate}</div>
             <div className="text__content__table flex justify-center md:col-span-2">
                 {!loading && !props.admin && props.richiesta.stato == "Invalidata" && <button className="button__action" onClick={updateRichiesta}> Modifica </button>}
-                {!loading && !props.admin && props.richiesta.stato == "Invalidata" && <button className="button__action" onClick={deleteRichiesta}> Elimina </button>}
+                {!loading && !props.admin && props.richiesta.stato == "Invalidata" && <button className="button__action" onClick={()=> {setShowDeletePopup(true)}}> Elimina </button>}
                 {loading && <button className="button__action button__loading"> <LoadingButton /> </button>}
                 <button className="button__action" onClick={()=>{navigate(linkRichiesta)}}> Visualizza </button>
             </div >
+            {component}
         </>
     )
 }

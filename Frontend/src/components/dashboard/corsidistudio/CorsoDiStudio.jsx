@@ -2,8 +2,10 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react'; 
 import LoadingButton from "../../LoadingButton";
+import PopupAlert from '../../../components/PopupAlert'
 
 function CorsoDiStudio(props) {   
+    const [showDeletePopup, setShowDeletePopup] = useState(false); // per gestire la visualizzazione del popup elimina un corso di studio
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false); // tiene traccia se un CDS e' stata eliminata
@@ -13,6 +15,7 @@ function CorsoDiStudio(props) {
     const updateCDS = () => { navigate(`/dashboard/modifica-corso/${props.corso.id}`)}
     const deleteCDS = async () => {
         try {
+            setShowDeletePopup(false);
             setLoading(true);
             const response = await fetch(`/api/deleteCDS/${props.corso.id}`, {
                 method: 'DELETE',
@@ -37,7 +40,9 @@ function CorsoDiStudio(props) {
             }
         } catch (error) { console.log(error); }
     }
-
+    // componente per popup delete
+    let component = null;
+    if(showDeletePopup) component = <PopupAlert message="Sei sicuro? Conferma eliminazione" handleYes={deleteCDS} handleNo={() => {setShowDeletePopup(false)}} />
     if (isDeleted) return null
     if(errDelete){
         return (<>
@@ -62,9 +67,10 @@ function CorsoDiStudio(props) {
             </div >
             <div className="text__content__table flex justify-center">
                 <button className="button__action" onClick={updateCDS}> Modifica </button>
-                {!loading && <button className="button__action" onClick={deleteCDS}> Elimina </button>}
+                {!loading && <button className="button__action" onClick={() => {setShowDeletePopup(true)}}> Elimina </button>}
                 {loading && <button className="button__action button__loading"> <LoadingButton /> </button>}
             </div >
+            {component}
         </>
     )
 }

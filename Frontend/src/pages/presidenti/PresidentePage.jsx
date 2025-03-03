@@ -2,8 +2,13 @@ import NavbarGrin from '../../components/NavbarGrin.jsx';
 import { useParams, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 import Loading from '../../components/Loading.jsx';
+import PopupAlert from '../../components/PopupAlert.jsx';
 
 function PresidentePage() {
+    const [showResetPopup, setShowResetPopup] = useState(false); // popup per reset della password
+    const [showAbilitaPopup, setShowAbilitaPopup] = useState(false); // popup per abilitare account presidente
+    const [showDisabilitaPopup, setShowDisabilitaPopup] = useState(false); // popup per disabilitare account presidente
+
     const navigate = useNavigate();
     const { idPresidente } = useParams();
     const [loading, setLoading] = useState(true);
@@ -67,6 +72,8 @@ function PresidentePage() {
                 </>;
                 setMessageResult(component);
             }
+            setShowAbilitaPopup(false);
+            setShowDisabilitaPopup(false);
             
         } catch (error) { console.log(error); }
     }
@@ -99,10 +106,15 @@ function PresidentePage() {
                 </>;
                 setMessageResult(component);
             }
+            setShowResetPopup(false);
             
         } catch (error) { console.log(error); }
     }
-
+    // gestisce la visualizzazione del popup e anche che tipo di popup
+    let component = null;
+    if(showResetPopup) component = <PopupAlert message="Sei sicuro di resettare la password?" handleYes={resetPassword} handleNo={() => {setShowResetPopup(false)}} />
+    if(showAbilitaPopup) component = <PopupAlert message="Sei sicuro di abilitare l'account?" handleYes={abilita} handleNo={() => {setShowAbilitaPopup(false)}} />
+    if(showDisabilitaPopup) component = <PopupAlert message="Sei sicuro di disabilitare l'account?" handleYes={disabilita} handleNo={() => {setShowDisabilitaPopup(false)}} />
     if(loading) return <Loading />
     else return (
         <>
@@ -115,11 +127,11 @@ function PresidentePage() {
             <div className="flex space-x-4 p-4 items-center justify-center">
                 <p className="text-xl">Azioni: </p>
                 { presidente.attivo == 1 ? 
-                    <button className="button__principale" onClick={disabilita}> Disabilita account </button> :
-                    <button className="button__principale" onClick={abilita}> Riattiva account </button> }
-                <button className="button__principale" onClick={resetPassword}> Reset password </button>
-                
+                    <button className="button__principale" onClick={() => {setShowDisabilitaPopup(true)}}> Disabilita account </button> :
+                    <button className="button__principale" onClick={() => {setShowAbilitaPopup(true)}}> Riattiva account </button> }
+                <button className="button__principale" onClick={() => {setShowResetPopup(true)}}> Reset password </button>
             </div>
+            {component}
             {messageResult}
         </>
     )
