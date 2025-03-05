@@ -394,6 +394,18 @@ function FormNewInsegnamento(props){
                             </select>
                             {formErrors.annoerogazione && <p className="error__message">{formErrors.annoerogazione}</p>}
                         </div>
+                        {/* Elenco delle sottoarea */}
+                        <div className="mb-4">
+                            {formData.sottoaree.length != 0 && <label htmlFor="settore" className="form__label">Sottoaree: </label>}
+                            {formData.sottoaree.map((elemento, index) => ( 
+                                <div key={index} className="flex flex-col md:flex-row justify-center items-center p-2">
+                                    <p className="text-base p-2" key={index}>{elemento.nome} {unitCFU ? `(CFU: ${elemento.ore/CFUtoH})` : `(Ore: ${elemento.ore})`}</p> 
+                                    <button type="button" className="button__action" onClick={() => deleteInsSottoarea(elemento.id)}>
+                                        Elimina
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
                         {/* Aggiungi una sottoarea all'insegnamento */}
                         <div className="mb-4">
                             <div className="flex flex-col items-center">
@@ -426,19 +438,6 @@ function FormNewInsegnamento(props){
                                 </>}
                             </div>
                             {formErrors.sottoaree && <p className="error__message">{formErrors.sottoaree}</p>}
-                        </div>
-                        
-                        {/* Elenco delle sottoarea */}
-                        <div className="mb-4">
-                            {formData.sottoaree.length != 0 && <label htmlFor="settore" className="form__label">Sottoaree: </label>}
-                            {formData.sottoaree.map((elemento, index) => ( 
-                                <div key={index} className="flex flex-col md:flex-row justify-center items-center p-2">
-                                    <p className="text-base p-2" key={index}>{elemento.nome} {unitCFU ? `(CFU: ${elemento.ore/CFUtoH})` : `(Ore: ${elemento.ore})`}</p> 
-                                    <button type="button" className="button__action" onClick={() => deleteInsSottoarea(elemento.id)}>
-                                        Elimina
-                                    </button>
-                                </div>
-                            ))}
                         </div>
                         <p className="text-base p-2">* Campi obbligatori</p>
                         {/* Bottone di invio e annulla */}

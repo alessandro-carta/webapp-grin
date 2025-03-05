@@ -347,7 +347,7 @@ function FormNewRegola(props) {
                     {showSelezioni &&
                     <div className="mb-4">
                         <label className="form__label">Scegli: *</label>
-                        <div className="flex flex-wrap justify-start">
+                        <div className="flex flex-col justify-start">
                             {elementRadio.map((item) => (
                                 <div key={item.id} className="flex p-2">
                                     <input

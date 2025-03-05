@@ -131,16 +131,18 @@ function ControlloRegolePage(){
                 <div className="text__header__table">Esito</div>
                 {regole.map((r, index) => ( <Regola key={index} regola={r} check={true}/> ))}
             </div>
-            <p className="text-xl subtitle">Il corso di studio {checkAnvur ? "è" : "non è"} accreditato all'ANVUR</p>
-            <p className="text-xl subtitle">La richiesta {resultErogazione() ? "ha" : "non ha"} suparato il controllo</p>
-
+            {checkAnvur && <p className="text-xl success__message">Il corso di studio è accreditato all'ANVUR</p>}
+            {!checkAnvur && <p className="text-xl error__message">Il corso di studio non è accreditato all'ANVUR</p>}
+            {resultErogazione() && <p className="p-2 text-xl subtitle">La richiesta ha superato il controllo, puoi erogare il Bollino!</p>}
+            {!resultErogazione() && <p className="p-2 text-xl subtitle">Impossibile erogare il Bollino! (Controlli non superati)</p>}
+            
             <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
                 <p className="text-xl">Azioni: </p>
                 {btnEroga}
                 {btnInvalida}
             </div>
             <Link className="link" to={`/r/${idRegolamento}`}>
-                    Annulla
+                    Torna alla richiesta
             </Link>
             {component}
         </>
