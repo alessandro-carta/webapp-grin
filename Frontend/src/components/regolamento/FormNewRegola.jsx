@@ -325,7 +325,7 @@ function FormNewRegola(props) {
                                     onChange={handleChange}
                                     className="h-4 w-4"
                                 />
-                                <label htmlFor={tipo} className="block text-sm font-medium">Regola per {tipo}</label>
+                                <label htmlFor={tipo} className="block text-sm font-medium">Imponi la regola per {tipo}</label>
                             </div>
                         ))}
                         {formErrors.tipologia && <p className="error__message">{formErrors.tipologia}</p>}
@@ -346,7 +346,7 @@ function FormNewRegola(props) {
                     </div> }
                     {showSelezioni &&
                     <div className="mb-4">
-                        <label className="form__label">Scegli: *</label>
+                        <label className="form__label">Seleziona una o più scelte: *</label>
                         <div className="flex flex-col justify-start">
                             {elementRadio.map((item) => (
                                 <div key={item.id} className="flex p-2">

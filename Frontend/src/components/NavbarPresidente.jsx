@@ -15,7 +15,7 @@ function NavbarPresidente(){
                 <NavLink to={`/dashboard/corsidistudio`}  className={({isActive}) => isActive ? 'link' : 'link__noactive'}>Corsi Di Studio</NavLink>
                 <NavLink to={`/dashboard/richieste`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}>Richieste</NavLink>
                 <NavLink to={`/aree/?Visual=presidente`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}>Aree e sottoaree</NavLink>
-                <NavLink to={`/regolamento/?Visual=presidente`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}>Regolamento</NavLink>
+                <NavLink to={`/regolamento/?Visual=presidente`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}>Regole</NavLink>
                 <NavLink to={`/dashboard/bollini`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}>Bollini</NavLink>
             </div>;
     }
@@ -27,7 +27,7 @@ function NavbarPresidente(){
                     <NavLink to={`/dashboard/corsidistudio`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}> Corsi Di Studio </NavLink>
                     <NavLink to={`/dashboard/richieste`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}> Richieste </NavLink>
                     <NavLink to={`/aree/?Visual=presidente`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}> Aree e sottoaree </NavLink>
-                    <NavLink to={`/regolamento/?Visual=presidente`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}> Regolamento </NavLink>
+                    <NavLink to={`/regolamento/?Visual=presidente`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}> Regole </NavLink>
                     <NavLink to={`/dashboard/bollini`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}> Bollini </NavLink>
                 </div>
                 <div className="md:hidden flex items-center">

@@ -14,7 +14,7 @@ if(menuMobile){
         <div className="md:hidden absolute left-0 top-10 w-full bg-white p-8 space-y-4 flex flex-col">
             <NavLink to={`/presidenti`}  className={({isActive}) => isActive ? 'link' : 'link__noactive'}>Account presidenti</NavLink>
             <NavLink to={`/aree/?Visual=admin`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}>Aree e sottoaree</NavLink>
-            <NavLink to={`/regolamento/?Visual=admin`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}>Regolamento</NavLink>
+            <NavLink to={`/regolamento/?Visual=admin`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}>Regole</NavLink>
             <NavLink to={`/richieste`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}>Richieste</NavLink>
             <NavLink to={`/bollini`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}>Bollini</NavLink>
         </div>;
@@ -26,7 +26,7 @@ return (
             <div className="hidden md:flex space-x-6">
                 <NavLink to={`/presidenti`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}> Account presidenti </NavLink>
                 <NavLink to={`/aree/?Visual=admin`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}> Aree e sottoaree </NavLink>
-                <NavLink to={`/regolamento/?Visual=admin`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}> Regolamento </NavLink>
+                <NavLink to={`/regolamento/?Visual=admin`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}> Regole </NavLink>
                 <NavLink to={`/richieste`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}> Richieste </NavLink>
                 <NavLink to={`/bollini`} className={({isActive}) => isActive ? 'link' : 'link__noactive'}> Bollini </NavLink>
             </div>

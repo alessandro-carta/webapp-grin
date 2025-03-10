@@ -227,7 +227,7 @@ app.get("/api/bollinoRichiestaPresidente/:idRichiesta", authenticateToken, autho
 app.get("/api/presidenti", authenticateToken, authorizeRole(['admin']), async (req, res) => {
     return handleGetPresidenti(req, res);
 })
-app.get("/api/presidente/:idPresidente", authenticateToken, authorizeRole(['admin']), async (req, res) => {
+app.get("/api/presidente/:idPresidente", authenticateToken, authorizeRole(['admin', 'presidente']), async (req, res) => {
     return handleGetPresidente(req, res);
 })
 app.post("/api/addPresidente", authenticateToken, authorizeRole(['admin']), async (req, res) => {

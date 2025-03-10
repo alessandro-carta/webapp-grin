@@ -34,6 +34,7 @@ import RegolamentoCDSPage from './pages/dashboard/regolamenti/RegolamentoCDSPage
 import RegolePage from './pages/regolamento/RegolePage.jsx'
 import RegolamentoPage from './pages/richieste/RegolamentoPage.jsx'
 import Login from './pages/auth/Login.jsx'
+import DownloadPdfPage from './pages/pdf/DownloadPdfPage.jsx'
 
 
 const router = createBrowserRouter([
@@ -160,6 +161,10 @@ const router = createBrowserRouter([
   {
     path: "dashboard/r/:idRegolamento/modifica-insegnamento/:idInsegnamento",
     element: <UpdateInsegnamentoPage />
+  },
+  {
+    path: "dashboard/r/:idRegolamento/genera-pdf",
+    element: <DownloadPdfPage />
   },
   {
     path: "dashboard/controllo-regole/:idRegolamento",

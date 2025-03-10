@@ -4,14 +4,13 @@ import { useState, useEffect } from "react";
 import Anno from "../../../components/richieste/Anno";
 import Loading from "../../../components/Loading";
 
-
-
 function RegolamentoCDSPage() {
     const { idRegolamento } = useParams();
     const navigate = useNavigate();
     // loading dei contenuti dinamici
     const [loading, setLoading] = useState(true);
     const [loadingBollino, setLoadingBollino] = useState(true);
+    const [showPdf, setShowPdf] = useState(false);
     // titolo della pagina
     const [pageTitle, setPageTitle] = useState('Regolamento');
     useEffect(() => { document.title = pageTitle}, [pageTitle]); // eseguito ogni volta che cambia pageTitle
@@ -74,13 +73,12 @@ function RegolamentoCDSPage() {
         return (
             <>
                 <NavbarPresidente />
-                { /* Azioni possibili solo per richieste non presenti */
-                regolamento.richiesta == null &&  
                 <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 p-2 items-center justify-center">
                     <p className="text-xl">Azioni: </p>
-                    <button className="button__principale" onClick={() => {navigate(`/dashboard/controllo-regole/${idRegolamento}`)}}> Invia richiesta </button>
-                    <button className="button__principale" onClick={() => {navigate(`/dashboard/r/${idRegolamento}/crea-un-nuovo-insegnamento`)}}> Aggiungi insegnamento </button>
-                </div> }
+                    {regolamento.richiesta == null && <><button className="button__principale" onClick={() => {navigate(`/dashboard/controllo-regole/${idRegolamento}`)}}> Invia richiesta </button>
+                    <button className="button__principale" onClick={() => {navigate(`/dashboard/r/${idRegolamento}/crea-un-nuovo-insegnamento`)}}> Aggiungi insegnamento </button></>}
+                    <button className="button__principale" onClick={() => {navigate(`/dashboard/r/${idRegolamento}/genera-pdf`)}}> Esporta in PDF </button>
+                </div>
                 {regolamento.stato == "Approvata" && <p className="text-2xl success__message p-4">Richiesta approvata</p>}
                 {regolamento.stato == "Invalidata" && <p className="text-2xl error__message p-4">Richiesta invalidata</p>}
                 {regolamento.stato == "Elaborazione" && <p className="text-2xl title p-4">Richiesta in fase di elaborazione</p>}
