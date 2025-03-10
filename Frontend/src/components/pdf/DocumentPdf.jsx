@@ -81,12 +81,10 @@ function DocumentPdf(props){
                                 </View>
                             ))}
                         </View>
-
-
                     ))}
                 </View>
 
-                {/* vista che contiene l'elenco delle aree e sottoaree diviso per anni */}
+                {/* vista che contiene l'elenco delle aree e sottoaree diviso per anni
                 <View style={styles.section}>
                     <Text style={styles.titleSection}>Riepilogo Anni:</Text>
                     {props.anni.map((anno, keyAnno) => (
@@ -98,6 +96,30 @@ function DocumentPdf(props){
                                     {getSottoareePerAnno(anno).filter(sottoarea => sottoarea.area == area.id).map((sottoarea, keySottoarea) => (
                                         <View key={keySottoarea} style={styles.list}>
                                             <Text key={keySottoarea} style={styles.elementChildList}>- {sottoarea.nome}: {unitCFU ? `${parseInt(sottoarea.oretot)/CFUtoH} CFU` : `${sottoarea.oretot}h`}</Text>
+                                        </View>
+                                    ))}
+                                </View>
+                            ))}
+                        </View>
+                    ))}
+                </View> */}
+                {/* vista che contiene l'elenco delle aree e sottoaree diviso per anni in una tabella*/}
+                <View style={styles.section}>
+                    <Text style={styles.titleSection}>Riepilogo Anni:</Text>
+                    {props.anni.map((anno, keyAnno) => (
+                        <View key={keyAnno} style={styles.section}>
+                            <Text key={keyAnno} style={styles.subtitleSection}>{anno} ANNO</Text>
+                            {getAreePerAnno(anno).map((area, keyArea) => (
+                                <View key={keyArea} style={[styles.list, styles.section]}>
+                                    <Text key={keyArea} style={[styles.elementList, styles.bold, styles.space]}>{area.nome}: {unitCFU ? `${parseInt(area.oretot)/CFUtoH} CFU` : `${area.oretot}h`}</Text>
+                                    <View key={keyArea} style={styles.tableHeader}>
+                                        <Text style={[styles.tableCol1, styles.bold]}>Sottoarea</Text>
+                                        <Text style={[styles.tableCol2, styles.bold]}>{unitCFU ? "CFU totali" : "Ore totali"}</Text>
+                                    </View>
+                                    {getSottoareePerAnno(anno).filter(sottoarea => sottoarea.area == area.id).map((sottoarea, keySottoarea) => (
+                                        <View key={keySottoarea} style={styles.tableHeader}>
+                                            <Text style={styles.tableCol1}>{sottoarea.nome}</Text>
+                                            <Text style={styles.tableCol2}>{unitCFU ? `${parseInt(sottoarea.oretot)/CFUtoH} CFU` : `${sottoarea.oretot}h`}</Text>
                                         </View>
                                     ))}
                                 </View>

@@ -17,6 +17,12 @@ export const styles = StyleSheet.create({
         marginBottom: 20,
         fontFamily: "Helvetica-Bold",
     },
+    bold: {
+        fontFamily: "Helvetica-Bold",
+    },
+    space: {
+        marginTop: "11px",
+    },
     content: {
         fontSize: 12,
     },
@@ -36,5 +42,28 @@ export const styles = StyleSheet.create({
     elementChildList: {
         marginLeft: 20,
     },
-    
+    tableHeader: {
+        flexDirection: 'row',
+        borderBottom: '1px solid #E4E4E4',
+    },
+    tableCol1: {
+        width: "60%",
+        textAlign: "left",
+        fontSize: "12px",
+        paddingBottom: "10px",
+        paddingTop: "10px",
+        marginLeft: "11px",
+    },
+    tableCol2: {
+        width: "40%",
+        textAlign: "left",
+        fontSize: "12px",
+        borderLeft: 1,
+        borderLeftColor: "#E4E4E4",
+        borderBottomColor: "#E4E4E4",
+        paddingBottom: "10px",
+        paddingTop: "10px",
+        marginLeft: "11px",
+        paddingLeft: "11px",
+    },
 });
