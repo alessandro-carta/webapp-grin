@@ -2,7 +2,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import Loading from "../../components/Loading";
 import { PDFViewer } from "@react-pdf/renderer";
 import { useEffect, useState } from "react";
-import DocumentPdf from "../../components/pdf/DocumentPDF";
+import DocumentPdf from "/Frontend/src/components/pdf/DocumentPdf";
 import NavbarPresidente from "../../components/NavbarPresidente"
 
 function DownloadPdfPage(){
