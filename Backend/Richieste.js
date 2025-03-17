@@ -4,7 +4,7 @@ import { db } from "./database.js";
 
 export async function getRichieste(){
     const queryRichieste = `
-        SELECT Richieste.idRichiesta AS "id", Richieste.Data AS "data", Richieste.Stato AS "stato", Presidenti.Università AS "università", Presidenti.Email AS "email", CorsiDiStudio.Nome AS "corsodistudio", Regolamenti.AnnoAccademico AS "annoaccademico", Regolamenti.idRegolamento AS "regolamento"
+        SELECT Richieste.idRichiesta AS "id", Richieste.Data AS "data", Richieste.Stato AS "stato", Presidenti.Universita AS "università", Presidenti.Email AS "email", CorsiDiStudio.Nome AS "corsodistudio", Regolamenti.AnnoAccademico AS "annoaccademico", Regolamenti.idRegolamento AS "regolamento"
         FROM Richieste, Regolamenti, CorsiDiStudio, Presidenti
         WHERE Regolamento = idRegolamento AND CDS = idCDS AND Presidente = idPresidente AND Stato <> "Bozza"`;
     const [result] = await db.query(queryRichieste);
@@ -12,7 +12,7 @@ export async function getRichieste(){
 }
 export async function getRichiesta(id){
     const queryRichiesta = `
-        SELECT Regolamenti.idRegolamento AS "regolamento", CorsiDiStudio.Nome AS "corsodistudio", Richieste.idRichiesta AS "id", Richieste.Data AS "data", Richieste.Stato AS "stato", Regolamenti.AnnoAccademico AS "annoaccademico", Presidenti.Università AS "università", Presidenti.Email AS "email", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur"
+        SELECT Regolamenti.idRegolamento AS "regolamento", CorsiDiStudio.Nome AS "corsodistudio", Richieste.idRichiesta AS "id", Richieste.Data AS "data", Richieste.Stato AS "stato", Regolamenti.AnnoAccademico AS "annoaccademico", Presidenti.Universita AS "università", Presidenti.Email AS "email", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur"
         FROM Richieste, Regolamenti, CorsiDiStudio, Presidenti
         WHERE Regolamento = idRegolamento AND CDS = idCDS AND Presidente = idPresidente AND idRichiesta = ? `;
     const [result] = await db.query(queryRichiesta, [id]);
@@ -25,7 +25,7 @@ export async function updateRichiesta(id, stato) {
 
 export async function getInsegnamenti(regolamento){
     const queryInsegnamenti = `
-        SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.CFU AS "cfutot", Insegnamenti.Settore AS "settore", Insegnamenti.Ore AS "oretot"
+        SELECT Insegnamenti.idInsegnamento AS "id", Insegnamenti.Nome AS "nome", Insegnamenti.AnnoErogazione AS "annoerogazione", Insegnamenti.Settore AS "settore", Insegnamenti.Ore AS "oretot"
         FROM Regolamenti, Insegnamenti
         WHERE idRegolamento = Regolamento AND idRegolamento = ? `;
     const [result] = await db.query(queryInsegnamenti, [regolamento]);
@@ -33,7 +33,7 @@ export async function getInsegnamenti(regolamento){
 }
 export async function getInsegnamentoSottoaree(id){
     const querySottoaree = `
-        SELECT Sottoaree.idSottoarea AS "id", Sottoaree.Area AS "area", Sottoaree.Nome AS "nome", InsegnamentiSottoaree.CFU AS "cfu", InsegnamentiSottoaree.Ore AS "ore"
+        SELECT Sottoaree.idSottoarea AS "id", Sottoaree.Area AS "area", Sottoaree.Nome AS "nome", InsegnamentiSottoaree.Ore AS "ore"
         FROM Insegnamenti, InsegnamentiSottoaree, Sottoaree
         WHERE idInsegnamento = Insegnamento AND idSottoarea = Sottoarea AND idInsegnamento = ? `;
     const [result] = await db.query(querySottoaree, [id]);
@@ -53,7 +53,7 @@ export async function getInsegnamentiFull(regolamento) {
 
 export async function getRegolamento(id) {
     const [result] = await db.query(`
-        SELECT CorsiDiStudio.idCDS AS "cds", Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur", CorsiDiStudio.Presidente AS "presidente", Richieste.idRichiesta AS "richiesta", Richieste.Stato AS "stato", Presidenti.Email AS "email", Presidenti.Università AS "università"
+        SELECT CorsiDiStudio.idCDS AS "cds", Regolamenti.idRegolamento AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", CorsiDiStudio.AnnoDurata AS "duratacorso", Regolamenti.Anvur AS "anvur", CorsiDiStudio.Presidente AS "presidente", Richieste.idRichiesta AS "richiesta", Richieste.Stato AS "stato", Presidenti.Email AS "email", Presidenti.Universita AS "università"
         FROM Regolamenti JOIN CorsiDiStudio ON Regolamenti.CDS = CorsiDiStudio.idCDS JOIN Presidenti ON CorsiDiStudio.Presidente = Presidenti.idPresidente LEFT JOIN Richieste ON Richieste.Regolamento = Regolamenti.idRegolamento
         WHERE Regolamenti.idRegolamento = ?`, [id]);
     return result[0];

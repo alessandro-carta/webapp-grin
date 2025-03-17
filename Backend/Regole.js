@@ -2,15 +2,15 @@ import { db } from "./database.js";
 import { v4 as uuidv4 } from 'uuid';
 
 
-export async function addRegola(id, descrizione, cfu, ore, centrale, tipologia, selezioni, count) {
+export async function addRegola(id, descrizione, ore, centrale, tipologia, selezioni) {
     // garantisco atomicità tramite l'uso di una transazione che:
     // inserisce il record in Regole
     // inserisce k record nella tarella Regole* a seconda della tipologia della regola
     try {
         await db.beginTransaction();
         if(selezioni.length == 0) return {ok: false, error: "Selezioni obbligatorie"};
-        const queryRegola = 'INSERT INTO Regole (idRegola, Descrizione, CFU, Ore, Centrale, Tipologia, Count) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        await db.query(queryRegola, [id, descrizione, cfu, ore, centrale, tipologia, count]);
+        const queryRegola = 'INSERT INTO Regole (idRegola, Descrizione, Ore, Centrale, Tipologia) VALUES (?, ?, ?, ?, ?)';
+        await db.query(queryRegola, [id, descrizione, ore, centrale, tipologia]);
         let querySelezioni;
         if(tipologia === 'area') querySelezioni = 'INSERT INTO RegoleAree (Regola, Area) VALUES ?';
         if(tipologia === 'sottoarea') querySelezioni = 'INSERT INTO RegoleSottoaree (Regola, Sottoarea) VALUES ?';
@@ -27,7 +27,7 @@ export async function addRegola(id, descrizione, cfu, ore, centrale, tipologia, 
 }
 export async function getRegole(){
     const [result] = await db.query(`
-        SELECT idRegola AS "id", Descrizione AS "descrizione", CFU AS "cfu", Tipologia AS "tipologia", Count AS "count", Ore AS "ore", Centrale AS "centrale"
+        SELECT idRegola AS "id", Descrizione AS "descrizione", Tipologia AS "tipologia", Ore AS "ore", Centrale AS "centrale"
         FROM Regole` );
     return result;
 }
@@ -71,10 +71,8 @@ export async function deleteRegola(id) {
 
 export async function handleAddRegola(req, res) {
     // selezioni contiene l'elenco degli id delle aree/sottoaree/settori
-    let { descrizione, cfu, ore, centrale, tipologia, selezioni, count } = req.body;
+    let { descrizione, ore, centrale, tipologia, selezioni } = req.body;
     const id = uuidv4();
-    if(cfu == 0) cfu = null;
-    if(count == 0) count = null;
     const result = await addRegola(id, descrizione, cfu, ore, centrale, tipologia, selezioni, count);
     if(result.ok){
         // risposta avvenuta con successo
@@ -100,6 +98,7 @@ export async function handleGetRegole(req, res) {
             data: regole
         });
     } catch (error) {
+        console.log(error);
         // errore generale interno al server
         return res.status(500).json({
             message: "Si è verificato un errore durante il recupero delle regole .",

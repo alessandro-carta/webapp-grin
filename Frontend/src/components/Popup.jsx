@@ -1,5 +1,5 @@
 import React from 'react';
-import { unitCFU } from '../../ConfigClient';
+import { CFUtoH, unitCFU } from '../../ConfigClient';
 
 function Popup (props) {
   return (

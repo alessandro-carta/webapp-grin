@@ -19,9 +19,13 @@ import { handleCheckRegole } from "./CheckRichiesta.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.listen(port, () => {
+const server = app.listen(port, (err) => {
     console.log(`Server in ascolto sulla porta > ${port}`);
 })
+server.on('error', (err) => {
+    console.error('Errore durante l\'avvio del server:', err.message);
+    process.exit(1);
+});
 
 // middleware che controlla la validità del token
 const authenticateToken = (req, res, next) => {
@@ -46,7 +50,10 @@ const authorizeRole = (roles) => {
 const authorizePresidenteCDS = async (req, res, next) => {
     let id;
     if(req.params.idCDS != undefined) id = req.params.idCDS;
-    else id = req.body.cds;
+    else {
+        if(req.body.cds != undefined) id = req.body.cds;
+        else return res.status(403).json({ message: "Non sei autorizzato ad accedere a questa risorsa" });
+    }
     const presidente = req.user.userId;
     try {
         const cds = await getCorsoDiStudio(id);
@@ -88,7 +95,7 @@ const authorizePresidenteRichiesta = async (req, res, next) => {
     const presidente = req.user.userId;
     try {
         const richiesta = await getRichiesta(id);
-        if(richiesta == null) return res.status(404).json({ message: "Richiesta non trovato" });
+        if(richiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
         if (richiesta.presidente !== presidente) return res.status(403).json({ message: "Non sei autorizzato ad accedere a questa risorsa" });
         next();
     } catch (error) {
@@ -142,7 +149,7 @@ app.put("/api/updateCDS", authenticateToken, authorizeRole(['presidente']), auth
 // 1. Aggiungere un regolamento
 // 2. Elenco dei regolamenti di un cds
 // 3. Informazioni di un determinato regolamento
-// 4. Elimanare un regolamento di un cds
+// 4. Eliminare un regolamento di un cds
 // 5. Elenco degli insegnamenti di un determinato regolamento
 // 6. Aggiungere un nuovo insegnamento
 // 7. Eliminare un insegnamento
@@ -197,9 +204,10 @@ app.put("/api/sendRichiesta/", authenticateToken, authorizeRole(['presidente']),
 app.get("/api/richiestaPresidente/:idRichiesta", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
     return handleGetRichiestaPerPresidente(req, res);
 })
+// controllare se si può eliminare
 app.put("/api/saveRichiesta/", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
     return handleSaveRichiesta(req, res);
-})
+}) 
 app.delete("/api/deleteRichiesta/:idRichiesta", authenticateToken, authorizeRole(['presidente']), authorizePresidenteRichiesta, async (req, res) => {
     return handleDeleteRichiesta(req, res);
 })

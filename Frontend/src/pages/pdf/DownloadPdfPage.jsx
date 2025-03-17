@@ -1,11 +1,15 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import Loading from "../../components/Loading";
 import { PDFViewer } from "@react-pdf/renderer";
-import DocumentPdf from "../../components/pdf/DocumentPdf";
 import { useEffect, useState } from "react";
+import DocumentPdf from "../../components/pdf/DocumentPDF";
+import NavbarPresidente from "../../components/NavbarPresidente"
 
 function DownloadPdfPage(){
     const {idRegolamento} = useParams();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const visual = queryParams.get('Visual');
     // regolamento con anche informazione del corso e della richiesta
     const [loadingReg, setLoadingReg] = useState(true);
     const [regolamento, setRegolamento] = useState();
@@ -31,7 +35,10 @@ function DownloadPdfPage(){
     }
     const loadRegolamento = async () => {
         try {
-            const response = await fetch(`/api/regolamento/${idRegolamento}`, {
+            let linkFetch;
+            if (visual === 'admin') linkFetch = `/api/regolamentoAdmin/${idRegolamento}`;
+            else linkFetch = `/api/regolamento/${idRegolamento}`;
+            const response = await fetch(linkFetch, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -59,7 +66,10 @@ function DownloadPdfPage(){
     const [insegnamenti, setInsegnamenti] = useState();
     const loadInsegnamenti = async () => {
         try {
-            const response = await fetch(`/api/insegnamentiPresidente/${idRegolamento}`, {
+            let linkFetch;
+            if (visual === 'admin') linkFetch = `/api/insegnamenti/${idRegolamento}`;
+            else linkFetch = `/api/insegnamentiPresidente/${idRegolamento}`;
+            const response = await fetch(linkFetch, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -135,20 +145,25 @@ function DownloadPdfPage(){
     else {
         const anni = [];
         for(let i = 0; i < regolamento.duratacorso; i++) anni.push(i+1);
-        return (        
+        return (     
+            <>   
+            <NavbarPresidente />
             <div className='flex flex-col'>
-                <PDFViewer showToolbar={true} className='w-full h-screen'>
-                    <DocumentPdf 
-                        regolamento={regolamento} 
-                        presidente={presidente}
-                        anni={anni}
-                        insegnamenti={insegnamenti}
-                        aree={aree}
-                        sottoaree={sottoaree}
-                    />
-                </PDFViewer>
-                <Link className="link" to={`/dashboard/r/${idRegolamento}`}>Annulla</Link>
+                <div className='flex flex-col justify-center items-center m-4'>
+                    <PDFViewer showToolbar={true} className='w-full h-screen'>
+                        <DocumentPdf 
+                            regolamento={regolamento} 
+                            presidente={presidente}
+                            anni={anni}
+                            insegnamenti={insegnamenti}
+                            aree={aree}
+                            sottoaree={sottoaree}
+                        />
+                    </PDFViewer>
+                </div>
+                <Link className="link" to={visual === "admin" ? `/r/${idRegolamento}` : `/dashboard/r/${idRegolamento}` }>Chiudi</Link>
             </div>
+            </>
         )}
 
 

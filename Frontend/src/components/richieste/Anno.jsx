@@ -6,7 +6,7 @@ function Anno(props){
     const navigate = useNavigate();
     const [clickedAnno, setClickedAnno] = useState(false);
     
-    useEffect(() => {
+    /*useEffect(() => {
         let linkFetch;
         if(!props.admin) linkFetch = `/api/insegnamentiPresidente/${props.regolamento}`;
         else linkFetch = `/api/insegnamenti/${props.regolamento}`;
@@ -25,7 +25,7 @@ function Anno(props){
                 }
             })
             // accesso non consentito
-            if(response.status == 403) console.log("no access"); //navigate('/');
+            if(response.status == 403) navigate('/');
             // risposta con successo
             if(response.ok) {
                 const data = await response.json();
@@ -35,19 +35,19 @@ function Anno(props){
             }
             
         } catch (error) { console.log(error); }
-    }
+    }*/
 
     const showDetailAnno = () => { setClickedAnno(!clickedAnno) }
     let component;
-    if(!loading && !clickedAnno) component = null;
-    if(!loading && clickedAnno){
+    if(!clickedAnno) component = null;
+    if(clickedAnno){
         component = <>
             <div className="grid grid-cols-1 md:grid-cols-4 p-5">
                 <div className="text__header__table">Nome</div>
                 <div className="text__header__table">Ore</div>
                 <div className="text__header__table">Sottoaree</div>
                 <div className="text__header__table">Azioni</div>
-                {insegnamenti.map((i) => (<Insegnamento key={i.id} insegnamento={i} edit={props.edit}/>))}
+                {props.insegnamenti.map((i) => (<Insegnamento key={i.id} insegnamento={i} edit={props.edit}/>))}
             </div> 
         </>;
     }

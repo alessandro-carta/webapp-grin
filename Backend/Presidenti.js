@@ -3,23 +3,23 @@ import { v4 as uuidv4 } from 'uuid';
 
 export async function getPresidenti(){
     const [result] = await db.query(`
-        SELECT idPresidente AS "id", Nome AS "nome", Cognome AS "cognome", Email AS "email", Università AS "università", Attivo AS "attivo", FirstPassword AS "firstpassword"
+        SELECT idPresidente AS "id", Nome AS "nome", Cognome AS "cognome", Email AS "email", Universita AS "università", Attivo AS "attivo", FirstPassword AS "firstpassword"
         FROM Presidenti`);
     return result;
 }
 export async function getPresidente(id){
     const [result] = await db.query(`
-        SELECT idPresidente AS "id", Nome AS "nome", Cognome AS "cognome", Email AS "email", Università AS "università", Attivo AS "attivo", FirstPassword AS "firstpassword", Password AS "passPres"
+        SELECT idPresidente AS "id", Nome AS "nome", Cognome AS "cognome", Email AS "email", Universita AS "università", Attivo AS "attivo", FirstPassword AS "firstpassword", Password AS "passPres"
         FROM Presidenti
         WHERE idPresidente = ? `, [id]);
     return result[0];
 }
 export async function addPresidente(id, nome, cognome, email, università){
-    const [result] = await db.query(`INSERT INTO Presidenti (idPresidente, Nome, Cognome, Email, Università) VALUES (?, ?, ?, ?, ?)`, [id, nome, cognome, email, università]);
+    const [result] = await db.query(`INSERT INTO Presidenti (idPresidente, Nome, Cognome, Email, Universita) VALUES (?, ?, ?, ?, ?)`, [id, nome, cognome, email, università]);
     return result;
 }
 export async function updatePresidente(id, nome, cognome, email, università, attivo){
-    const [result] = await db.query(`UPDATE Presidenti SET Nome = ?, Cognome = ?, Email = ?, Università = ?, Attivo = ? WHERE idPresidente = ?`, [nome, cognome, email, università, attivo, id]);
+    const [result] = await db.query(`UPDATE Presidenti SET Nome = ?, Cognome = ?, Email = ?, Universita = ?, Attivo = ? WHERE idPresidente = ?`, [nome, cognome, email, università, attivo, id]);
     return result;
 }
 export async function resetPassword(id){

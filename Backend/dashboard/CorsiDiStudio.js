@@ -4,14 +4,14 @@ import { v4 as uuidv4 } from 'uuid';
 
 export async function getCorsiDiStudio(presidente) {
     const [result] = await db.query(`
-        SELECT CorsiDiStudio.idCDS AS "id", CorsiDiStudio.Nome AS "corsodistudio", Presidenti.Università AS "università", CorsiDiStudio.AnnoDurata AS "durata"
+        SELECT CorsiDiStudio.idCDS AS "id", CorsiDiStudio.Nome AS "corsodistudio", Presidenti.Universita AS "università", CorsiDiStudio.AnnoDurata AS "durata"
         FROM CorsiDiStudio, Presidenti
         WHERE idPresidente = Presidente AND idPresidente = ?`, [presidente]);
     return result;
 }
 export async function getCorsoDiStudio(id) {
     const [result] = await db.query(`
-        SELECT CorsiDiStudio.idCDS AS "id", CorsiDiStudio.Nome AS "corsodistudio", Presidenti.Università AS "università", CorsiDiStudio.AnnoDurata AS "durata", CorsiDiStudio.Presidente AS "presidente"
+        SELECT CorsiDiStudio.idCDS AS "id", CorsiDiStudio.Nome AS "corsodistudio", Presidenti.Universita AS "università", CorsiDiStudio.AnnoDurata AS "durata", CorsiDiStudio.Presidente AS "presidente"
         FROM CorsiDiStudio, Presidenti
         WHERE idPresidente = Presidente AND idCDS = ?`, [id]);
     return result[0];

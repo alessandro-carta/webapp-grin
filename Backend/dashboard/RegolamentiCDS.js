@@ -45,12 +45,12 @@ export async function duplicateRegolamento(id, annoaccademico, regolamento){
         for(let i = 0; i < resultInsegnamenti.length; i++){
             const idI = uuidv4();
             await db.query(`
-                INSERT INTO Insegnamenti (idInsegnamento, Nome, AnnoErogazione, CFU, Ore, Settore, Regolamento) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)`, [idI, resultInsegnamenti[i].nome, resultInsegnamenti[i].annoerogazione, resultInsegnamenti[i].cfutot, resultInsegnamenti[i].oretot, resultInsegnamenti[i].settore, id]);
+                INSERT INTO Insegnamenti (idInsegnamento, Nome, AnnoErogazione, Ore, Settore, Regolamento) 
+                VALUES (?, ?, ?, ?, ?, ?)`, [idI, resultInsegnamenti[i].nome, resultInsegnamenti[i].annoerogazione, resultInsegnamenti[i].oretot, resultInsegnamenti[i].settore, id]);
             if(resultInsegnamenti[i].sottoaree.length > 0){
-                const valoriSottoaree = resultInsegnamenti[i].sottoaree.map(sottoarea => [idI, sottoarea.id, sottoarea.cfu, sottoarea.ore]);
+                const valoriSottoaree = resultInsegnamenti[i].sottoaree.map(sottoarea => [idI, sottoarea.id, sottoarea.ore]);
                 await db.query(`
-                    INSERT INTO InsegnamentiSottoaree (Insegnamento, Sottoarea, CFU, Ore) 
+                    INSERT INTO InsegnamentiSottoaree (Insegnamento, Sottoarea, Ore) 
                     VALUES ? `, [valoriSottoaree]);
             }            
         }

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export async function getRichieste(presidente){
     const queryRichieste = `
-        SELECT Richieste.idRichiesta AS "id", Richieste.Data AS "data", Richieste.Stato AS "stato", Presidenti.Università AS "università", Presidenti.Email AS "email", CorsiDiStudio.Nome AS "corsodistudio", Regolamenti.AnnoAccademico AS "annoaccademico", Regolamenti.idRegolamento AS "regolamento"
+        SELECT Richieste.idRichiesta AS "id", Richieste.Data AS "data", Richieste.Stato AS "stato", Presidenti.Universita AS "università", Presidenti.Email AS "email", CorsiDiStudio.Nome AS "corsodistudio", Regolamenti.AnnoAccademico AS "annoaccademico", Regolamenti.idRegolamento AS "regolamento"
         FROM Richieste, Regolamenti, CorsiDiStudio, Presidenti
         WHERE Regolamento = idRegolamento AND CDS = idCDS AND Presidente = idPresidente AND idPresidente = ? AND Richieste.Stato <> "Bozza" `;
     const [result] = await db.query(queryRichieste, [presidente]);
@@ -87,7 +87,6 @@ export async function handleGetRichiestaPerPresidente(req, res) {
     try {
         // risposta con successo
         const richiesta = await getRichiesta(id);
-        if(richiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
         return res.status(200).json({
             message: "Richiesta",
             data: richiesta
@@ -124,8 +123,7 @@ export async function handleDeleteRichiesta(req, res) {
     const id = req.params.idRichiesta;
     try {
         const richiesta = await getRichiesta(id);
-        if(richiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
-        if(richiesta.stato != "Invalidata" && richiesta.stato != "Bozza") return res.status(400).json({ message: "Non puoi eliminare questa richiesta" });
+        if(richiesta.stato != "Invalidata") return res.status(400).json({ message: "Non puoi eliminare questa richiesta" });
         // risposta con successo
         await deleteRichiesta(id);
         return res.status(204).json({ });
@@ -137,31 +135,3 @@ export async function handleDeleteRichiesta(req, res) {
         });
     }
 }
-/*export async function handleSendRichiesta(req, res) {
-    const id = req.body.richiesta;
-    const data = req.body.data;
-    try {
-        // risposta avvenuta con successo
-        // controllo che la richiesta rispetti le regole per l'erogazione del bollino
-        const richiesta = await getRichiesta(id);
-        if(richiesta == null) return res.status(404).json({ message: "Richiesta non trovata" });
-        const resultRegole = await checkRegole(id);
-        const checkFinal = resultRegole.regole.filter((regola) => regola.check == false);
-        if(checkFinal.length == 0 && resultRegole.anvur && richiesta.stato === 'Bozza'){
-            // invio la richiesta
-            await sendRichiesta(id, "Elaborazione", data);
-            return res.status(201).json({
-                message: "Richiesta inviata con successo",
-                data: id
-            });
-        }
-        else return res.status(400).json({ message: "Si è verificato un errore durante l'elaborazione della richiesta" });
-    } catch (error) {
-        console.log(error);
-        // errore generale interno al server
-        return res.status(500).json({
-            message: "Si è verificato un errore durante l'elaborazione della richiesta",
-            error: error.message || error
-        });
-    }
-}*/

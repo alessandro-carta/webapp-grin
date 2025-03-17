@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: 'GRIN'
+      MYSQL_USER: 'grinUser'
+      MYSQL_PASSWORD: 'grinAdmin'
+      MYSQL_ROOT_PASSWORD: 'admin'
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./script.sql:/docker-entrypoint-initdb.d/script.sql
+
+  backend:
+    image: backend:latest
+    ports:
+      - 8081:8081
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=grinUser
+      - MYSQL_PASSWORD=grinAdmin
+      - MYSQL_DB=GRIN
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+
+volumes:
+  db_data:
+    driver: local

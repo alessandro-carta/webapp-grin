@@ -21,7 +21,7 @@ export async function addBollino(id, erogato, richiesta) {
 }
 export async function getBollini() {
     const queryBollini = `
-        SELECT Bollini.Richiesta AS "richiesta", Bollini.idBollino AS "id", Bollini.Erogato AS "erogato", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", Presidenti.Università AS "università", Regolamenti.idRegolamento AS "regolamento"
+        SELECT Bollini.Richiesta AS "richiesta", Bollini.idBollino AS "id", Bollini.Erogato AS "erogato", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", Presidenti.Universita AS "università", Regolamenti.idRegolamento AS "regolamento"
         FROM Bollini, Richieste, Regolamenti, CorsiDiStudio, Presidenti
         WHERE idRichiesta = Richiesta AND idRegolamento = Regolamento AND idCDS = CDS AND idPresidente = Presidente `;
     const [result] = await db.query(queryBollini);
@@ -29,7 +29,7 @@ export async function getBollini() {
 }
 export async function getBolliniPublic() {
     const queryBollini = `
-        SELECT Bollini.idBollino AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", Presidenti.Università AS "università"
+        SELECT Bollini.idBollino AS "id", Regolamenti.AnnoAccademico AS "annoaccademico", CorsiDiStudio.Nome AS "corsodistudio", Presidenti.Universita AS "università"
         FROM Bollini, Richieste, Regolamenti, CorsiDiStudio, Presidenti
         WHERE idRichiesta = Richiesta AND idRegolamento = Regolamento AND idCDS = CDS AND idPresidente = Presidente AND Erogato = 1`;
     const [result] = await db.query(queryBollini);

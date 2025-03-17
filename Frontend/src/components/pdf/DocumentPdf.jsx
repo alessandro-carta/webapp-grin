@@ -15,7 +15,7 @@ function DocumentPdf(props){
         }
         return areeResult;
     }
-
+    // restituisce l'elenco delle aree con il totale di ore per ogni anno
     const getAreePerAnno = (anno) => {
         let areeMap = new Map(); // hash map che contiene le aree con le oretot per ogni anno
         for(let area of props.aree) areeMap.set(area.id, {...area, oretot: 0}); // carico la hash map con tutte le aree a zero
@@ -24,22 +24,57 @@ function DocumentPdf(props){
             let areeIns = getAreePerInsegnamento(ins.sottoaree);
             for(let areaIns of areeIns){
                 let getArea = areeMap.get(areaIns.id)
-                if(!getArea) areeMap.set(areaIns.id, areaIns);
-                else areeMap.set(areaIns.id, {...getArea, oretot: getArea.oretot+areaIns.oretot});
+                if(getArea) areeMap.set(areaIns.id, {...getArea, oretot: getArea.oretot+areaIns.oretot}); 
             }
         }
         return Array.from(areeMap.values());
     }
-
-    const getSottoareePerAnno = (anno) => {
+    // restituisce l'elenco delle aree con il totale per tutto il regolamento
+    const getAreePerRegolamento = () => {
+        let areeMap = new Map(); // hash map che contiene le aree con le oretot
+        for(let area of props.aree) areeMap.set(area.id, {...area, oretot: 0}); // carico la hash map con tutte le aree a zero
+        for(let ins of props.insegnamenti){
+            let areeIns = getAreePerInsegnamento(ins.sottoaree);
+            for(let areaIns of areeIns){
+                let getArea = areeMap.get(areaIns.id)
+                if(getArea) areeMap.set(areaIns.id, {...getArea, oretot: getArea.oretot+areaIns.oretot}); 
+            }
+        }
+        return Array.from(areeMap.values());
+    }
+    // restituisce l'elenco delle sottoaree con il totale di ore per ogni anno
+    const getSottoareePerAnno = (anno, area) => {
         let sottoareeMap = new Map(); // hash map che contiene le sottoaree con le oretot per ogni anno
-        for(let sottoarea of props.sottoaree) sottoareeMap.set(sottoarea.id, {...sottoarea, oretot: 0}); // carico la hash map con tutte le sottoaree a zero
+        // carico la hash map con tutte le sottoaree a zero
+        for(let sottoarea of props.sottoaree) {
+            if(sottoarea.area == area) sottoareeMap.set(sottoarea.id, {...sottoarea, oretot: 0}); 
+        }
         const insAnno = props.insegnamenti.filter(ins => ins.annoerogazione == anno); // contiene tutti gli insegnamenti per un determinato anno
         for(let ins of insAnno){
             for(let insSottoarea of ins.sottoaree){
                 // per ogni sottoarea aggiungo alla somma già presente nella hash map
-                let getSottoarea = sottoareeMap.get(insSottoarea.id);
-                if(getSottoarea) sottoareeMap.set(insSottoarea.id, {...getSottoarea, oretot: getSottoarea.oretot+insSottoarea.ore});
+                if(insSottoarea.area == area){
+                    let getSottoarea = sottoareeMap.get(insSottoarea.id);
+                    if(getSottoarea) sottoareeMap.set(insSottoarea.id, {...getSottoarea, oretot: getSottoarea.oretot+insSottoarea.ore});
+                }
+            }
+        }
+        return Array.from(sottoareeMap.values());
+    }
+    // restituisce l'elenco delle sottoaree con il totale di ore per tutto il regolamento
+    const getSottoareePerRegolamento = (area) => {
+        let sottoareeMap = new Map(); // hash map che contiene le sottoaree con le oretot per ogni anno
+         // carico la hash map con tutte le sottoaree a zero
+        for(let sottoarea of props.sottoaree) {
+            if(sottoarea.area == area) sottoareeMap.set(sottoarea.id, {...sottoarea, oretot: 0});
+        }
+        for(let ins of props.insegnamenti){
+            for(let insSottoarea of ins.sottoaree){
+                // per ogni sottoarea aggiungo alla somma già presente nella hash map
+                if(insSottoarea.area == area){
+                    let getSottoarea = sottoareeMap.get(insSottoarea.id);
+                    if(getSottoarea) sottoareeMap.set(insSottoarea.id, {...getSottoarea, oretot: getSottoarea.oretot+insSottoarea.ore});
+                }
             }
         }
         return Array.from(sottoareeMap.values());
@@ -55,6 +90,27 @@ function DocumentPdf(props){
                     <Text style={styles.content}>Durata: {props.regolamento.duratacorso}</Text>
                     <Text style={styles.content}>Stato richiesta: {props.regolamento.richiesta == null ? " Nessuna richiesta presente " : " "+props.regolamento.stato}</Text>
                     <Text style={styles.content}>Presidente: {props.presidente.nome} {props.presidente.cognome} ({props.presidente.email})</Text>
+                </View>
+                {/* vista che contiene l'elenco delle aree e sottoaree per tutto il regolamento in una tabella*/}
+                <View style={styles.section}>
+                    <Text style={styles.titleSection}>Riepilogo Regolamento:</Text>
+                    {getAreePerRegolamento().map((area, keyArea) => (
+                        <View key={keyArea} style={[styles.list, styles.section]}>
+                            <Text key={keyArea} style={[styles.elementList, styles.bold, styles.space]}>{area.nome}: {unitCFU ? `${parseInt(area.oretot)/CFUtoH} CFU` : `${area.oretot}h`}</Text>
+                            <View key={keyArea} style={styles.tableHeader}>
+                                <Text style={[styles.tableCol1, styles.bold]}>Sottoarea</Text>
+                                <Text style={[styles.tableCol2, styles.bold]}>{unitCFU ? "CFU totali" : "Ore totali"}</Text>
+                            </View>
+                            {getSottoareePerRegolamento(area.id).map((sottoarea, keySottoarea) => (
+                                <View key={keySottoarea} style={styles.tableHeader}>
+                                    <Text style={styles.tableCol1}>{sottoarea.nome}</Text>
+                                    <Text style={styles.tableCol2}>{unitCFU ? `${parseInt(sottoarea.oretot)/CFUtoH} CFU` : `${sottoarea.oretot}h`}</Text>
+                                </View>
+                            ))}
+
+                        </View>
+
+                    ))}
                 </View>
                 {/* vista che contiene l'elenco degli insegnamenti e per ogni insegnamento l'elenco delle aree coperte e per ognuna le sottoaree */}
                 <View style={styles.section}>
@@ -83,26 +139,6 @@ function DocumentPdf(props){
                         </View>
                     ))}
                 </View>
-
-                {/* vista che contiene l'elenco delle aree e sottoaree diviso per anni
-                <View style={styles.section}>
-                    <Text style={styles.titleSection}>Riepilogo Anni:</Text>
-                    {props.anni.map((anno, keyAnno) => (
-                        <View key={keyAnno} style={styles.section}>
-                            <Text key={keyAnno} style={styles.subtitleSection}>{anno} ANNO</Text>
-                            {getAreePerAnno(anno).map((area, keyArea) => (
-                                <View key={keyArea} style={[styles.list, styles.section]}>
-                                    <Text key={keyArea} style={styles.elementList}>• {area.nome}: {unitCFU ? `${parseInt(area.oretot)/CFUtoH} CFU` : `${area.oretot}h`}</Text>
-                                    {getSottoareePerAnno(anno).filter(sottoarea => sottoarea.area == area.id).map((sottoarea, keySottoarea) => (
-                                        <View key={keySottoarea} style={styles.list}>
-                                            <Text key={keySottoarea} style={styles.elementChildList}>- {sottoarea.nome}: {unitCFU ? `${parseInt(sottoarea.oretot)/CFUtoH} CFU` : `${sottoarea.oretot}h`}</Text>
-                                        </View>
-                                    ))}
-                                </View>
-                            ))}
-                        </View>
-                    ))}
-                </View> */}
                 {/* vista che contiene l'elenco delle aree e sottoaree diviso per anni in una tabella*/}
                 <View style={styles.section}>
                     <Text style={styles.titleSection}>Riepilogo Anni:</Text>
@@ -116,7 +152,7 @@ function DocumentPdf(props){
                                         <Text style={[styles.tableCol1, styles.bold]}>Sottoarea</Text>
                                         <Text style={[styles.tableCol2, styles.bold]}>{unitCFU ? "CFU totali" : "Ore totali"}</Text>
                                     </View>
-                                    {getSottoareePerAnno(anno).filter(sottoarea => sottoarea.area == area.id).map((sottoarea, keySottoarea) => (
+                                    {getSottoareePerAnno(anno, area.id).map((sottoarea, keySottoarea) => (
                                         <View key={keySottoarea} style={styles.tableHeader}>
                                             <Text style={styles.tableCol1}>{sottoarea.nome}</Text>
                                             <Text style={styles.tableCol2}>{unitCFU ? `${parseInt(sottoarea.oretot)/CFUtoH} CFU` : `${sottoarea.oretot}h`}</Text>

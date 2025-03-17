@@ -2,38 +2,6 @@ import { getRegolamento } from "./dashboard/RegolamentiCDS.js";
 import { db } from "./database.js";
 import { getRegoleFull } from "./Regole.js";
 
-export async function CFUperArea(idRegolamento, minCFUperArea) {
-    const query = `
-        SELECT Aree.idArea AS "id", SUM(InsegnamentiSottoaree.CFU) AS "CFUTot"
-        FROM Regolamenti, Insegnamenti, InsegnamentiSottoaree, Sottoaree, Aree
-        WHERE idRegolamento = Regolamento AND idInsegnamento = Insegnamento AND idSottoarea = Sottoarea AND idArea = Area AND idRegolamento = ?
-        GROUP BY Aree.idArea
-        HAVING SUM(InsegnamentiSottoaree.CFU) >= ? `;
-    const [result] = await db.query(query, [idRegolamento, minCFUperArea]);
-    return result;
-}
-export async function CFUperSottoarea(idRegolamento, minCFUperSottoarea) {
-    const query = `
-        SELECT Sottoaree.idSottoarea AS "id", SUM(InsegnamentiSottoaree.CFU) AS "CFUTot"
-        FROM Regolamenti, Insegnamenti, InsegnamentiSottoaree, Sottoaree
-        WHERE idRegolamento = Regolamento AND idInsegnamento = Insegnamento AND idSottoarea = Sottoarea AND idRegolamento = ?
-        GROUP BY Sottoaree.idSottoarea
-        HAVING SUM(InsegnamentiSottoaree.CFU) >= ? `;
-    const [result] = await db.query(query, [idRegolamento, minCFUperSottoarea]);
-    return result;
-}
-export async function CFUperSettore(idRegolamento, minCFUperSettore) {
-    const query = `
-        SELECT Insegnamenti.Settore AS "id", SUM(Insegnamenti.CFU) AS "CFUTot"
-        FROM Regolamenti, Insegnamenti
-        WHERE idRegolamento = Regolamento AND idRegolamento = ?
-        GROUP BY Insegnamenti.Settore
-        HAVING SUM(Insegnamenti.CFU) >= ? `;
-    const [result] = await db.query(query, [idRegolamento, minCFUperSettore]);
-    return result;
-}
-
-
 // controlla la copertura delle selezione di un regolamento
 export async function checkCopertura(idRegolamento, selezioni, tipoRegola) {
     let query;
@@ -66,7 +34,7 @@ export async function checkCopertura(idRegolamento, selezioni, tipoRegola) {
 }
 
 // controlla la somma dei cfu di un regolamento
-export async function checkSommaCfu(idRegolamento, selezioni, somma, tipoRegola) {
+/*export async function checkSommaCfu(idRegolamento, selezioni, somma, tipoRegola) {
     let query;
     if(tipoRegola === "area") query = `
         SELECT Aree.idArea AS "id", SUM(InsegnamentiSottoaree.CFU) AS "cfutot"
@@ -97,7 +65,7 @@ export async function checkSommaCfu(idRegolamento, selezioni, somma, tipoRegola)
         console.log(error);
         return false
     }
-}
+}*/
 
 // controlla la somma dei cfu di un regolamento
 export async function checkSommaOre(idRegolamento, selezioni, somma, tipoRegola) {
@@ -150,9 +118,7 @@ export async function checkRegole(regolamento){
             // 2. Somma
             try {
                 const resCompertura = await checkCopertura(regolamento, selezioni, regola.tipologia);
-                let resSomma;
-                if(regola.cfu != null) resSomma = await checkSommaCfu(regolamento, selezioni, regola.cfu, regola.tipologia);
-                else resSomma = await checkSommaOre(regolamento, selezioni, regola.ore, regola.tipologia);
+                const resSomma = await checkSommaOre(regolamento, selezioni, regola.ore, regola.tipologia);
                 resRegola = {...regola, check: (resCompertura && resSomma)};
                 result.regole.push(resRegola);
             } catch (error) {
@@ -163,9 +129,7 @@ export async function checkRegole(regolamento){
             // controlli:
             // 1. Somma
             try {
-                let resSomma;
-                if(regola.cfu != null) resSomma = await checkSommaCfu(regolamento, selezioni, regola.cfu, regola.tipologia);
-                else resSomma = await checkSommaOre(regolamento, selezioni, regola.ore, regola.tipologia);
+                let resSomma = await checkSommaOre(regolamento, selezioni, regola.ore, regola.tipologia);
                 resRegola = {...regola, check: resSomma};
                 result.regole.push(resRegola);
             } catch (error) {

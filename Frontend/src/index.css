@@ -110,7 +110,7 @@ body {
 .link:hover{color: var(--blu-3);}
 
 .link__noactive{color: var(--testo);}
-.link__noactive:hover{color: var(--gray);}
+.link__noactive:hover{color: var(--blu-2);}
 
 .text__header__table{
   color: var(--blu-3);
