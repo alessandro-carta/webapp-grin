@@ -19,13 +19,16 @@ import { handleCheckRegole } from "./CheckRichiesta.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
-const server = app.listen(port, (err) => {
+
+const server = app.listen(port, async () => {
     console.log(`Server in ascolto sulla porta > ${port}`);
-})
+});
+
 server.on('error', (err) => {
     console.error('Errore durante l\'avvio del server:', err.message);
     process.exit(1);
 });
+
 
 // middleware che controlla la validità del token
 const authenticateToken = (req, res, next) => {
@@ -255,7 +258,10 @@ app.put("/api/resetPassword", authenticateToken, authorizeRole(['admin']), async
 // 3. Aggiungi area
 // 4. Elimina area
 // 5. Modifica area
-app.get("/api/aree", authenticateToken, authorizeRole(['admin','presidente']), async (req, res) => {
+/*app.get("/api/aree", authenticateToken, authorizeRole(['admin','presidente']), async (req, res) => {
+    return handleGetAree(req, res);
+})*/
+app.get("/api/aree", async (req, res) => {
     return handleGetAree(req, res);
 })
 app.get("/api/area/:idArea", authenticateToken, authorizeRole(['admin','presidente']), async (req, res) => {

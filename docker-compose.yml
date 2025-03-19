@@ -5,12 +5,12 @@ services:
     image: mysql:8
     environment:
       MYSQL_DATABASE: 'GRIN'
-      MYSQL_USER: 'grinUser'
-      MYSQL_PASSWORD: 'grinAdmin'
       MYSQL_ROOT_PASSWORD: 'admin'
     volumes:
       - db_data:/var/lib/mysql
       - ./script.sql:/docker-entrypoint-initdb.d/script.sql
+    networks:
+      - default
 
   backend:
     image: backend:latest
@@ -18,14 +18,17 @@ services:
       - 8081:8081
     environment:
       - MYSQL_HOST=db
-      - MYSQL_USER=grinUser
-      - MYSQL_PASSWORD=grinAdmin
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=admin
       - MYSQL_DB=GRIN
     depends_on:
       - db
     build:
       context: ./Backend
       dockerfile: Dockerfile
+    networks:
+      - default
+
 
   frontend:
     image: frontend:latest
@@ -36,8 +39,16 @@ services:
     build:
       context: ./Frontend
       dockerfile: Dockerfile
-
+    environment:
+      - VITE_API_URL=http://backend:8081
+    networks:
+      - default
 
 volumes:
   db_data:
     driver: local
+
+networks:
+  default:
+    driver: bridge
+

@@ -73,7 +73,7 @@ export async function handleAddRegola(req, res) {
     // selezioni contiene l'elenco degli id delle aree/sottoaree/settori
     let { descrizione, ore, centrale, tipologia, selezioni } = req.body;
     const id = uuidv4();
-    const result = await addRegola(id, descrizione, cfu, ore, centrale, tipologia, selezioni, count);
+    const result = await addRegola(id, descrizione, ore, centrale, tipologia, selezioni);
     if(result.ok){
         // risposta avvenuta con successo
         return res.status(201).json({ 
