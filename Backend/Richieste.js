@@ -41,7 +41,7 @@ export async function getInsegnamentoSottoaree(id){
 }
 export async function getInsegnamentiFull(regolamento) {
     // contiene l'elenco degli insegnamenti
-    // per ogni insegnamento l'elenco delle sottoaree con cfu
+    // per ogni insegnamento l'elenco delle sottoaree con le ore
     let insegnamentiFull = []; 
     const insegnamenti = await getInsegnamenti(regolamento);
     for(let insegnamento of insegnamenti){

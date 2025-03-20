@@ -33,41 +33,7 @@ export async function checkCopertura(idRegolamento, selezioni, tipoRegola) {
     }
 }
 
-// controlla la somma dei cfu di un regolamento
-/*export async function checkSommaCfu(idRegolamento, selezioni, somma, tipoRegola) {
-    let query;
-    if(tipoRegola === "area") query = `
-        SELECT Aree.idArea AS "id", SUM(InsegnamentiSottoaree.CFU) AS "cfutot"
-        FROM Regolamenti, Insegnamenti, InsegnamentiSottoaree, Sottoaree, Aree
-        WHERE idRegolamento = Regolamento AND idInsegnamento = Insegnamento AND idSottoarea = Sottoarea AND idArea = Area AND idRegolamento = ?
-        GROUP BY Aree.idArea`;
-    if(tipoRegola === "sottoarea") query = `
-        SELECT Sottoaree.idSottoarea AS "id", SUM(InsegnamentiSottoaree.CFU) AS "cfutot"
-        FROM Regolamenti, Insegnamenti, InsegnamentiSottoaree, Sottoaree
-        WHERE idRegolamento = Regolamento AND idInsegnamento = Insegnamento AND idSottoarea = Sottoarea AND idRegolamento = ?
-        GROUP BY Sottoaree.idSottoarea`;
-    if(tipoRegola === "settore") query = `
-        SELECT Insegnamenti.Settore AS "id", SUM(Insegnamenti.CFU) AS "cfutot"
-        FROM Regolamenti, Insegnamenti
-        WHERE idRegolamento = Regolamento AND idRegolamento = ?
-        GROUP BY Insegnamenti.Settore`;
-    try {
-        // restituisce true se un regolamento ha tutte le selezioni centrali della regola
-        // false altrimenti
-        const [elenco] = await db.query(query, [idRegolamento]);
-        const elencoSelezioniReg = elenco.map(item => item.id);
-        let sum = 0;
-        for(let elemento of elenco){
-            if(selezioni.includes(elemento.id)) sum += parseInt(elemento.cfutot);
-        }
-        return sum >= somma;
-    } catch (error) {
-        console.log(error);
-        return false
-    }
-}*/
-
-// controlla la somma dei cfu di un regolamento
+// controlla la somma delle ore di un regolamento
 export async function checkSommaOre(idRegolamento, selezioni, somma, tipoRegola) {
     let query;
     if(tipoRegola === "area") query = `

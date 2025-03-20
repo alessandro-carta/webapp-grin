@@ -1,7 +1,6 @@
 // server
 export const port = 8081;
-export const tentativi = 5;
-export const ritardo = 10000;
+export const ritardo = 5000;
 
 // token
 export const passAdmin = "admin";

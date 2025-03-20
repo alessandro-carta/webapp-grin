@@ -1,5 +1,5 @@
 import mysql from 'mysql2'
-import { database, host, password, ritardo, tentativi, user } from './Config.js';
+import { database, host, password, ritardo, user } from './Config.js';
 
 export let db;
 
@@ -13,17 +13,18 @@ async function connectToDatabase() {
           database: process.env.MYSQL_DB || "GRIN"
         }).promise();
   
-        // Prova di connessione per vedere se il database risponde
+        // tenta la connessione
         await db.connect();
         console.log("Connessione al database riuscita!");
-        break;  // Se la connessione ha successo, esci dal ciclo
+        break;
   
       } catch (error) {
+        // connessione fallita
         console.error(`Tentativo di connessione al DB fallito. Errore:`, error.message);
         console.log(`Riprovo tra ${ritardo / 1000} secondi...`);
-        await new Promise(resolve => setTimeout(resolve, ritardo));  // Attendere prima del prossimo tentativo
+        await new Promise(resolve => setTimeout(resolve, ritardo));  // attende prima del prossimo tentativo
       }
     }
   }
   
-  connectToDatabase();
+connectToDatabase();
